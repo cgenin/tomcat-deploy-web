@@ -1,0 +1,14 @@
+{
+  "name": "old-versions",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^3.3.5",
+    "font-awesome": "^4.4.0",
+    "jquery": "^2.2.0",
+    "ractive": "^0.7.3",
+    "q": "^1.4.1",
+    "moment": "^2.10.6",
+    "ractive-load": "^0.5.2"
+  }
+}
