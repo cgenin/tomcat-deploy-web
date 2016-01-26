@@ -1,6 +1,7 @@
 var DeployDB = function DeployDB() {
     var Q = require('q'),
-        OldVersCollection = 'old-versions',
+        fileCollection = 'files',
+        configCollection = 'configuration',
         loki = require('lokijs'),
         db = new loki('db/data.json', {autoload: true});
 
@@ -16,23 +17,27 @@ var DeployDB = function DeployDB() {
         var deferred = Q.defer();
         db.loadDatabase({}, function () {
 
-            createIfNotExist(OldVersCollection);
+            createIfNotExist(fileCollection);
+            createIfNotExist(configCollection);
             deferred.resolve(db);
         });
         return deferred.promise;
     };
 
-    this.getCollection = function () {
-        return db.getCollection(OldVersCollection);
+    this.files = function () {
+        return db.getCollection(fileCollection);
     };
 
+    this.config = function () {
+        return db.getCollection(configCollection);
+    };
     this.insert = function (collection, item) {
         collection.insert(item);
         db.saveDatabase();
     };
 
     this.save = function (collection, item) {
-        if (item.$loki) {
+        if(item.$loki){
             collection.update(item);
         } else {
             collection.insert(item);
@@ -63,12 +68,6 @@ DeployDB.instance = null;
 DeployDB.getInstance = function () {
     if (this.instance === null) {
         this.instance = new DeployDB();
-        this.instance.init().then(function () {
-            console.log('Initializing db : OK.');
-        }).catch(function (err) {
-            console.error('error initializing db');
-            console.error(err);
-        });
     }
     return this.instance;
 };

@@ -7,7 +7,11 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var oldVerions = require('./routes/upload');
+var server = require('./routes/server');
+var all = require('./routes/all');
+var artifact = require('./routes/artifact');
+var deploy = require('./routes/deploy');
+var deploydb = require('./deploydb');
 
 var app = express();
 
@@ -25,7 +29,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/api/old-version', oldVerions);
+//app.use('/api/old-version', oldVerions);
+app.use('/api/server', server);
+app.use('/api/all', all);
+app.use('/api/artifact', artifact);
+app.use('/api/deploy', deploy);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -57,6 +65,8 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
+deploydb.init().then(function(){
+  console.log('db started.')
+});
 
 module.exports = app;
