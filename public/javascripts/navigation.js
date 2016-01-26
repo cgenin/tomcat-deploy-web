@@ -1,4 +1,6 @@
+var socket = null;
 (function () {
+    socket = io();
     Ractive.load('components/navigation.html').then(function (DeployBar) {
         var deploybar, current = null;
         var change = function (newNavigation) {

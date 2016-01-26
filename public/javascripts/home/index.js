@@ -85,7 +85,15 @@ module.exports = function () {
                                     return v !== -1;
                                 });
                             };
-
+                            socket.on('rc-log', function (msg) {
+                                Logger.log(msg);
+                            });
+                            socket.on('rc-error', function (msg) {
+                                Logger.error(msg);
+                            });
+                            socket.on('rc-end', function () {
+                                Logger.log("********************** END **********************");
+                            });
                             home.on('complete', function () {
                                 $('[data-toggle="tooltip"]').tooltip();
                             });
@@ -130,108 +138,30 @@ module.exports = function () {
 
 
                             home.on('submit', function () {
-                                /*   try {
-                                 console.log('submit');
-                                 $('.nav-tabs a[href="#logs"]').tab('show');
+                                console.log('submit');
+                                $('.nav-tabs a[href="#logs"]').tab('show');
 
-                                 Logger.start();
-                                 Logger.log('start deploy...');
-                                 var war = require('../war'),
-                                 configuration = home.get('configuration'),
-                                 selected = selectedFiles();
-
-                                 var nbDeploiement = selected.length,
-                                 endMessage = function () {
-                                 nbDeploiement--;
-                                 if (0 === nbDeploiement) {
-                                 Logger.log("********************** END **********************");
-                                 }
-                                 },
-                                 errorLogger = function (msg) {
-                                 return function (err) {
-                                 Logger.error(msg);
-                                 Logger.error(err);
-                                 endMessage();
-                                 };
-                                 };
-
-                                 Logger.log('selected wars :' + selected.length);
-
-                                 var launch_inner = function (array) {
-                                 if (!array || array.length === 0) {
-                                 return;
-                                 }
-                                 var o = array.shift();
-                                 Logger.log('managing old version :' + o.name);
-                                 war.managedOld(o).then(
-                                 function () {
-                                 Logger.log('prepare download :' + o.name);
-                                 war.download(o).then(
-                                 function (name) {
-                                 Logger.log('deploy : ' + name);
-                                 war.undeploy(configuration, o).then(function () {
-                                 Logger.log('Undeployed : ' + name);
-                                 war.deploy(configuration, o).then(
-                                 function (name) {
-                                 Logger.log('Updated : ' + name);
-                                 launch_inner(array);
-                                 endMessage();
-                                 }, errorLogger('error in deploying'));
-                                 }, errorLogger('error in undeploying'));
-                                 }, errorLogger('error in downloading'));
-
-                                 }, errorLogger('error in managing old war'));
-
-                                 };
+                                Logger.start();
+                                Logger.log('start deploy...');
+                                var configuration = home.get('configuration'),
+                                    selected = selectedFiles();
+                                Logger.log('selected wars :' + selected.length);
+                                socket.emit('deploy', selected);
 
 
-                                 war.makedirectory().then(
-                                 function () {
-                                 Logger.log('root directory : OK.');
-                                 launch_inner(selected);
-                                 });
-                                 }
-                                 catch (e) {
-                                 Logger.error(e);
-                                 }*/
                                 return false;
                             });
                             home.on('undeploy', function () {
                                 try {
                                     $('.nav-tabs a[href="#logs"]').tab('show');
                                     Logger.start();
-                                    var war = require('../war'),
-                                        configuration = home.get('configuration'),
+                                    var configuration = home.get('configuration'),
                                         selected = selectedFiles();
 
-                                    var nbDeploiement = 0,
-                                        endMessage = function () {
-                                            nbDeploiement += 1;
-                                            if (selected.length === nbDeploiement) {
-                                                Logger.log("********************** END **********************");
-                                            }
-                                        },
-                                        errorLogger = function (msg) {
-                                            return function (err) {
-                                                Logger.error(msg);
-                                                Logger.error(err);
-                                                endMessage();
-                                            };
-                                        };
 
                                     Logger.log('selected wars :' + selected.length);
-                                    var source = new EventSource('api/deploy');
-                                    source.onmessage = function(event) {
-                                        document.getElementById("result").innerHTML += event.data + "<br>";
-                                    };
-                                    /*
-                                    selected.forEach(function (o) {
-                                        Logger.log('deploy : ' + o.name);
-                                        war.undeploy(configuration, o).then(function (name) {
-                                            Logger.log('undeployed : ' + name);
-                                            endMessage();
-                                        }, errorLogger('error in undeploying'));
-                                    });*/
+                                    socket.emit('undeploy', selected);
+
 
                                 } catch (e) {
                                     Logger.error(e);
