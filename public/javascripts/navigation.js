@@ -1,6 +1,7 @@
 var socket = null;
 (function () {
     socket = io();
+    $.material.init();
     Ractive.load('components/navigation.html').then(function (DeployBar) {
         var deploybar, current = null;
         var change = function (newNavigation) {
@@ -24,10 +25,10 @@ var socket = null;
             data: {home: false, add: false},
             navChange: change
         });
-        deploybar.on('close', function () {
+        /*deploybar.on('close', function () {
             deploydb.close();
             window.close();
-        });
+        });*/
         change('home');
     }).catch(function (e) {
         console.error(e);

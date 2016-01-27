@@ -65,6 +65,7 @@ var download = function (item) {
             deferred.reject(err);
         });
     } catch (e) {
+        console.error(e);
         deferred.reject(e);
     }
     return deferred.promise;

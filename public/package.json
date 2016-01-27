@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^3.3.5",
+    "bootstrap-material-design": "^0.5.7",
     "font-awesome": "^4.4.0",
     "jquery": "^2.2.0",
     "lodash": "^4.0.1",

@@ -35,7 +35,7 @@ module.exports = function (io) {
                 }, function (err) {
                     console.error(err);
                     rc.error('error in undeploying');
-                    rc.error('error', err);
+                    rc.error( err.message);
                     recursiveUndeploy(rest);
                 });
 
@@ -45,7 +45,7 @@ module.exports = function (io) {
                     console.error(err.stack);
                 }
                 rc.error('Exception in deployement');
-                rc.error(JSON.stringify(err));
+                rc.error( err.message);
                 rc.end();
             }
         };
@@ -57,7 +57,7 @@ module.exports = function (io) {
             var errorLogger = function (msg) {
                 return function (err) {
                     rc.error(msg);
-                    rc.error(err);
+                    rc.error(err.message);
                     rc.end();
                 };
             };

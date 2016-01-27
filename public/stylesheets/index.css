@@ -400,3 +400,7 @@ div.message.warning{background: #E74;}
 div.message.success{background: #5A6;}
 div.message.announcement{background: #EA0;}
 div.message.error{background: #C43;}
+
+div.tooltip-inner {
+    max-width: 500px;
+}
