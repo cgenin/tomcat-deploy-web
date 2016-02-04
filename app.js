@@ -73,8 +73,12 @@ var server = http.createServer(app);
 var io = require('socket.io')(server);
 
 io.on('connection', function (socket) {
-    console.log('socket.io : ' + socket);
-    require('./routes/deploy')(socket);
+    var ip = '';
+    if (socket && socket.conn && socket.conn.remoteAddress) {
+        ip = socket.conn.remoteAddress;
+    }
+    console.log('connection of ' + ip);
+    require('./routes/deploy')(socket, io, ip);
 });
 
 module.exports = {

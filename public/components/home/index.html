@@ -48,6 +48,14 @@
             </div>
 
         </div>
+        {{#if deploiementInProgress.type}}
+        <div class="row">
+        <div class="alert alert-warning col-xs-offset-4 col-xs-4">
+            <h4>Warning deployement! <i class="fa fa-refresh fa-spin"></i></h4>
+            <strong>{{deploiementInProgress.type}} by {{deploiementInProgress.host}}</strong>
+        </div>
+        </div>
+        {{/if}}
         <div class="row">
             <div class="col-xs-6 text-right">
                 <button type="button" class="btn btn-default" on-click="save">
@@ -87,6 +95,7 @@
                                     <th>
                                         <input type="checkbox" checked="{{all}}" on-click="all-checked"></th>
                                     <th>Name</th>
+                                    <th>Status</th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -99,17 +108,32 @@
                                     <td><a href="#" data-toggle="tooltip" data-placement="top"
                                            data-original-title="URL : {{url}}">{{name}}</a>
                                     </td>
+                                    <td>
+                                        {{#if status}}
+                                        <span class="{{status.state === 'OK' ? 'text-success' :''}} {{status.state === 'KO' ? 'text-danger' :''}}">
+                                        <i class="fa {{status.state === 'OK' ? 'fa-check' :''}} {{status.state === 'KO' ? ' fa-frown-o' :''}} "></i>
+                                        {{moment(status.dt).format('DD-MM-YYYY HH:mm:ss')}}
+                                        </span>
+
+                                        {{/if}}
+                                    </td>
                                     <td style="padding-top: 2px;">
 
-                                            <div class="btn-group" style="margin-top: 4px;">
-                                                <a href="bootstrap-elements.html" data-target="#" class="btn btn-raised btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                    <li class="fa fa-cogs"></li>
-                                                    <span class="caret"></span>
-                                                    <div class="ripple-container"></div></a>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="#" on-click="onDelete(this,i)">  <i class="fa fa-trash"></i> Delete</a></li>
-                                                </ul>
-                                            </div>
+                                        <div class="btn-group" style="margin-top: 4px;">
+                                            <a href="bootstrap-elements.html" data-target="#"
+                                               class="btn btn-raised btn-sm dropdown-toggle" data-toggle="dropdown"
+                                               aria-expanded="false">
+                                                <li class="fa fa-cogs"></li>
+                                                <span class="caret"></span>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" on-click="onDelete(this,i)"> <i class="fa fa-trash"></i>
+                                                    Delete</a></li>
+                                                <!--li><a href="#" on-click="onRollback(this,i)"> <i
+                                                        class="fa fa-trash"></i> Rollback</a></li-->
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                                 {{/items}}

@@ -37,13 +37,35 @@ var DeployDB = function DeployDB() {
     };
 
     this.save = function (collection, item) {
-        if(item.$loki){
+        if (item.$loki) {
             collection.update(item);
         } else {
             collection.insert(item);
         }
         db.saveDatabase();
     };
+
+    this.updateStatus = function (collection, item, state) {
+        if (item.$loki) {
+            var filter = collection.data.filter(function (i) {
+                return i.$loki === item.$loki;
+            });
+            if (filter && filter.length > 0) {
+                filter[0].status = {
+                    state: state,
+                    dt: new Date()
+                };
+                collection.update(filter[0]);
+                db.saveDatabase();
+                return filter[0];
+            }
+
+        }
+
+        return item;
+
+    };
+
     this.remove = function (collection, item) {
         collection.remove(item);
         db.saveDatabase();

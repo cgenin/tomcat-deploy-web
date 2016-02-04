@@ -1,5 +1,6 @@
-module.exports = function () {
+module.exports = function (change) {
     var Q = require('q'),
+        moment = require('moment'),
         deferred = Q.defer();
     try {
         $.get('api/all', function (all) {
@@ -28,11 +29,17 @@ module.exports = function () {
                                         enabledButt: false,
                                         targetDir: '',
                                         configuration: configuration,
-                                        message: {}
+                                        message: {},
+                                        moment: moment,
+                                        deploiementInProgress: deploiementInProgress
                                     },
                                     components: {
                                         Logger: Logger.component,
                                         Message: Message
+                                    },
+                                    onRollback: function (item) {
+                                        selectedArtifact = item;
+                                        change('rollback');
                                     },
                                     onDelete: function (item) {
                                         var r = new XMLHttpRequest();
@@ -94,6 +101,17 @@ module.exports = function () {
                             socket.on('rc-end', function () {
                                 Logger.log("********************** END **********************");
                             });
+                            socket.on('rc-start', function () {
+                                Logger.start();
+                            });
+                            socket.on('deploy-start', function (data) {
+                                home.set('deploiementInProgress', data);
+                            });
+                            socket.on('deploy-end', function (data) {
+                                console.log(data);
+                                home.set('deploiementInProgress', {});
+                            });
+
                             home.on('complete', function () {
                                 $('[data-toggle="tooltip"]').tooltip();
                             });
@@ -140,29 +158,17 @@ module.exports = function () {
                             home.on('submit', function () {
                                 console.log('submit');
                                 $('.nav-tabs a[href="#logs"]').tab('show');
-
-                                Logger.start();
-                                Logger.log('start deploy...');
                                 var configuration = home.get('configuration'),
                                     selected = selectedFiles();
-                                Logger.log('selected wars :' + selected.length);
                                 socket.emit('deploy', selected);
-
-
                                 return false;
                             });
                             home.on('undeploy', function () {
                                 try {
                                     $('.nav-tabs a[href="#logs"]').tab('show');
-                                    Logger.start();
                                     var configuration = home.get('configuration'),
                                         selected = selectedFiles();
-
-
-                                    Logger.log('selected wars :' + selected.length);
                                     socket.emit('undeploy', selected);
-
-
                                 } catch (e) {
                                     Logger.error(e);
                                 }
