@@ -1,1 +1,0 @@
-browserify -r ./javascripts/home/index.js:home >  build/home.js

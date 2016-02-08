@@ -7,10 +7,6 @@
     "bootstrap-material-design": "^0.5.7",
     "font-awesome": "^4.4.0",
     "jquery": "^2.2.0",
-    "lodash": "^4.0.1",
-    "moment": "^2.10.6",
-    "q": "^1.4.1",
-    "ractive": "^0.7.3",
-    "ractive-load": "^0.5.2"
+    "moment": "^2.10.6"
   }
 }
