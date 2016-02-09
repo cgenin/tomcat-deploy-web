@@ -1,6 +1,6 @@
 import React from 'react';
 import Logger from './../../widgets/logger/Logger';
-import Message from './Message';
+import Message from '../../widgets/message/Message';
 import ServerEdit from './../../widgets/server/ServerEdit';
 import ServerSaveButton from './../../widgets/server/ServerSaveButton';
 import List from './../../widgets/artifacts/List';
@@ -8,7 +8,6 @@ import List from './../../widgets/artifacts/List';
 
 class HomePage extends React.Component {
     render() {
-        console.log(this.props)
         return (
             <div>
                 <div className="row">
@@ -25,7 +24,6 @@ class HomePage extends React.Component {
                 <div className="row">
                     <div className="col-xs-offset-3 col-xs-6 text-center">
                         <Message />
-
                     </div>
                 </div>
                 <div className="row">

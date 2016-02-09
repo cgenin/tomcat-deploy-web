@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect} from 'react-redux';
-import {Overlay} from 'react-bootstrap';
+import {OverlayTrigger,Tooltip} from 'react-bootstrap';
 
 let mapStateToProps = function (state, ownProps) {
     return {
@@ -13,12 +13,17 @@ let mapDispatchToProps = function (dispatch) {
 };
 
 class ItemStatus extends React.Component {
+
+
     render() {
+        if (!this.props.artifact.last) {
+            return null;
+        }
+
         return (
             <span
                 className="{{status.state === 'OK' ? 'text-success' :''}} {{status.state === 'KO' ? 'text-danger' :''}}">
                 <i className="fa {{status.state === 'OK' ? 'fa-check' :''}} {{status.state === 'KO' ? ' fa-frown-o' :''}} "/>
-
                                         </span>
         );
     }
@@ -28,38 +33,20 @@ class ItemStatus extends React.Component {
 class ItemName extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {show: true};
-        this.toggle = this.toggle.bind(this);
     }
 
-    toggle() {
-        this.setState({show: !this.state.show});
-    }
 
     render() {
         const style = {
-            position: 'absolute',
-            backgroundColor: '#EEE',
-            boxShadow: '0 5px 10px rgba(0, 0, 0, 0.2)',
-            border: '1px solid #CCC',
-            borderRadius: 3,
-            marginLeft: -5,
-            marginTop: 5,
-            padding: 10
+            cursor: 'pointer'
         };
         const popup = 'URL : ' + this.props.artifact.url;
-        return (<span>
-            <a href="#" data-toggle="tooltip" data-placement="top" ref="target">{this.props.artifact.name}</a>
-            <Overlay
-                show={this.state.show}
-                onHide={() => this.setState({ show: false })}
-                placement="right" container={this} target={() => ReactDOM.findDOMNode(this.refs.target)}>
-                <div style={style}>
-                    <strong>{popup}</strong>
-                </div>
-            </Overlay>
-
-        </span>);
+        const tool = (<Tooltip id="0"><strong>{popup}</strong></Tooltip>);
+        return (
+            <OverlayTrigger placement="right" overlay={tool}>
+                <a href="#" style={style}>{this.props.artifact.name}</a>
+            </OverlayTrigger>
+        );
     }
 }
 
@@ -74,7 +61,7 @@ class ItemList extends React.Component {
                     <ItemName artifact={this.props.artifact}/>
                 </td>
                 <td>
-
+                    <ItemStatus artifact={this.props.artifact}/>
                 </td>
                 <td style={{paddingTop: '2px'}}>
 

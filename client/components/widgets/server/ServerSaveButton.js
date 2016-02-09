@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect} from 'react-redux';
 import { save } from '../../../modules/server/actions';
+import { send, TYPE_SUCCESS } from '../../../modules/message/actions';
 
 let mapStateToProps = function (state, ownProps) {
     const server = state.server;
@@ -15,6 +16,7 @@ let mapDispatchToProps = function (dispatch) {
     return {
         onSave: function () {
             dispatch(save());
+            setTimeout(500, ()=> dispatch(send(TYPE_SUCCESS, 'config saved !')));
         }
     }
 };

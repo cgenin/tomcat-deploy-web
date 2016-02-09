@@ -32,7 +32,6 @@ class ServerEdit extends React.Component {
     }
 
     render() {
-        console.log('Form:' + JSON.stringify(this.props));
         return (
             <div className="row">
                 <form className="form-inline">
