@@ -4,6 +4,13 @@ const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const routes = require('./routes/index');
+const serverRest = require('./routes/server');
+const all = require('./routes/all');
+const artifact = require('./routes/artifact');
+
+const deploydb = require('./deploydb');
+
 const app = express();
 
 // view engine setup
@@ -16,7 +23,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
+app.use('/api/server', serverRest);
+app.use('/api/all', all);
+app.use('/api/artifact', artifact);
 
 require('./routes')(app);
+
+deploydb.init().then(function () {
+    console.log('db started.')
+});
 
 module.exports = app;
