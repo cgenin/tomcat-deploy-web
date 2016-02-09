@@ -7,18 +7,20 @@ const defaultState = {
 };
 
 export function mReducers(state = defaultState, action) {
-    console.log(action);
+    let type;
+    let text;
+    let show;
     switch (action.type) {
         case SEND:
-            state.type = action.content.type;
-            state.text = action.content.text;
-            state.show = true;
-            return state;
+            type = action.content.type;
+            text = action.content.text;
+            show = true;
+            return {type, text, show};
         case HIDE:
-           state.type = '';
-           state.text = '';
-           state.show = false;
-            return state;
+           type = '';
+           text = '';
+           show = false;
+            return {type, text, show};
         default :
             return state;
     }

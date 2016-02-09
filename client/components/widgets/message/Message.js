@@ -11,8 +11,8 @@ let mapStateToProps = function (state, ownProps) {
 
 let mapDispatchToProps = function (dispatch) {
     return {
-        onInit: function () {
-            setTimeout(7500, ()=>dispatch(hide()));
+        onHide: function () {
+            dispatch(hide());
         }
     }
 };
@@ -38,12 +38,16 @@ class MessageError extends React.Component {
 }
 
 class Message extends React.Component {
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.message.show && nextProps.message.show !== this.props.message.show) {
+            setTimeout(()=> this.props.onHide(), 5000);
+        }
+    }
+
     render() {
-        console.log(this.props);
         if (!this.props.message.show) {
             return null;
         }
-        console.log('2');
         switch (this.props.message.type) {
             case TYPE_SUCCESS:
 
@@ -52,7 +56,6 @@ class Message extends React.Component {
 
                 return (<MessageError text={this.props.message.text}/>);
         }
-        console.log('end');
         return null;
     }
 }

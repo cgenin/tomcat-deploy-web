@@ -5,6 +5,7 @@ import ServerEdit from './../../widgets/server/ServerEdit';
 import ServerSaveButton from './../../widgets/server/ServerSaveButton';
 import List from './../../widgets/artifacts/List';
 
+import InProgress from './../../widgets/actions/InProgress';
 
 class HomePage extends React.Component {
     render() {
@@ -27,9 +28,8 @@ class HomePage extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="alert alert-warning col-xs-offset-4 col-xs-4">
-                        <h3>Warning deployement in progress! <i className="fa fa-refresh fa-spin"/></h3>
-                        <strong>sss</strong>
+                    <div className=" col-xs-offset-4 col-xs-4">
+                        <InProgress />
                     </div>
                 </div>
                 <div className="row">

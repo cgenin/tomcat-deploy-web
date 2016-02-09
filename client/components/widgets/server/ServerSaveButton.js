@@ -16,7 +16,7 @@ let mapDispatchToProps = function (dispatch) {
     return {
         onSave: function () {
             dispatch(save());
-            setTimeout(500, ()=> dispatch(send(TYPE_SUCCESS, 'config saved !')));
+            setTimeout(()=> dispatch(send(TYPE_SUCCESS, 'config saved !')), 1000);
         }
     }
 };

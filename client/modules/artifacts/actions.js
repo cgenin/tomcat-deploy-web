@@ -8,9 +8,9 @@ export function save(name, url) {
     };
 }
 
-export function del(index) {
+export function del(name) {
     return {
-        type: DELETE, index
+        type: DELETE, name
     };
 }
 

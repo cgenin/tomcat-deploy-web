@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect} from 'react-redux';
 import {OverlayTrigger,Tooltip} from 'react-bootstrap';
+import { del } from '../../../modules/artifacts/actions';
 
 let mapStateToProps = function (state, ownProps) {
     return {
@@ -9,7 +10,11 @@ let mapStateToProps = function (state, ownProps) {
 };
 
 let mapDispatchToProps = function (dispatch) {
-    return {}
+    return {
+        onDelete: function (name) {
+            dispatch(del(name));
+        }
+    }
 };
 
 class ItemStatus extends React.Component {
@@ -51,6 +56,19 @@ class ItemName extends React.Component {
 }
 
 class ItemList extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick(e) {
+        e.preventDefault();
+        const name = this.props.artifact.name;
+        this.props.onDelete(name);
+        return false;
+    }
+
     render() {
 
         return (
@@ -74,8 +92,7 @@ class ItemList extends React.Component {
                             <div className="ripple-container"></div>
                         </a>
                         <ul className="dropdown-menu">
-                            <li><a href="#"> <i className="fa fa-trash"/>
-                                Delete</a></li>
+                            <li><a href="#" onClick={this.onClick}><i className="fa fa-trash"/>&nbsp;Delete</a></li>
                         </ul>
                     </div>
                 </td>
@@ -90,7 +107,9 @@ class List extends React.Component {
     }
 
     render() {
-        const artifacts = this.props.artifacts.map((artifact, i)=> <ItemList key={i} artifact={artifact}/>);
+        const onDelete = this.props.onDelete;
+        const artifacts = this.props.artifacts.map((artifact, i)=> <ItemList key={i} onDelete={onDelete}
+                                                                             artifact={artifact}/>);
         return (
             <div className="col-xs-offset-1 col-xs-10">
                 <table className="table table-hover">

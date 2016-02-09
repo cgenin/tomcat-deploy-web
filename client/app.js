@@ -33,11 +33,11 @@ export const store = compose(
     )
 )(createStore)(rootReducer);
 
-
+/*
 store.subscribe(
     state => console.log(state),
     (previousState, state) => previousState.server !== state.server
-);
+);*/
 
 // Needed befor react 1.0 release
 injectTapEventPlugin();

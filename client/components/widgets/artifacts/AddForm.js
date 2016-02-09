@@ -67,13 +67,14 @@ class AddForm extends React.Component {
                 <div className="col-xs-offset-4 col-xs-4">
                     <a href="#/" className="btn btn-default">
                         <li className="fa fa-backward"/>
-                        Cancel
+                        &nbsp;Cancel
                     </a>
                 </div>
                 <div className=" col-xs-4">
-                    <button type="button" onClick={this.onClick} className="btn btn-primary" disabled={this.state.disabled}>
+                    <button type="button" onClick={this.onClick} className="btn btn-primary"
+                            disabled={this.state.disabled}>
                         <li className="glyphicon glyphicon-ok"/>
-                        Submit
+                        &nbsp;Submit
                     </button>
                 </div>
             </form>

@@ -1,4 +1,4 @@
-import {SAVE, FINDALL} from './actions';
+import {SAVE, FINDALL, DELETE} from './actions';
 
 const defaultState = [];
 
@@ -12,6 +12,13 @@ export function areducers(state = defaultState, action) {
             const obj = {name, url};
             state.push(obj);
             return state;
+        case DELETE :
+            const n = action.name;
+            const index = state.findIndex((o)=> o.name === n);
+            if (index !== -1) {
+                state.splice(index, 1);
+            }
+            return Array.from(state);
         default :
             return state;
     }
