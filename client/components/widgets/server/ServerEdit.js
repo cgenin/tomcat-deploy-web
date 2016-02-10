@@ -38,7 +38,7 @@ class ServerEdit extends React.Component {
                     <div className=" col-md-6">
 
                         <div className="form-group">
-                            <label htmlFor="server" className="hidden-sm">Server : </label>
+                            <label htmlFor="server" className="hidden-sm">Server :&nbsp;&nbsp;</label>
 
                             <div className="input-group">
                                 <span className="input-group-addon">http://</span>
@@ -51,7 +51,7 @@ class ServerEdit extends React.Component {
                     </div>
                     <div className=" col-md-6">
                         <div className="form-group">
-                            <label htmlFor="user" className="hidden-sm">User : </label>
+                            <label htmlFor="user" className="hidden-sm">User :&nbsp;&nbsp;</label>
                             <input type="text" className="form-control" id="user" ref="username"
                                    value={this.props.server.username} onChange={this.onChange}
                                    placeholder="User"/>
@@ -59,7 +59,7 @@ class ServerEdit extends React.Component {
                     </div>
                     <div className="col-md-offset-6 col-md-6">
                         <div className="form-group">
-                            <label htmlFor="password" className="hidden-sm">Password : </label>
+                            <label htmlFor="password" className="hidden-sm">Password :&nbsp;&nbsp;</label>
                             <input type="password" className="form-control" id="password" ref="password"
                                    value={this.props.server.password} onChange={this.onChange}
                                    placeholder="Password"/>

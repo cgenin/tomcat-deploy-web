@@ -1,3 +1,5 @@
+import fetch from 'isomorphic-fetch';
+
 export const UPDATE = 'SEVER:UPDATE';
 export const SAVE = 'SEVER:SAVE';
 

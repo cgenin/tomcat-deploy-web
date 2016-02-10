@@ -4,6 +4,11 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 
 /* GET users listing. */
+router.get('/', function (req, res, next) {
+    var items = deploydb.files() || {data: []};
+    res.json(items.data);
+});
+
 
 router.post('/', bodyParser.json(), function (req, res, next) {
     var body = req.body;

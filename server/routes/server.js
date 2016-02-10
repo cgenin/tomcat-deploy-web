@@ -5,8 +5,8 @@ var bodyParser = require('body-parser');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-    var obj = deploydb.config() || {data: {}};
-    res.json(obj.data);
+    var config = deploydb.config() || {data: [{}]};
+    res.json( config.data[0]);
 });
 router.put('/', bodyParser.json(), function (req, res, next) {
     var body = req.body;

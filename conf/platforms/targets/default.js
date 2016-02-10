@@ -29,6 +29,7 @@ module.exports = {
         { rel: 'stylesheet', type: 'text/css', href: '/styles.css' }
       ],
       scripts: [
+        { type: 'text/javascript', src: '/node_modules/babel-polyfill/dist/polyfill.js' },
         { type: 'text/javascript', src: '/node_modules/jquery/dist/jquery.js' },
         { type: 'text/javascript', src: '/node_modules/bootstrap/dist/js/bootstrap.min.js' },
         { type: 'text/javascript', src: '/node_modules/bootstrap-material-design/dist/js/material.js' },
