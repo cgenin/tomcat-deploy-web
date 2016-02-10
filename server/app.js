@@ -20,7 +20,7 @@ app.set('view engine', 'ejs');
 // uncomment after placing your favicon in /public
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/api/server', serverRest);
@@ -30,7 +30,9 @@ app.use('/api/artifact', artifact);
 require('./routes')(app);
 
 deploydb.init().then(function () {
-    console.log('db started.')
+  console.log('db started.')
 });
+
+
 
 module.exports = app;
