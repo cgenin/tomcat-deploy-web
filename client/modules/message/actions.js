@@ -4,16 +4,16 @@ export const TYPE_SUCCESS = 'SUCCESS';
 export const TYPE_ERROR = 'ERROR';
 
 export function hide() {
-    return {
-        type: HIDE
-    };
+  return {
+    type: HIDE
+  };
 }
 
 export function send(type, text) {
-    return {
-        type: SEND,
-        content: {
-            type, text
-        }
-    };
+  return {
+    type: SEND,
+    content: {
+      type, text
+    }
+  };
 }

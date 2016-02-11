@@ -26,6 +26,8 @@
       "Always"
     ],
     "react/no-multi-comp": 0,
-    "react/jsx-no-bind": 0
+    "react/jsx-no-bind": 0,
+    "object-curly-spacing": [0, "never"],
+    "indent": [1, 2]
   }
 }

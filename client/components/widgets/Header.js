@@ -1,20 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router';
 import classNames from 'classnames';
 import { connect} from 'react-redux';
 
-let mapStateToProps = function (state, ownProps) {
+const mapStateToProps = function (state) {
     const homeActive = state.routing.location.pathname === '/';
-    const addAcive = state.routing.location.pathname === '/add';
+    const addActive = state.routing.location.pathname === '/add';
     return {
-        homeActive, addAcive
+        homeActive, addActive
     };
 };
 
 class Header extends React.Component {
     render() {
-        const clsHome = classNames({'active': this.props.homeActive});
-        const clsAdd = classNames({'active': this.props.addAcive});
+        const clsHome = classNames({active: this.props.homeActive});
+        const clsAdd = classNames({active: this.props.addActive});
         return (
             <nav className="navbar navbar-default navbar-static-top" style={{backgroundColor: 'rgb(63, 81, 181)'}}>
                 <div className="container-fluid">
@@ -48,6 +47,9 @@ class Header extends React.Component {
         );
     }
 }
-
+Header.propTypes = {
+    homeActive: React.PropTypes.bool.isRequired,
+    addActive: React.PropTypes.bool.isRequired
+};
 
 export default connect(mapStateToProps)(Header);

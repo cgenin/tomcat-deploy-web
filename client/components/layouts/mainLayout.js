@@ -3,19 +3,18 @@ import Header from '../widgets/header';
 
 class MainLayout extends React.Component {
 
-    componentDidMount() {
-        $.material.init();
-    }
+  componentDidMount() {
+    window.$.material.init();
+  }
 
-    render() {
-
-        return (
-            <div>
-                <Header/>
-                {this.props.children}
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <Header/>
+        {this.props.children}
+      </div>
+    );
+  }
 }
 
 export default MainLayout;
