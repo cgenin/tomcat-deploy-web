@@ -42,11 +42,10 @@ class AddForm extends React.Component {
     const name = this.refs.name.value;
     const url = this.refs.url.value;
     const disabled = name.length === 0 || url.length === 0;
-    this.setState({name, url, disabled});
+    this.setState({ name, url, disabled });
   }
 
   render() {
-
     return (
       <form >
 
@@ -60,8 +59,8 @@ class AddForm extends React.Component {
 
           <div className="input-group">
             <span className="input-group-addon">http://</span>
-            <input type="text" className="form-control" id="url" placeholder="Url"
-                   value={this.state.url} onChange={this.onChange} ref="url"/>
+            <input type="text" className="form-control" id="url" placeholder="Url" value={this.state.url}
+                   onChange={this.onChange} ref="url"/>
           </div>
         </div>
         <div className="col-xs-offset-4 col-xs-4">
@@ -71,8 +70,7 @@ class AddForm extends React.Component {
           </a>
         </div>
         <div className=" col-xs-4">
-          <button type="button" onClick={this.onClick} className="btn btn-primary"
-                  disabled={this.state.disabled}>
+          <button type="button" onClick={this.onClick} className="btn btn-primary" disabled={this.state.disabled}>
             <li className="glyphicon glyphicon-ok"/>
             &nbsp;Submit
           </button>
@@ -81,4 +79,7 @@ class AddForm extends React.Component {
     );
   }
 }
+
+AddForm.propTypes = { routing: React.PropTypes.object.isRequired };
+
 export default connect(mapStateToProps, mapDispatchToProps)(AddForm);

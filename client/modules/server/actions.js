@@ -19,7 +19,7 @@ export function save(server) {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }, body
-    }).then(res=>res.json()).then(json => {
+    }).then(res => res.json()).then(json => {
       dispatch(update(json));
     });
   };

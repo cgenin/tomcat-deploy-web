@@ -3,21 +3,19 @@ import {connect} from 'react-redux';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import { del, load } from '../../../modules/artifacts/actions';
 
-let mapStateToProps = function (state, ownProps) {
+const mapStateToProps = function (state) {
   return {
     artifacts: state.artifacts
   };
 };
 
-let mapDispatchToProps = function (dispatch) {
+const mapDispatchToProps = function (dispatch) {
   return {
-    onDelete: function (artifact) {
+    onDelete: (artifact) => {
       dispatch(del(artifact));
     },
-    onInit: function () {
-      dispatch(load());
-    }
-  }
+    onInit: () => dispatch(load()),
+  };
 };
 
 class ItemStatus extends React.Component {
@@ -39,6 +37,8 @@ class ItemStatus extends React.Component {
 
 }
 
+ItemStatus.propTypes = { artifact: React.PropTypes.object.isRequired };
+
 class ItemName extends React.Component {
   constructor(props) {
     super(props);
@@ -49,7 +49,7 @@ class ItemName extends React.Component {
     const style = {
       cursor: 'pointer'
     };
-    const popup = 'URL : ' + this.props.artifact.url;
+    const popup = `URL : ${this.props.artifact.url}`;
     const tool = (<Tooltip id="0"><strong>{popup}</strong></Tooltip>);
     return (
       <OverlayTrigger placement="right" overlay={tool}>
@@ -58,6 +58,8 @@ class ItemName extends React.Component {
     );
   }
 }
+
+ItemName.propTypes = { artifact: React.PropTypes.object.isRequired };
 
 class ItemList extends React.Component {
 
@@ -74,7 +76,6 @@ class ItemList extends React.Component {
   }
 
   render() {
-
     return (
       <tr>
         <td scope="row">
@@ -105,6 +106,8 @@ class ItemList extends React.Component {
   }
 }
 
+ItemList.propTypes = { artifact: React.PropTypes.object.isRequired };
+
 class List extends React.Component {
   constructor(props) {
     super(props);
@@ -116,8 +119,7 @@ class List extends React.Component {
 
   render() {
     const onDelete = this.props.onDelete;
-    const artifacts = this.props.artifacts.map((artifact, i)=> <ItemList key={i} onDelete={onDelete}
-                                                                         artifact={artifact}/>);
+    const artifacts = this.props.artifacts.map((artifact, i) => <ItemList key={i} onDelete={onDelete} artifact={artifact} />);
     return (
       <div className="col-xs-offset-1 col-xs-10">
         <table className="table table-hover">
@@ -141,5 +143,6 @@ class List extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(List);
+List.propTypes = { artifacts: React.PropTypes.array.isRequired };
 
+export default connect(mapStateToProps, mapDispatchToProps)(List);

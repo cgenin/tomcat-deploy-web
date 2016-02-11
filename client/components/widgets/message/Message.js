@@ -2,20 +2,21 @@ import React from 'react';
 import { connect} from 'react-redux';
 import { hide, TYPE_ERROR, TYPE_SUCCESS } from '../../../modules/message/actions';
 
-let mapStateToProps = function (state, ownProps) {
+const mapStateToProps = function (state, ownProps) {
 
   return {
     message: state.messaging
   };
 };
 
-let mapDispatchToProps = function (dispatch) {
+const mapDispatchToProps = function (dispatch) {
   return {
     onHide: function () {
       dispatch(hide());
     }
   }
 };
+
 
 class MessageSuccess extends React.Component {
   render() {
@@ -27,6 +28,8 @@ class MessageSuccess extends React.Component {
   }
 }
 
+MessageSuccess.propTypes = { text: React.PropTypes.string.isRequired };
+
 class MessageError extends React.Component {
   render() {
     return (
@@ -37,10 +40,12 @@ class MessageError extends React.Component {
   }
 }
 
+MessageError.propTypes = { text: React.PropTypes.string.isRequired };
+
 class Message extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.message.show && nextProps.message.show !== this.props.message.show) {
-      setTimeout(()=> this.props.onHide(), 5000);
+      setTimeout(() => this.props.onHide(), 5000);
     }
   }
 
@@ -55,10 +60,13 @@ class Message extends React.Component {
       case TYPE_ERROR :
 
         return (<MessageError text={this.props.message.text}/>);
+      default :
+        return null;
     }
-    return null;
   }
 }
+
+Message.propTypes = { message: React.PropTypes.object.isRequired };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Message);
 
