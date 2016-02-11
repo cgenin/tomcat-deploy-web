@@ -1,4 +1,5 @@
 var express = require('express');
+const http = require('http');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -64,8 +65,11 @@ deploydb.init().then(function () {
 /**
  * Create HTTP server.
  */
-
 var server = http.createServer(app);
+
+/**
+ * create Socket.io
+ */
 var io = require('socket.io')(server);
 
 io.on('connection', function (socket) {
