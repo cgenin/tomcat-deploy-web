@@ -28,6 +28,9 @@
     "react/no-multi-comp": 0,
     "react/jsx-no-bind": 0,
     "object-curly-spacing": [0, "never"],
-    "indent": [1, 2]
+    "indent": [1, 2],
+    "func-names":0,
+    "object-shorthand":0,
+    "quote-props":0
   }
 }

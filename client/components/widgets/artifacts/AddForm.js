@@ -52,7 +52,8 @@ class AddForm extends React.Component {
         <div className="form-group ">
           <label className="control-label" htmlFor="name">Name</label>
           <input type="text" className="form-control" id="name" placeholder="Name"
-                 value={this.state.name} onChange={this.onChange} ref="name"/>
+                 value={this.state.name} onChange={this.onChange} ref="name"
+          />
         </div>
         <div className="form-group">
           <label className="control-label" htmlFor="url">Url</label>
@@ -60,7 +61,8 @@ class AddForm extends React.Component {
           <div className="input-group">
             <span className="input-group-addon">http://</span>
             <input type="text" className="form-control" id="url" placeholder="Url" value={this.state.url}
-                   onChange={this.onChange} ref="url"/>
+                   onChange={this.onChange} ref="url"
+            />
           </div>
         </div>
         <div className="col-xs-offset-4 col-xs-4">

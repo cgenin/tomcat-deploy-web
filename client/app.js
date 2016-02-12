@@ -19,7 +19,7 @@ const reduxRouterMiddleware = syncHistory(history);
 
 const rootReducer = combineReducers(Object.assign({}, {
   routing: routeReducer,
-  server: reducers,
+  servers: reducers,
   artifacts: areducers,
   messaging: mReducers
 }));
