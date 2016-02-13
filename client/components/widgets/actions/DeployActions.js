@@ -41,6 +41,15 @@ class DeployActions extends React.Component {
   }
 
   render() {
+    if (this.props.actions.inProgress.active) {
+      return (
+        <div className="row">
+          <div className="alert alert-dismissible alert-warning col-xs-6 col-xs-offset-3 text-center">
+            <h3>Deploiement in progress <i className="fa fa-refresh fa-spin"/></h3>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="row">
         <div className="col-xs-3 col-xs-offset-3 text-right">

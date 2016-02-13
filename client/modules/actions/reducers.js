@@ -1,13 +1,19 @@
-import {ADD_ARTIFACTS, REMOVE_ARTIFACTS, ARTIFACTS, SERVERS, FORCE_LOGGER, ADD_SERVER, REMOVE_SERVER} from './actions';
+import {ADD_ARTIFACTS, REMOVE_ARTIFACTS, ARTIFACTS, SERVERS, FORCE_LOGGER, IN_PROGRESS, ADD_SERVER, REMOVE_SERVER} from './actions';
 
 const defaultState = {
   artifacts: [],
-  servers: []
+  servers: [],
+  inProgress: {}
 };
 
 export function actionReducers(state = defaultState, action) {
   let clone;
   switch (action.type) {
+    case IN_PROGRESS:
+      const stat = action.stat || {};
+      clone = Object.assign({}, state);
+      clone.inProgress = stat;
+      return clone;
     case ARTIFACTS:
       const updated = action.artifacts || [];
       clone = Object.assign({}, state);
