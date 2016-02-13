@@ -40,9 +40,13 @@ export function del(server) {
     }, body
   }).then(res => res.json()).then(json => {
     dispatch(update(json));
+    return new Promise((resolve) => resolve(json));
   });
 }
 
 export function load() {
-  return dispatch => fetch('api/server').then(res => res.json()).then(json => dispatch(update(json)));
+  return dispatch => fetch('api/server').then(res => res.json()).then(json => {
+    dispatch(update(json));
+    return new Promise((resolve) => resolve(json));
+  });
 }

@@ -36,15 +36,20 @@ const managedOld = function (item) {
   const deferred = Q.defer();
   const name = item.name;
   const path = fullpath(name);
-  fs.stat(path, (err) => {
-    if (err) {
-      deferred.resolve(false);
-      return;
-    }
-    const time = new Date().getTime();
-    fs.renameSync(path, `${path}.${time}`);
-    deferred.resolve(true);
-  });
+  try {
+    fs.stat(path, (err) => {
+      if (err) {
+        deferred.resolve(false);
+        return;
+      }
+      const time = new Date().getTime();
+      fs.renameSync(path, `${path}.${time}`);
+      deferred.resolve(true);
+    });
+  } catch (e) {
+    console.error(e);
+    deferred.reject(e);
+  }
   return deferred.promise;
 };
 
@@ -75,76 +80,87 @@ const download = function (item) {
 };
 
 const host = function (configuration) {
-  return `http://${configuration.hostname}`;
+  return `http://${configuration.host}`;
 };
 
 const deploy = function (configuration, item) {
   const deferred = Q.defer();
-  const root = host(configuration);
-  const parsingUrl = URL.parse(root);
-  const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
-  const options = {
-    host: parsingUrl.hostname,
-    method: 'PUT',
-    port: parsingUrl.port,
-    path: url,
-    auth: `${configuration.user.name}:${configuration.user.password}`
-  };
-  const req = http.request(options, (rs) => {
-    let result = '';
-    rs.on('data', (data) => {
-      result += data;
+  try {
+    const root = host(configuration);
+    const parsingUrl = URL.parse(root);
+    const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
+    const options = {
+      host: parsingUrl.hostname,
+      method: 'PUT',
+      port: parsingUrl.port,
+      path: url,
+      auth: `${configuration.username}:${configuration.password}`
+    };
+    const req = http.request(options, (rs) => {
+      let result = '';
+      rs.on('data', (data) => {
+        result += data;
+      });
+      rs.on('end', () => {
+        if (rs.statusCode === 200) {
+          deferred.resolve(result);
+        } else {
+          deferred.reject(rs);
+        }
+      });
+    }).on('error', (e) => {
+      deferred.reject(e);
     });
-    rs.on('end', () => {
-      if (rs.statusCode === 200) {
-        deferred.resolve(result);
+
+    fs.readFile(fullpath(item.name), (err, data) => {
+      if (err) {
+        deferred.reject(err);
       } else {
-        deferred.reject(rs);
+        req.end(data);
       }
     });
-  }).on('error', (e) => {
+  } catch (e) {
+    console.error(e);
     deferred.reject(e);
-  });
-
-  fs.readFile(fullpath(item.name), (err, data) => {
-    if (err) {
-      deferred.reject(err);
-    } else {
-      req.end(data);
-    }
-  });
-
+  }
   return deferred.promise;
 };
 
 const undeploy = function (configuration, item) {
   const deferred = Q.defer();
-  const root = host(configuration);
-  const parsingUrl = URL.parse(root);
-  const url = `${root}/manager/text/undeploy?path=/${item.name}`;
-  const options = {
-    host: parsingUrl.hostname,
-    method: 'GET',
-    port: parsingUrl.port,
-    path: url,
-    auth: `${configuration.user.name}:${configuration.user.password}`
-  };
+  try {
+    const root = host(configuration);
+    const parsingUrl = URL.parse(root);
+    const url = `${root}/manager/text/undeploy?path=/${item.name}`;
+    const options = {
+      host: parsingUrl.hostname,
+      method: 'GET',
+      port: parsingUrl.port,
+      path: url,
+      auth: `${configuration.username}:${configuration.password}`
+    };
 
-  http.get(options, (rs) => {
-    let result = '';
-    rs.on('data', (data) => {
-      result += data;
+    http.get(options, (rs) => {
+      let result = '';
+      rs.on('data', (data) => {
+        result += data;
+      });
+      rs.on('end', () => {
+        if (rs.statusCode === 200) {
+          deferred.resolve(result);
+        } else {
+          deferred.reject(rs);
+        }
+      });
+    }).on('error', (e) => {
+      deferred.reject(e);
     });
-    rs.on('end', () => {
-      if (rs.statusCode === 200) {
-        deferred.resolve(result);
-      } else {
-        deferred.reject(rs);
-      }
-    });
-  }).on('error', (e) => {
+  } catch (e) {
+    console.error(e);
     deferred.reject(e);
-  });
+  }
+
+
   return deferred.promise;
 };
 

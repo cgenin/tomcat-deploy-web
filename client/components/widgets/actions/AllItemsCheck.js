@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { update } from '../../../modules/actions/actions';
+import { updateArtifacts } from '../../../modules/actions/actions';
 
 const mapStateToProps = function (state) {
   const artifacts = state.artifacts;
@@ -17,10 +17,10 @@ const mapStateToProps = function (state) {
 const mapDispatchToProps = function (dispatch) {
   return {
     onCheck(artifacts) {
-      dispatch(update(artifacts));
+      dispatch(updateArtifacts(artifacts));
     },
     onUnCheck() {
-      dispatch(update([]));
+      dispatch(updateArtifacts([]));
     }
   };
 };

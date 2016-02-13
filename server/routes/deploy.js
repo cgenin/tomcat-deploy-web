@@ -39,7 +39,7 @@ module.exports = function (socket, io, ip) {
         const last = artifacts.slice(-1)[0];
         const rest = artifacts.slice(0, -1);
         rc.log(`undeploy : ${last.name}`);
-        war.undeploy(deploydb.config().data[0], last).then((name) => {
+        war.undeploy(data.server, last).then((name) => {
           rc.log(`undeployed : ${name}`);
           recursiveUndeploy(rest);
         }, (err) => {
@@ -58,7 +58,7 @@ module.exports = function (socket, io, ip) {
         rc.end();
       }
     };
-    recursiveUndeploy(data);
+    recursiveUndeploy(data.artifacts);
   });
 
   socket.on('deploy', (data) => {
@@ -74,7 +74,7 @@ module.exports = function (socket, io, ip) {
         };
       };
 
-      const configuration = deploydb.config().data[0];
+      const configuration = data.server;
       const launchInner = (array) => {
         if (!array || array.length === 0) {
           rc.end();
@@ -88,14 +88,13 @@ module.exports = function (socket, io, ip) {
             war.download(o).then(
               (name) => {
                 rc.log(`deploy : ${name}`);
-                war.undeploy(deploydb.config().data[0], o).then(() => {
+                war.undeploy(configuration, o).then(() => {
                   rc.log(`Undeployed : ${name}`);
 
                   war.deploy(configuration, o).then(
                     (wname) => {
                       rc.log(`Updated : ${wname}`);
                       socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK'));
-                      io.sockets.emit('rc-end', {});
                       io.sockets.emit('deploy-end', {});
                       launchInner(array);
                     }, errorLogger('error in deploying', o));
@@ -109,7 +108,7 @@ module.exports = function (socket, io, ip) {
       rc.log(`selected wars : ${data.length} by ${ip}`);
       war.makedirectory().then(() => {
         rc.log('root directory : OK.');
-        launchInner(data);
+        launchInner(data.artifacts);
       });
     }
   );

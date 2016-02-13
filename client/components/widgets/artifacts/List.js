@@ -1,7 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import moment from 'moment';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import { del, load } from '../../../modules/artifacts/actions';
+import { removeArtifacts} from '../../../modules/actions/actions';
 import ItemCheck from './../actions/ItemCheck';
 import AllItemsCheck from './../actions/AllItemsCheck';
 
@@ -15,6 +17,7 @@ const mapDispatchToProps = function (dispatch) {
   return {
     onDelete(artifact) {
       dispatch(del(artifact));
+      dispatch(removeArtifacts(artifact));
     },
     onInit() {
       dispatch(load());
@@ -25,16 +28,21 @@ const mapDispatchToProps = function (dispatch) {
 class ItemStatus extends React.Component {
 
   render() {
-    if (!this.props.artifact.last) {
+    const status = this.props.artifact.status;
+    if (!status) {
       return null;
+    }
+    const formattedDate = moment(status.dt).format('YYYY/MM/DD HH:mm:ss');
+    if (status.state === 'KO') {
+      return (<span className="text-danger">
+                <i className="fa  fa-frown-o "/> {formattedDate}
+      </span>);
     }
 
     return (
-      <span
-        className="{{status.state === 'OK' ? 'text-success' :''}} {{status.state === 'KO' ? 'text-danger' :''}}">
-                <i
-                  className="fa {{status.state === 'OK' ? 'fa-check' :''}} {{status.state === 'KO' ? ' fa-frown-o' :''}} "/>
-                                        </span>
+      <span className="text-success">
+      <i className="fa fa-check"/> {formattedDate}
+      </span>
     );
   }
 

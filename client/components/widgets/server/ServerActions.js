@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { routeActions } from 'react-router-redux';
 import {Overlay} from 'react-bootstrap';
 import { load, del } from '../../../modules/server/actions';
+import { updateServers } from '../../../modules/actions/actions';
 
 const mapStateToProps = function (state) {
   const servers = state.servers;
@@ -20,13 +21,26 @@ const mapDispatchToProps = function (dispatch) {
         }));
     },
     onDelete: function (server) {
-      dispatch(del(server));
+      dispatch(del(server)).then((data) => {
+        if (!data || data.length === 0) {
+          dispatch(updateServers([]));
+        } else {
+          dispatch(updateServers(Array.of(data[0])));
+        }
+
+      });
     },
     onAdd: function () {
       dispatch(routeActions.push('/server/add'));
     },
     onInit: function () {
-      dispatch(load());
+      dispatch(load()).then((data) => {
+        if (!data || data.length === 0) {
+          dispatch(updateServers([]));
+        } else {
+          dispatch(updateServers(Array.of(data[0])));
+        }
+      });
     }
   };
 };

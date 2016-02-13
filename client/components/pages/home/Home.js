@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import {Tabs, Tab} from 'react-bootstrap';
 import Logger from './../../widgets/logger/Logger';
 import Message from '../../widgets/message/Message';
@@ -6,6 +7,21 @@ import ServerActions from './../../widgets/server/ServerActions';
 import List from './../../widgets/artifacts/List';
 import Title from '../../widgets/Title';
 import InProgress from './../../widgets/actions/InProgress';
+import DeployActions from './../../widgets/actions/DeployActions';
+import {hideConsole} from './../../../modules/actions/actions';
+
+const mapStateToProps = function (state) {
+  const showLogger = state.actions.forceLogger;
+  return {showLogger};
+};
+
+const mapDispatchToProps = function (dispatch) {
+  return {
+    onSelect: function () {
+      dispatch(hideConsole());
+    }
+  };
+};
 
 class HomePage extends React.Component {
 
@@ -14,12 +30,27 @@ class HomePage extends React.Component {
     this.state = {
       key: 1
     };
-
     this.handleSelect = this.handleSelect.bind(this);
+  }
+
+  componentWillMount() {
+    const showLogger = this.props.showLogger;
+    if (showLogger) {
+      this.setState({key: 2});
+    }
+  }
+
+
+  componentWillReceiveProps(newProps) {
+    const showLogger = newProps.showLogger;
+    if (showLogger) {
+      this.setState({key: 2});
+    }
   }
 
   handleSelect(key) {
     this.setState({key});
+    this.props.onSelect();
   }
 
   render() {
@@ -41,20 +72,7 @@ class HomePage extends React.Component {
             <div className="panel-body">
               <ServerActions />
             </div>
-            <div className="row">
-              <div className="col-xs-3 col-xs-offset-3 text-right">
-                <button type="button" className="btn btn-default" >
-                  <i className="fa fa-trash-o"/>
-                  &nbsp;Undeploy
-                </button>
-              </div>
-              <div className="col-xs-6 text-left">
-                <button type="button" className="btn btn-info">
-                  <i className="fa fa-play"/>
-                  &nbsp;Run
-                </button>
-              </div>
-            </div>
+            <DeployActions />
             <div className="row">
               <div>
                 <Tabs activeKey={this.state.key} onSelect={this.handleSelect}
@@ -70,4 +88,6 @@ class HomePage extends React.Component {
   }
 }
 
-export default HomePage;
+HomePage.propTypes = {showLogger: React.PropTypes.bool};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
