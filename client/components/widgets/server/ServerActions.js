@@ -86,7 +86,7 @@ class ServerActions extends React.Component {
       marginTop: 10,
       padding: 10
     };
-    const styleButt = {marginRight: '5px;', marginLeft: '5px;'};
+    const styleButt = {marginRight: '5px', marginLeft: '5px'};
     const options = this.props.servers.map((s, i) => (<option key={i} value={i}>{s.host}</option>));
     const disabled = this.props.servers.length === 0;
     return (

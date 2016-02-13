@@ -24,4 +24,4 @@ export function mReducers(state = defaultState, action) {
     default :
       return state;
   }
-};
+}

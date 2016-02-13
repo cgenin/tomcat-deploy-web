@@ -38,7 +38,7 @@ class ItemCheck extends React.Component {
 
   render() {
     return (
-      <input type="checkbox" className="success material-checkbox" checked={this.props.checked} onChange={this.onChange}/>
+      <input type="checkbox" className="success material-checkbox" title="deploy this item" checked={this.props.checked} onChange={this.onChange}/>
     );
   }
 }

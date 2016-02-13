@@ -11,6 +11,8 @@ import {reducers} from './modules/server/reducers';
 import {areducers} from './modules/artifacts/reducers';
 import {mReducers} from './modules/message/reducers';
 import {actionReducers} from './modules/actions/reducers';
+import {loggerReducers} from './modules/logger/reducers';
+import {initialize} from './socket';
 
 
 import routes from './routes';
@@ -23,7 +25,8 @@ const rootReducer = combineReducers(Object.assign({}, {
   servers: reducers,
   artifacts: areducers,
   messaging: mReducers,
-  actions: actionReducers
+  actions: actionReducers,
+  logger: loggerReducers
 }));
 
 export const store = compose(
@@ -36,6 +39,8 @@ export const store = compose(
 
 // Needed befor react 1.0 release
 injectTapEventPlugin();
+
+initialize(store.dispatch);
 
 ReactDOM.render(
   <Provider store={store}>

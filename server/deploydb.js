@@ -5,7 +5,7 @@ const DeployDB = function DeployDB() {
   const loki = require('lokijs');
   const db = new loki('db/data.json', {autoload: true});
   const createIfNotExist = function (name) {
-    console.log('createIfNotExist :' + name);
+    console.log(`createIfNotExist : ${name}`);
     if (!db.getCollection(name)) {
       db.addCollection(name);
       db.saveDatabase();
@@ -15,7 +15,6 @@ const DeployDB = function DeployDB() {
   this.init = function () {
     const deferred = Q.defer();
     db.loadDatabase({}, () => {
-
       createIfNotExist(fileCollection);
       createIfNotExist(configCollection);
       deferred.resolve(db);
@@ -46,13 +45,11 @@ const DeployDB = function DeployDB() {
 
   this.updateStatus = function (collection, item, state) {
     if (item.$loki) {
-      const filter = collection.data.filter((i) => {
-        return i.$loki === item.$loki;
-      });
+      const filter = collection.data.filter((i) => i.$loki === item.$loki);
       if (filter && filter.length > 0) {
         filter[0].status = {
           state: state,
-          dt   : new Date()
+          dt: new Date()
         };
         collection.update(filter[0]);
         db.saveDatabase();

@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect} from 'react-redux';
 import { save } from '../../../modules/artifacts/actions';
+import { routeActions } from 'react-router-redux';
 
-
-const mapStateToProps = function (state, ownProps) {
+const mapStateToProps = function (state) {
   return {
     routing: state.routing
   };
@@ -12,10 +12,9 @@ const mapStateToProps = function (state, ownProps) {
 const mapDispatchToProps = function (dispatch) {
   return {
     onSave: function (name, url) {
-      dispatch(save(name, url));
-      // dispatch(routeActions.push('/'));
+      dispatch(save(name, url)).then(() => dispatch(routeActions.push('/')));
     }
-  }
+  };
 };
 
 class AddForm extends React.Component {

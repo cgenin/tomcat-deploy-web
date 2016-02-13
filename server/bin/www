@@ -40,7 +40,7 @@ io.on('connection', function (socket) {
     ip = socket.conn.remoteAddress;
   }
   console.log('connection of ' + ip);
-  require('./routes/deploy')(socket, io, ip);
+  require('../routes/deploy')(socket, io, ip);
 });
 
 /**

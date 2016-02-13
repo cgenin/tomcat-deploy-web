@@ -3,7 +3,6 @@ import { connect} from 'react-redux';
 import { hide, TYPE_ERROR, TYPE_SUCCESS } from '../../../modules/message/actions';
 
 const mapStateToProps = function (state) {
-
   return {
     message: state.messaging
   };
@@ -14,7 +13,7 @@ const mapDispatchToProps = function (dispatch) {
     onHide: function () {
       dispatch(hide());
     }
-  }
+  };
 };
 
 
@@ -69,4 +68,3 @@ class Message extends React.Component {
 Message.propTypes = {message: React.PropTypes.object.isRequired};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Message);
-

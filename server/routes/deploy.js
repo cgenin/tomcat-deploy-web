@@ -21,6 +21,8 @@ module.exports = function (socket, io, ip) {
   const war = require('../war');
   const rc = remoteConsole(io);
 
+  rc.log('connected to server.');
+
   socket.on('versions', (data) => {
     console.log(data);
     socket.emit('on-versions', data);
@@ -36,9 +38,9 @@ module.exports = function (socket, io, ip) {
       try {
         const last = artifacts.slice(-1)[0];
         const rest = artifacts.slice(0, -1);
-        rc.log('undeploy : ' + last.name);
+        rc.log(`undeploy : ${last.name}`);
         war.undeploy(deploydb.config().data[0], last).then((name) => {
-          rc.log('undeployed : ' + name);
+          rc.log(`undeployed : ${name}`);
           recursiveUndeploy(rest);
         }, (err) => {
           console.error(err);
@@ -46,7 +48,6 @@ module.exports = function (socket, io, ip) {
           rc.error(err.message);
           recursiveUndeploy(rest);
         });
-
       } catch (err) {
         console.error(err);
         if (err.stack) {
@@ -60,8 +61,7 @@ module.exports = function (socket, io, ip) {
     recursiveUndeploy(data);
   });
 
-  socket.on('deploy', function (data) {
-
+  socket.on('deploy', (data) => {
       const errorLogger = function (msg, o) {
         return function (err) {
           if (o) {
@@ -75,45 +75,42 @@ module.exports = function (socket, io, ip) {
       };
 
       const configuration = deploydb.config().data[0];
-      const launch_inner = (array) => {
+      const launchInner = (array) => {
         if (!array || array.length === 0) {
           rc.end();
           return;
         }
         const o = array.shift();
-        rc.log('managing old version :' + o.name);
+        rc.log(`managing old version : ${o.name}`);
         war.managedOld(o).then(
           () => {
-            rc.log('prepare download :' + o.name);
+            rc.log(`prepare download : ${o.name}`);
             war.download(o).then(
               (name) => {
-                rc.log('deploy : ' + name);
+                rc.log(`deploy : ${name}`);
                 war.undeploy(deploydb.config().data[0], o).then(() => {
-                  rc.log('Undeployed : ' + name);
+                  rc.log(`Undeployed : ${name}`);
 
                   war.deploy(configuration, o).then(
-                    (name) => {
-                      rc.log('Updated : ' + name);
+                    (wname) => {
+                      rc.log(`Updated : ${wname}`);
                       socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK'));
                       io.sockets.emit('rc-end', {});
                       io.sockets.emit('deploy-end', {});
-                      launch_inner(array);
+                      launchInner(array);
                     }, errorLogger('error in deploying', o));
                 }, errorLogger('error in undeploying', o));
               }, errorLogger('error in downloading', o));
-
           }, errorLogger('error in managing old war', o));
-
       };
       io.sockets.emit('deploy-start', {type: 'Deploy', host: ip});
       rc.start();
 
-      rc.log('selected wars :' + data.length + ' by ' + ip);
+      rc.log(`selected wars : ${data.length} by ${ip}`);
       war.makedirectory().then(() => {
         rc.log('root directory : OK.');
-        launch_inner(data);
+        launchInner(data);
       });
     }
   );
 };
-

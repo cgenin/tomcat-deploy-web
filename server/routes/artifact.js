@@ -3,7 +3,6 @@ const deploydb = require('../deploydb');
 const router = express.Router();
 const bodyParser = require('body-parser');
 
-/* GET users listing. */
 router.get('/', (req, res) => {
   const items = deploydb.files() || {data: []};
   res.json(items.data);
@@ -13,7 +12,7 @@ router.get('/', (req, res) => {
 router.post('/', bodyParser.json(), (req, res) => {
   const body = req.body;
   const files = deploydb.files();
-  const tmpHttp = (body.url.indexOf('http://') === -1) ? 'http://' + body.url : body.url;
+  const tmpHttp = (body.url.indexOf('http://') === -1) ? `http://${body.url}` : body.url;
   deploydb.insert(files, {
     name: body.name, url: tmpHttp
   });

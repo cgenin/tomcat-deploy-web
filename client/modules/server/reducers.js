@@ -12,4 +12,4 @@ export function reducers(state = defaultState, action) {
     default :
       return state;
   }
-};
+}

@@ -16,4 +16,4 @@ export function areducers(state = defaultState, action) {
     default :
       return state;
   }
-};
+}

@@ -1,3 +1,5 @@
+'use strict';
+
 const http = require('http');
 const fs = require('fs');
 const URL = require('url');
@@ -28,7 +30,7 @@ const warname = function (name) {
 };
 
 const fullpath = function (name) {
-  return downloadedDir + '/' + warname(name);
+  return `${downloadedDir}/${warname(name)}`;
 };
 const managedOld = function (item) {
   const deferred = Q.defer();
@@ -39,7 +41,8 @@ const managedOld = function (item) {
       deferred.resolve(false);
       return;
     }
-    fs.renameSync(path, path + '.' + new Date().getTime());
+    const time = new Date().getTime();
+    fs.renameSync(path, `${path}.${time}`);
     deferred.resolve(true);
   });
   return deferred.promise;
@@ -72,20 +75,20 @@ const download = function (item) {
 };
 
 const host = function (configuration) {
-  return 'http://' + configuration.hostname;
+  return `http://${configuration.hostname}`;
 };
 
 const deploy = function (configuration, item) {
   const deferred = Q.defer();
   const root = host(configuration);
   const parsingUrl = URL.parse(root);
-  const url = root + '/manager/text/deploy?path=/' + item.name + '&update=true';
+  const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
   const options = {
     host: parsingUrl.hostname,
     method: 'PUT',
     port: parsingUrl.port,
-    path: url, //I don't know for some reason i have to use full url as a path
-    auth: configuration.user.name + ':' + configuration.user.password
+    path: url,
+    auth: `${configuration.user.name}:${configuration.user.password}`
   };
   const req = http.request(options, (rs) => {
     let result = '';
@@ -115,16 +118,16 @@ const deploy = function (configuration, item) {
 };
 
 const undeploy = function (configuration, item) {
-  const deferred = Q.defer(),
-    root = host(configuration),
-    parsingUrl = URL.parse(root),
-    url = root + '/manager/text/undeploy?path=/' + item.name;
+  const deferred = Q.defer();
+  const root = host(configuration);
+  const parsingUrl = URL.parse(root);
+  const url = `${root}/manager/text/undeploy?path=/${item.name}`;
   const options = {
     host: parsingUrl.hostname,
     method: 'GET',
     port: parsingUrl.port,
-    path: url, //I don't know for some reason i have to use full url as a path
-    auth: configuration.user.name + ':' + configuration.user.password
+    path: url,
+    auth: `${configuration.user.name}:${configuration.user.password}`
   };
 
   http.get(options, (rs) => {

@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect} from 'react-redux';
-import {  save } from '../../../modules/server/actions';
+import { save } from '../../../modules/server/actions';
 import { routeActions } from 'react-router-redux';
 
 function isDisabled(server) {
-  return server.host.length === 0 || server.username.length === 0 || server.password.length === 0;
+  return !server.host || server.host.length === 0 || !server.username || server.username.length === 0
+    || !server.password || server.password.length === 0;
 }
 
 const mapStateToProps = function (state, ownProps) {
@@ -39,11 +40,12 @@ class Edition extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const server = this.props.server;
     const disabled = isDisabled(server);
     this.setState({server, disabled});
   }
+
 
   componentWillReceiveProps(newProps) {
     const server = newProps.server;
@@ -53,7 +55,7 @@ class Edition extends React.Component {
 
   onClick(e) {
     e.preventDefault();
-    let server = this.state.server;
+    const server = this.state.server;
     this.props.onSave(server);
     return false;
   }
@@ -63,10 +65,10 @@ class Edition extends React.Component {
     const host = this.refs.host.value;
     const username = this.refs.username.value;
     const password = this.refs.password.value;
-    let server = this.state.server;
-    server.host=host;
-    server.username=username;
-    server.password=password;
+    const server = this.state.server;
+    server.host = host;
+    server.username = username;
+    server.password = password;
     const disabled = isDisabled(server);
     this.setState({server, disabled});
   }
