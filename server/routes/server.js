@@ -22,8 +22,8 @@ router.post('/', bodyParser.json(), (req, res) => {
 });
 
 router.delete('/', bodyParser.json(), (req, res) => {
-  var body = req.body;
-  var files = deploydb.config();
+  const body = req.body;
+  const files = deploydb.config();
   deploydb.remove(files, body);
   res.json(deploydb.config().data);
 });

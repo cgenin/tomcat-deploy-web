@@ -1,4 +1,5 @@
 import React from 'react';
+import {Tabs, Tab} from 'react-bootstrap';
 import Logger from './../../widgets/logger/Logger';
 import Message from '../../widgets/message/Message';
 import ServerActions from './../../widgets/server/ServerActions';
@@ -7,6 +8,20 @@ import Title from '../../widgets/Title';
 import InProgress from './../../widgets/actions/InProgress';
 
 class HomePage extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      key: 1
+    };
+
+    this.handleSelect = this.handleSelect.bind(this);
+  }
+
+  handleSelect(key) {
+    this.setState({key});
+  }
+
   render() {
     return (
       <div>
@@ -28,13 +43,13 @@ class HomePage extends React.Component {
             </div>
             <div className="row">
               <div className="col-xs-3 col-xs-offset-3 text-right">
-                <button type="button" className="btn btn-default" disabled='{{!enabledButt}}'>
+                <button type="button" className="btn btn-default" >
                   <i className="fa fa-trash-o"/>
                   &nbsp;Undeploy
                 </button>
               </div>
               <div className="col-xs-6 text-left">
-                <button type="button" className="btn btn-info" disabled='{{!enabledButt}}'>
+                <button type="button" className="btn btn-info">
                   <i className="fa fa-play"/>
                   &nbsp;Run
                 </button>
@@ -42,24 +57,11 @@ class HomePage extends React.Component {
             </div>
             <div className="row">
               <div>
-                <ul className="nav nav-tabs" role="tablist"
-                    style={{marginLeft: '2em',marginRight: '2em'}}>
-                  <li role="presentation" className="active"><a href="#artifacts"
-                                                                aria-controls="artifacts" role="tab"
-                                                                data-toggle="tab">Artifacts</a>
-                  </li>
-                  <li role="presentation"><a href="#logs" aria-controls="logs" role="tab"
-                                             data-toggle="tab">Logs</a>
-                  </li>
-                </ul>
-                <div className="tab-content">
-                  <div role="tabpanel" className="tab-pane fade in active" id="artifacts">
-                    <List />
-                  </div>
-                  <div role="tabpanel" className="tab-pane fade " id="logs">
-                    <Logger />
-                  </div>
-                </div>
+                <Tabs activeKey={this.state.key} onSelect={this.handleSelect}
+                      style={{marginLeft: '2em', marginRight: '2em'}}>
+                  <Tab eventKey={1} title="Artifacts"> <List /></Tab>
+                  <Tab eventKey={2} title="Logs"> <Logger /></Tab>
+                </Tabs>
               </div>
             </div>
           </div>

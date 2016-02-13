@@ -1,30 +1,30 @@
-var express = require('express');
-var deploydb = require('../deploydb');
-var router = express.Router();
-var bodyParser = require('body-parser');
+const express = require('express');
+const deploydb = require('../deploydb');
+const router = express.Router();
+const bodyParser = require('body-parser');
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
-    var items = deploydb.files() || {data: []};
-    res.json(items.data);
+router.get('/', (req, res) => {
+  const items = deploydb.files() || {data: []};
+  res.json(items.data);
 });
 
 
-router.post('/', bodyParser.json(), function (req, res, next) {
-    var body = req.body;
-    var files = deploydb.files();
-    var tmpHttp = (body.url.indexOf('http://') === -1) ? 'http://' + body.url : body.url;
-    deploydb.insert(files, {
-        name: body.name, url: tmpHttp
-    });
-    res.json(deploydb.files().data);
+router.post('/', bodyParser.json(), (req, res) => {
+  const body = req.body;
+  const files = deploydb.files();
+  const tmpHttp = (body.url.indexOf('http://') === -1) ? 'http://' + body.url : body.url;
+  deploydb.insert(files, {
+    name: body.name, url: tmpHttp
+  });
+  res.json(deploydb.files().data);
 });
 
-router.delete('/', bodyParser.json(), function (req, res, next) {
-    var body = req.body;
-    var files = deploydb.files();
-    deploydb.remove(files, body);
-    res.json(deploydb.files().data);
+router.delete('/', bodyParser.json(), (req, res) => {
+  const body = req.body;
+  const files = deploydb.files();
+  deploydb.remove(files, body);
+  res.json(deploydb.files().data);
 });
 
 module.exports = router;

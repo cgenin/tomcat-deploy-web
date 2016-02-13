@@ -3,13 +3,13 @@ import { connect} from 'react-redux';
 import { save } from '../../../modules/artifacts/actions';
 
 
-let mapStateToProps = function (state, ownProps) {
+const mapStateToProps = function (state, ownProps) {
   return {
     routing: state.routing
   };
 };
 
-let mapDispatchToProps = function (dispatch) {
+const mapDispatchToProps = function (dispatch) {
   return {
     onSave: function (name, url) {
       dispatch(save(name, url));
@@ -42,7 +42,7 @@ class AddForm extends React.Component {
     const name = this.refs.name.value;
     const url = this.refs.url.value;
     const disabled = name.length === 0 || url.length === 0;
-    this.setState({ name, url, disabled });
+    this.setState({name, url, disabled});
   }
 
   render() {
@@ -82,6 +82,6 @@ class AddForm extends React.Component {
   }
 }
 
-AddForm.propTypes = { routing: React.PropTypes.object.isRequired };
+AddForm.propTypes = {routing: React.PropTypes.object.isRequired};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddForm);

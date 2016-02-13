@@ -1,14 +1,16 @@
 import React from 'react';
 import Title from '../../widgets/Title';
-import ServerEdit from '../../widgets/server/ServerEdit';
+import ServerEdit from '../../widgets/server/Edition';
 import { connect} from 'react-redux';
 
 
-const mapStateToProps = function (state, ownProps) {
+const mapStateToProps = function (state) {
   const query = state.routing.location.query;
-  if (!query.i)
+  if (!query.i) {
     return {add: true};
-  const id = parseInt(query.i);
+  }
+
+  const id = parseInt(query.i, 10);
   return {add: false, id};
 };
 

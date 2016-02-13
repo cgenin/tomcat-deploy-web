@@ -2,7 +2,7 @@ import React from 'react';
 import { connect} from 'react-redux';
 import { hide, TYPE_ERROR, TYPE_SUCCESS } from '../../../modules/message/actions';
 
-const mapStateToProps = function (state, ownProps) {
+const mapStateToProps = function (state) {
 
   return {
     message: state.messaging
@@ -28,7 +28,7 @@ class MessageSuccess extends React.Component {
   }
 }
 
-MessageSuccess.propTypes = { text: React.PropTypes.string.isRequired };
+MessageSuccess.propTypes = {text: React.PropTypes.string.isRequired};
 
 class MessageError extends React.Component {
   render() {
@@ -40,7 +40,7 @@ class MessageError extends React.Component {
   }
 }
 
-MessageError.propTypes = { text: React.PropTypes.string.isRequired };
+MessageError.propTypes = {text: React.PropTypes.string.isRequired};
 
 class Message extends React.Component {
   componentWillReceiveProps(nextProps) {
@@ -66,7 +66,7 @@ class Message extends React.Component {
   }
 }
 
-Message.propTypes = { message: React.PropTypes.object.isRequired };
+Message.propTypes = {message: React.PropTypes.object.isRequired};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Message);
 

@@ -13,7 +13,7 @@ class Logger extends React.Component {
             <div className="panel-body deploy-logger-main-panel"
                  style={{fontWeight: 'bold',backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>
               <ul >
-                <li>> Ready !</li>
+                <li> > Ready !</li>
                 {logs}
               </ul>
             </div>

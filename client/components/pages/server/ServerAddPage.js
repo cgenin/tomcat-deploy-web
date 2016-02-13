@@ -1,9 +1,9 @@
 import React from 'react';
 import Title from '../../widgets/Title';
-import ServerEdit from '../../widgets/server/ServerEdit';
+import ServerEdit from '../../widgets/server/Edition';
 
 
-export class ServerAddPage extends React.Component {
+export default class ServerAddPage extends React.Component {
   render() {
     return (
       <div>
@@ -19,5 +19,3 @@ export class ServerAddPage extends React.Component {
     );
   }
 }
-
-

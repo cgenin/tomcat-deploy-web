@@ -1,4 +1,4 @@
-import {SAVE_ON_SUCCESS, UPDATE, DELETE} from './actions';
+import {UPDATE, DELETE} from './actions';
 
 const defaultState = [];
 
@@ -8,7 +8,7 @@ export function areducers(state = defaultState, action) {
       return action.artifacts;
     case DELETE :
       const n = action.name;
-      const index = state.findIndex((o)=> o.name === n);
+      const index = state.findIndex((o) => o.name === n);
       if (index !== -1) {
         state.splice(index, 1);
       }

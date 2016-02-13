@@ -10,6 +10,7 @@ import { syncHistory, routeReducer } from 'react-router-redux';
 import {reducers} from './modules/server/reducers';
 import {areducers} from './modules/artifacts/reducers';
 import {mReducers} from './modules/message/reducers';
+import {actionReducers} from './modules/actions/reducers';
 
 
 import routes from './routes';
@@ -21,7 +22,8 @@ const rootReducer = combineReducers(Object.assign({}, {
   routing: routeReducer,
   servers: reducers,
   artifacts: areducers,
-  messaging: mReducers
+  messaging: mReducers,
+  actions: actionReducers
 }));
 
 export const store = compose(
@@ -31,12 +33,6 @@ export const store = compose(
     reduxRouterMiddleware
   )
 )(createStore)(rootReducer);
-
-/*
- store.subscribe(
- state => console.log(state),
- (previousState, state) => previousState.server !== state.server
- );*/
 
 // Needed befor react 1.0 release
 injectTapEventPlugin();

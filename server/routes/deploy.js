@@ -18,15 +18,15 @@ const remoteConsole = function (io) {
 
 
 module.exports = function (socket, io, ip) {
-  const war = require('../war'),
-    rc = remoteConsole(io);
+  const war = require('../war');
+  const rc = remoteConsole(io);
 
-  socket.on('versions', function (data) {
+  socket.on('versions', (data) => {
     console.log(data);
     socket.emit('on-versions', data);
   });
 
-  socket.on('undeploy', function (data) {
+  socket.on('undeploy', (data) => {
     const recursiveUndeploy = function (artifacts) {
       if (!artifacts || artifacts.length === 0) {
         rc.end();
@@ -34,13 +34,13 @@ module.exports = function (socket, io, ip) {
       }
 
       try {
-        var last = artifacts.slice(-1)[0];
-        var rest = artifacts.slice(0, -1);
+        const last = artifacts.slice(-1)[0];
+        const rest = artifacts.slice(0, -1);
         rc.log('undeploy : ' + last.name);
-        war.undeploy(deploydb.config().data[0], last).then(function (name) {
+        war.undeploy(deploydb.config().data[0], last).then((name) => {
           rc.log('undeployed : ' + name);
           recursiveUndeploy(rest);
-        }, function (err) {
+        }, (err) => {
           console.error(err);
           rc.error('error in undeploying');
           rc.error(err.message);
@@ -88,7 +88,7 @@ module.exports = function (socket, io, ip) {
             war.download(o).then(
               (name) => {
                 rc.log('deploy : ' + name);
-                war.undeploy(deploydb.config().data[0], o).then(function () {
+                war.undeploy(deploydb.config().data[0], o).then(() => {
                   rc.log('Undeployed : ' + name);
 
                   war.deploy(configuration, o).then(
@@ -109,7 +109,7 @@ module.exports = function (socket, io, ip) {
       rc.start();
 
       rc.log('selected wars :' + data.length + ' by ' + ip);
-      war.makedirectory().then(function () {
+      war.makedirectory().then(() => {
         rc.log('root directory : OK.');
         launch_inner(data);
       });
