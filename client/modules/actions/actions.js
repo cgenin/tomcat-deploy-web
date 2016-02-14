@@ -7,11 +7,18 @@ export const SERVERS = 'ACTIONS:SERVERS';
 export const ADD_SERVER = 'ACTIONS:ADD-ARTIFACTS';
 export const REMOVE_SERVER = 'ACTIONS:REMOVE-ARTIFACTS';
 export const FORCE_LOGGER = 'ACTIONS:FORCE_LOGGER';
+export const SNACKBAR = 'ACTIONS:SNACKBAR';
 export const IN_PROGRESS = 'ACTIONS:IN_PROGRESS';
 
 export function hideConsole() {
   return {
     type: FORCE_LOGGER, val: false
+  };
+}
+
+export function hideSnackbar() {
+  return {
+    type: SNACKBAR, val: false
   };
 }
 

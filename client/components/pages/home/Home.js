@@ -6,7 +6,6 @@ import Message from '../../widgets/message/Message';
 import ServerActions from './../../widgets/server/ServerActions';
 import List from './../../widgets/artifacts/List';
 import Title from '../../widgets/Title';
-import InProgress from './../../widgets/actions/InProgress';
 import DeployActions from './../../widgets/actions/DeployActions';
 import {hideConsole} from './../../../modules/actions/actions';
 
@@ -60,11 +59,6 @@ class HomePage extends React.Component {
         <div className="row">
           <div className="col-xs-offset-3 col-xs-6 text-center">
             <Message />
-          </div>
-        </div>
-        <div className="row">
-          <div className=" col-xs-offset-4 col-xs-4">
-            <InProgress />
           </div>
         </div>
         <div className="row">
