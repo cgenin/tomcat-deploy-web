@@ -89,18 +89,25 @@ class ItemList extends React.Component {
   render() {
     return (
       <tr>
-        <td scope="row">
+        <td className="text-center" scope="row" style={{paddingTop: '7px'}}>
           <ItemCheck artifact={this.props.artifact} checked={this.props.checked}/>
         </td>
-        <td>
+        <td className="text-left" style={{paddingTop: '7px'}}>
           <ItemName artifact={this.props.artifact}/>
         </td>
-        <td>
+        <td className="text-center" style={{paddingTop: '7px'}}>
           <ItemStatus artifact={this.props.artifact}/>
         </td>
-        <td style={{paddingTop: '2px'}}>
+        <td>
+          <div className="form-group">
+            <select className="form-control" style={{marginTop: '-28px'}} disabled="true">
+              <option value="">Latest</option>
+            </select>
+          </div>
+        </td>
+        <td className="text-center" style={{paddingTop: '2px'}}>
 
-          <div className="btn-group" style={{marginTop: '4px'}}>
+          <div className="btn-group" style={{marginTop: '11px'}}>
             <a href="bootstrap-elements.html" data-target="#"
                className="btn btn-raised btn-sm dropdown-toggle" data-toggle="dropdown"
                aria-expanded="false">
@@ -139,12 +146,13 @@ class List extends React.Component {
           <caption> Results {this.props.artifacts.length}.</caption>
           <thead>
           <tr>
-            <th>
+            <th className="text-center">
               <AllItemsCheck />
             </th>
             <th>Name</th>
-            <th>Deploy</th>
-            <th/>
+            <th className="text-center">Deploy</th>
+            <th className="text-center">Versions</th>
+            <th className="text-center">&nbsp;</th>
           </tr>
           </thead>
           <tbody>
