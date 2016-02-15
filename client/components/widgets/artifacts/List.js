@@ -89,13 +89,13 @@ class ItemList extends React.Component {
   render() {
     return (
       <tr>
-        <td className="text-center" scope="row" style={{paddingTop: '7px'}}>
+        <td className="text-center" scope="row" style={{paddingTop: '12px'}}>
           <ItemCheck artifact={this.props.artifact} checked={this.props.checked}/>
         </td>
-        <td className="text-left" style={{paddingTop: '7px'}}>
+        <td className="text-left" style={{paddingTop: '14px'}}>
           <ItemName artifact={this.props.artifact}/>
         </td>
-        <td className="text-center" style={{paddingTop: '7px'}}>
+        <td className="text-center" style={{paddingTop: '18px'}}>
           <ItemStatus artifact={this.props.artifact}/>
         </td>
         <td>

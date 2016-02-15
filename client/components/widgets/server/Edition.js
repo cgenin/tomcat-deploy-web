@@ -108,13 +108,19 @@ class Edition extends React.Component {
               />
             </div>
           </div>
-          <div className="col-xs-offset-4 col-xs-4">
+          <div className="col-xs-4 text-center">
             <button type="button" onClick={() => this.props.onBack()} className="btn btn-default">
               <li className="fa fa-backward"/>
               &nbsp;Cancel
             </button>
           </div>
-          <div className=" col-xs-4">
+          <div className=" col-xs-4 text-center">
+            <button type="button" className="btn btn-warning" disabled={this.state.disabled}>
+              <li className="glyphicon glyphicon-transfer"/>
+              &nbsp;Test
+            </button>
+          </div>
+          <div className=" col-xs-4 text-center">
             <button type="button" onClick={this.onClick} className="btn btn-primary" disabled={this.state.disabled}>
               <li className="glyphicon glyphicon-ok"/>
               &nbsp;Submit
