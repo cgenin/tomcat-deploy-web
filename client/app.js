@@ -8,6 +8,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { Router, hashHistory } from 'react-router';
 import { syncHistory, routeReducer } from 'react-router-redux';
 import {reducers} from './modules/server/reducers';
+import {testReducers} from './modules/test/reducers';
 import {areducers} from './modules/artifacts/reducers';
 import {mReducers} from './modules/message/reducers';
 import {actionReducers} from './modules/actions/reducers';
@@ -26,7 +27,8 @@ const rootReducer = combineReducers(Object.assign({}, {
   artifacts: areducers,
   messaging: mReducers,
   actions: actionReducers,
-  logger: loggerReducers
+  logger: loggerReducers,
+  testUrl: testReducers
 }));
 
 export const store = compose(

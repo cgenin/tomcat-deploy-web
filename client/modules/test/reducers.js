@@ -4,15 +4,17 @@ const defaultState = {
   inProgress: false,
   success: false,
   response: '',
+  url: '',
   code: 0
 };
 
-export function reducers(state = defaultState, action) {
+export function testReducers(state = defaultState, action) {
   let clone;
   switch (action.type) {
     case INPROGRESS :
       clone = Object.assign({}, state);
       clone.inProgress = true;
+      clone.url = action.url;
       return clone;
     case SUCCESS :
       clone = Object.assign({}, state);

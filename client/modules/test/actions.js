@@ -16,17 +16,19 @@ function failed(code) {
   };
 }
 
-function inprogress() {
+function inprogress(url) {
   return {
-    type: INPROGRESS
+    type: INPROGRESS, url
   };
 }
 
 export function testServer(host, username, password) {
   return dispatch => {
-    dispatch(inprogress());
+    const url = `http://${host}/manager/text/list`;
+    dispatch(inprogress(url));
     const encodedString = btoa(`${username}:${password}`);
-    fetch(`http://${host}/manager/text/list`, {
+    fetch(url, {
+      mode: 'no-cors',
       method: 'get',
       headers: {
         'Accept': 'application/json',
@@ -37,10 +39,11 @@ export function testServer(host, username, password) {
       if (res.status >= 200 && res.status < 300) {
         dispatch(success(res.text()));
       } else {
+        console.error(res);
         dispatch(failed(res.text()));
       }
     }).catch(ex => {
-      console.log('parsing failed', ex);
+      console.error(ex);
       dispatch(failed(0));
     });
   };

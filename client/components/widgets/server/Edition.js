@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect} from 'react-redux';
+import TestModal from '../test/TestModal';
 import { save } from '../../../modules/server/actions';
+import { testServer } from '../../../modules/test/actions';
 import { routeActions } from 'react-router-redux';
 
 function isDisabled(server) {
@@ -23,6 +25,9 @@ const mapDispatchToProps = function (dispatch) {
     },
     onSave: function (server) {
       dispatch(save(server)).then(dispatch(routeActions.push('/')));
+    },
+    onTest: function (host, username, password) {
+      dispatch(testServer(host, username, password));
     }
   };
 };
@@ -34,9 +39,11 @@ class Edition extends React.Component {
     super(props);
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.onTest= this.onTest.bind(this);
     this.state = {
       server: {},
-      disabled: true
+      disabled: true,
+      testShow: false
     };
   }
 
@@ -58,6 +65,16 @@ class Edition extends React.Component {
     const server = this.state.server;
     this.props.onSave(server);
     return false;
+  }
+
+  onTest(e) {
+    e.preventDefault();
+    this.setState({ testShow: true});
+    const host = this.refs.host.value;
+    const username = this.refs.username.value;
+    const password = this.refs.password.value;
+    this.props.onTest(host, username, password);
+
   }
 
   onChange(e) {
@@ -115,7 +132,7 @@ class Edition extends React.Component {
             </button>
           </div>
           <div className=" col-xs-4 text-center">
-            <button type="button" className="btn btn-warning" disabled={this.state.disabled}>
+            <button type="button" onClick={this.onTest} className="btn btn-warning" disabled={this.state.disabled}>
               <li className="glyphicon glyphicon-transfer"/>
               &nbsp;Test
             </button>
@@ -127,6 +144,7 @@ class Edition extends React.Component {
             </button>
           </div>
         </form>
+        <TestModal show={this.state.testShow} onHide={() => this.setState({testShow: false})}/>
       </div>
     );
   }
