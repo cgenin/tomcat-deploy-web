@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect} from 'react-redux';
 import TestModal from '../test/TestModal';
-import { save } from '../../../modules/server/actions';
+import { save, load } from '../../../modules/server/actions';
 import { testServer } from '../../../modules/test/actions';
 import { routeActions } from 'react-router-redux';
 
@@ -14,7 +14,10 @@ const mapStateToProps = function (state, ownProps) {
   if (ownProps.add === true) {
     return {server: {}, disabled: true};
   }
-  const server = state.servers[ownProps.id];
+  const server = state.servers.find(s => s.host === ownProps.id);
+  if (!server) {
+    return {server: {}, disabled: true};
+  }
   return {server};
 };
 
@@ -28,6 +31,9 @@ const mapDispatchToProps = function (dispatch) {
     },
     onTest: function (host, username, password) {
       dispatch(testServer(host, username, password));
+    },
+    onInit: function () {
+      dispatch(load());
     }
   };
 };
@@ -39,12 +45,16 @@ class Edition extends React.Component {
     super(props);
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
-    this.onTest= this.onTest.bind(this);
+    this.onTest = this.onTest.bind(this);
     this.state = {
       server: {},
       disabled: true,
       testShow: false
     };
+  }
+
+  componentDidMount() {
+    this.props.onInit();
   }
 
   componentWillMount() {
@@ -69,12 +79,11 @@ class Edition extends React.Component {
 
   onTest(e) {
     e.preventDefault();
-    this.setState({ testShow: true});
+    this.setState({testShow: true});
     const host = this.refs.host.value;
     const username = this.refs.username.value;
     const password = this.refs.password.value;
     this.props.onTest(host, username, password);
-
   }
 
   onChange(e) {

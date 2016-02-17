@@ -9,8 +9,7 @@ const mapStateToProps = function (state) {
   if (!query.i) {
     return {add: true};
   }
-
-  const id = parseInt(query.i, 10);
+  const id = query.i;
   return {add: false, id};
 };
 
@@ -31,6 +30,6 @@ class ServerEditPage extends React.Component {
     );
   }
 }
-ServerEditPage.propTypes = {add: React.PropTypes.bool.isRequired, id: React.PropTypes.number};
+ServerEditPage.propTypes = {add: React.PropTypes.bool.isRequired, id: React.PropTypes.string};
 
 export default connect(mapStateToProps)(ServerEditPage);

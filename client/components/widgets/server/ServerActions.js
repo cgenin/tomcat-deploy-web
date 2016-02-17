@@ -13,11 +13,11 @@ const mapStateToProps = function (state) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    onEdit: function (index) {
+    onEdit: function (server) {
       dispatch(routeActions.push(
         {
           pathname: '/server/edit',
-          query: {i: index}
+          query: {i: server.host}
         }));
     },
     onDelete: function (server) {
@@ -63,7 +63,8 @@ class ServerActions extends React.Component {
   onEdit(e) {
     e.preventDefault();
     const index = this.refs.current.value;
-    this.props.onEdit(index);
+    const server = this.props.servers[index];
+    this.props.onEdit(server);
     return false;
   }
 
