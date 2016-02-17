@@ -24,27 +24,21 @@ function inprogress(url) {
 
 export function testServer(host, username, password) {
   return dispatch => {
-    const url = `http://${host}/manager/text/list`;
-    dispatch(inprogress(url));
-    const encodedString = btoa(`${username}:${password}`);
-    fetch(url, {
-      mode: 'no-cors',
+    dispatch(inprogress(`http://${host}/manager/text/list`));
+    fetch(`api/server/auth?host=${encodeURIComponent(host)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
       method: 'get',
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Basic ${encodedString}`
+        'Accept': 'text/plain;charset=utf-8'
       }
-    }).then(res => {
-      if (res.status >= 200 && res.status < 300) {
-        dispatch(success(res.text()));
-      } else {
-        console.error(res);
-        dispatch(failed(res.text()));
-      }
-    }).catch(ex => {
+    }).then(res => res.json()).catch(ex => {
       console.error(ex);
       dispatch(failed(0));
+    }).then(json => {
+      if (json.status === 200) {
+        dispatch(success(json.body));
+      } else {
+        dispatch(failed(json.status));
+      }
     });
   };
 }

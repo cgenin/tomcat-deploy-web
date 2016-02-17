@@ -1,5 +1,6 @@
 const express = require('express');
 const deploydb = require('../deploydb');
+const war = require('../war');
 const router = express.Router();
 const bodyParser = require('body-parser');
 
@@ -12,6 +13,14 @@ router.get('/', (req, res) => {
     tmp.id = tmp.$loki;
     return tmp;
   }));
+});
+
+router.get('/auth', (req, res) => {
+  const host = req.query.host;
+  const username = req.query.username;
+  const password = req.query.password;
+  war.test(host, username, password).then(
+    (d) => res.json(d), (e) => res.json({status: 0, text: e}));
 });
 
 router.post('/', bodyParser.json(), (req, res) => {

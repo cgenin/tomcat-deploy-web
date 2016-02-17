@@ -126,6 +126,37 @@ const deploy = function (configuration, item) {
   return deferred.promise;
 };
 
+const test = function (h, username, password) {
+  const deferred = Q.defer();
+  try {
+    const root = `http://${h}`;
+    const parsingUrl = URL.parse(root);
+    const url = `${root}/manager/text/list`;
+    const options = {
+      host: parsingUrl.hostname,
+      method: 'GET',
+      port: parsingUrl.port,
+      path: url,
+      auth: `${username}:${password}`
+    };
+    http.get(options, (rs) => {
+      const bodyChunks = [];
+      rs.on('data', (chunk) => {
+        bodyChunks.push(chunk);
+      }).on('end', () => {
+        const body = Buffer.concat(bodyChunks).toString('utf8');
+        deferred.resolve({status: rs.statusCode, body});
+      });
+    }).on('error', (e) => {
+      deferred.reject(e);
+    });
+  } catch (e) {
+    console.error(e);
+    deferred.reject(e);
+  }
+  return deferred.promise;
+};
+
 const undeploy = function (configuration, item) {
   const deferred = Q.defer();
   try {
@@ -169,5 +200,6 @@ module.exports = {
   managedOld: managedOld,
   download: download,
   undeploy: undeploy,
-  deploy: deploy
+  deploy: deploy,
+  test: test
 };
