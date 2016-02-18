@@ -10,9 +10,9 @@ function success(data) {
   };
 }
 
-function failed(code) {
+function failed(code, data) {
   return {
-    type: FAILED, code
+    type: FAILED, code, data
   };
 }
 
@@ -37,7 +37,7 @@ export function testServer(host, username, password) {
       if (json.status === 200) {
         dispatch(success(json.body));
       } else {
-        dispatch(failed(json.status));
+        dispatch(failed(json.status, json.body));
       }
     });
   };

@@ -27,6 +27,7 @@ export function testReducers(state = defaultState, action) {
       clone.inProgress = false;
       clone.success = false;
       clone.code = action.code;
+      clone.response = action.data;
       return clone;
     default :
       return state;
