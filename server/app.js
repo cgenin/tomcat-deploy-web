@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const serverRest = require('./routes/server');
 const artifact = require('./routes/artifact');
+require('./backup').load();
 
 const deploydb = require('./deploydb');
 

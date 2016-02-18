@@ -4,7 +4,8 @@ const http = require('http');
 const fs = require('fs');
 const URL = require('url');
 const Q = require('q');
-const downloadedDir = 'download';
+const config = require('./config');
+const downloadedDir = config.downloadedDir;
 
 const makeDirectory = function () {
   const deferred = Q.defer();

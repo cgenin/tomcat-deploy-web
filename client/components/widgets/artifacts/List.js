@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
+import LaunchButton from '../artifacts/LaunchButton';
 import { del, load } from '../../../modules/artifacts/actions';
 import { removeArtifacts} from '../../../modules/actions/actions';
 import ItemCheck from './../actions/ItemCheck';
@@ -118,6 +119,7 @@ class ItemList extends React.Component {
             <ul className="dropdown-menu">
               <li><a href="#" onClick={this.onClick}><i className="fa fa-trash"/>&nbsp;Delete</a></li>
             </ul>
+            <LaunchButton name={this.props.artifact.name}/>
           </div>
         </td>
       </tr>
