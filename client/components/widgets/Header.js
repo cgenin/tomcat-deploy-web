@@ -19,7 +19,7 @@ class AboutModal extends React.Component {
           <ModalTitle id="contained-modal-title-sm">About ?</ModalTitle>
         </ModalHeader>
         <ModalBody>
-          <h4>0.4.0</h4>
+          <h4>0.4.1</h4>
           <p>Tu comprends, là on voit qu'on a beaucoup à travailler sur nous-mêmes car il y a de bonnes règles, de
             bonnes rules et c'est une sensation réelle qui se produit si on veut ! Pour te dire comme on a beaucoup
             à apprendre sur la vie !
@@ -49,7 +49,7 @@ class Header extends React.Component {
   render() {
     const clsHome = classNames({active: this.props.homeActive});
     const clsAdd = classNames({active: this.props.addActive});
-    let smClose = () => this.setState({smShow: false});
+    const smClose = () => this.setState({smShow: false});
     return (
       <nav className="navbar navbar-default navbar-static-top" style={{backgroundColor: 'rgb(63, 81, 181)'}}>
         <div className="container-fluid">

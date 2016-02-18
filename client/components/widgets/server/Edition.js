@@ -53,14 +53,14 @@ class Edition extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.props.onInit();
-  }
-
   componentWillMount() {
     const server = this.props.server;
     const disabled = isDisabled(server);
     this.setState({server, disabled});
+  }
+
+  componentDidMount() {
+    this.props.onInit();
   }
 
 

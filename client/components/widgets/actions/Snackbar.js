@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import { hideSnackbar } from '../../../modules/actions/actions';
 
-const mapStateToProps = function (state, ownProps) {
+const mapStateToProps = function (state) {
   const snackbar = state.actions.snackbar;
   return {
     snackbar
@@ -28,7 +28,7 @@ class Snackbar extends React.Component {
   componentWillReceiveProps(newProps) {
     const snackbar = newProps.snackbar;
     if (snackbar) {
-      setTimeout(() => this.props.onHide(), 5000);
+      setTimeout(() => this.props.onHide(), 10000);
     }
   }
 
@@ -52,7 +52,7 @@ class Snackbar extends React.Component {
     return (
       <div id="snackbar-container">
         <div className="snackbar snackbar-opened">
-          <button className="close" aria-label="close" style={{marginLeft:'15px', float:'right'}}><span
+          <button className="close" aria-label="close" style={{marginLeft: '15px', float: 'right'}}><span
             aria-hidden="true" onClick={this.hide}>&times;</span></button>
           <span>
             Deployement finish ! - <a href="#" onClick={this.refresh}>please refresh for new status</a>

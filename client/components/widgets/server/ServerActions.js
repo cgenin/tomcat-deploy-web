@@ -27,7 +27,6 @@ const mapDispatchToProps = function (dispatch) {
         } else {
           dispatch(updateServers(Array.of(data[0])));
         }
-
       });
     },
     onAdd: function () {

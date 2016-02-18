@@ -1,4 +1,4 @@
-import {SEND,HIDE} from './actions';
+import {SEND, HIDE} from './actions';
 
 const defaultState = {
   type: '',
