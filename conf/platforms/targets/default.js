@@ -6,6 +6,7 @@ module.exports = {
     name: 'Tomcat - Deploy - Web',
     title: 'Tomcat - Deploy - Web'
   },
+  downloadedDir :'download',
   server: {
     port: 5000
   },
