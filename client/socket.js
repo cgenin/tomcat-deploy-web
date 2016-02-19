@@ -1,5 +1,6 @@
 import {end, error, log, start} from './modules/logger/actions';
 import {progress} from './modules/actions/actions';
+import {update} from './modules/versions/actions';
 /* eslint no-undef: 0 */
 export const socket = io();
 
@@ -11,4 +12,5 @@ export function initialize(dispatch) {
   socket.on('deploiement-in-progress', (data) => {
     dispatch(progress(data));
   });
+  socket.on('versions', (data) => dispatch(update(data)));
 }

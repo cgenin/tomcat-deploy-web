@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import moment from 'moment';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import LaunchButton from '../artifacts/LaunchButton';
+import ArtifactVersions from '../versions/ArtifactVersions';
 import { del, load } from '../../../modules/artifacts/actions';
 import { removeArtifacts} from '../../../modules/actions/actions';
 import ItemCheck from './../actions/ItemCheck';
@@ -49,7 +50,7 @@ class ItemStatus extends React.Component {
 
 }
 
-ItemStatus.propTypes = {artifact: React.PropTypes.object.isRequired};
+ItemStatus.propTypes = { artifact: React.PropTypes.object.isRequired };
 
 class ItemName extends React.Component {
   constructor(props) {
@@ -71,7 +72,7 @@ class ItemName extends React.Component {
   }
 }
 
-ItemName.propTypes = {artifact: React.PropTypes.object.isRequired};
+ItemName.propTypes = { artifact: React.PropTypes.object.isRequired };
 
 class ItemList extends React.Component {
 
@@ -100,11 +101,7 @@ class ItemList extends React.Component {
           <ItemStatus artifact={this.props.artifact}/>
         </td>
         <td>
-          <div className="form-group">
-            <select className="form-control" style={{marginTop: '-28px'}} disabled="true">
-              <option value="">Latest</option>
-            </select>
-          </div>
+          <ArtifactVersions name={this.props.artifact.name}/>
         </td>
         <td className="text-center" style={{paddingTop: '2px'}}>
 
@@ -127,7 +124,7 @@ class ItemList extends React.Component {
   }
 }
 
-ItemList.propTypes = {artifact: React.PropTypes.object.isRequired};
+ItemList.propTypes = { artifact: React.PropTypes.object.isRequired };
 
 class List extends React.Component {
   constructor(props) {
@@ -166,6 +163,6 @@ class List extends React.Component {
   }
 }
 
-List.propTypes = {artifacts: React.PropTypes.array.isRequired};
+List.propTypes = { artifacts: React.PropTypes.array.isRequired };
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

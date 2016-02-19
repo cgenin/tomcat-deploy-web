@@ -1,5 +1,6 @@
 const deploydb = require('../deploydb');
 const inProgress = require('../in-progress');
+const backup = require('../backup');
 const remoteConsole = function (io) {
   return {
     error: function (msg) {
@@ -26,10 +27,10 @@ module.exports = function (socket, io, ip) {
   };
   rc.log('connected to server.');
 
-  socket.on('versions', (data) => {
-    console.log(data);
-    socket.emit('on-versions', data);
-  });
+
+  const data = backup.data();
+  socket.emit('versions', data);
+
 
   socket.on('undeploy', (data) => {
     inProgress.active();

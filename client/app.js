@@ -13,6 +13,7 @@ import {areducers} from './modules/artifacts/reducers';
 import {mReducers} from './modules/message/reducers';
 import {actionReducers} from './modules/actions/reducers';
 import {loggerReducers} from './modules/logger/reducers';
+import {versionsReducers} from './modules/versions/reducers';
 import {initialize} from './socket';
 
 
@@ -28,7 +29,8 @@ const rootReducer = combineReducers(Object.assign({}, {
   messaging: mReducers,
   actions: actionReducers,
   logger: loggerReducers,
-  testUrl: testReducers
+  testUrl: testReducers,
+  versions: versionsReducers
 }));
 
 export const store = compose(

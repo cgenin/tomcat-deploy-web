@@ -48,8 +48,8 @@ class TestModal extends React.Component {
   render() {
     const inProgress = (this.props.test.inProgress) ? (
       <div className="text-center"><i className="fa fa-refresh fa-spin fa-4x"/></div>) : null;
-    const success = (this.props.test.success) ? (<Success response={this.props.test.response}/>) : null;
-    const error = (!this.props.test.success) ? (<Error response={this.props.test.response} code={this.props.test.code}/>) : null;
+    const success = (!this.props.test.inProgress && this.props.test.success) ? (<Success response={this.props.test.response}/>) : null;
+    const error = (!this.props.test.inProgress && !this.props.test.success) ? (<Error response={this.props.test.response} code={this.props.test.code}/>) : null;
     return (
       <Modal {...this.props} bsSize="lg" aria-labelledby="contained-modal-title-sm">
         <ModalHeader closeButton>

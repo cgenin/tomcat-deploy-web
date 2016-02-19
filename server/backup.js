@@ -47,10 +47,10 @@ const Backup = function Backup() {
         }
       });
 
-      console.log(JSON.stringify(inner));
+      // console.log(JSON.stringify(inner));
     });
   };
-  this.get = function () {
+  this.data = function () {
     return inner;
   };
 };
