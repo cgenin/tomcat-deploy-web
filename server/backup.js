@@ -32,7 +32,8 @@ const Backup = function Backup() {
           if (!inner[name]) {
             inner[name] = [];
           }
-          inner[name].push({f, name, dt});
+          inner[name].push({f, name, dt, date: new Date(dt)});
+          inner[name].sort((a, b) => b.dt - a.dt);
         }
         if (old.test(f)) {
           const reOld = old.exec(f);
@@ -41,9 +42,11 @@ const Backup = function Backup() {
           if (!inner[name]) {
             inner[name] = [];
           }
-          inner[name].push({f, name, dt});
+          inner[name].push({f, name, dt, date: new Date(dt)});
+          inner[name].sort((a, b) => b.dt - a.dt);
         }
       });
+
       console.log(JSON.stringify(inner));
     });
   };
