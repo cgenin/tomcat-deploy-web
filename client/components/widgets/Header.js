@@ -72,7 +72,16 @@ class Header extends React.Component {
                   className="sr-only">(current)</span></a></li>
               <li className={clsAdd}>
                 <a href="#/add" data-toggle="collapse" data-target="#menu-navbar-collapse">
-                  <i className="fa fa-cog fa-plus"/>&nbsp; Add</a></li>
+                  <i className="fa fa-cog fa-plus"/>&nbsp; Add</a>
+              </li>
+              <li className="dropdown">
+                <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown"><i className="fa fa-cog" />&nbsp; Configuration
+                  <b className="caret" /></a>
+                <ul className="dropdown-menu">
+                  <li className="dropdown-header">Artifacts</li>
+                  <li><a href="#" >Clean history</a></li>
+                </ul>
+              </li>
             </ul>
             <ul className="nav navbar-nav navbar-right">
               <li><a href="#" onClick={this.onLaunchAbout}><strong>&nbsp;?&nbsp;</strong></a></li>

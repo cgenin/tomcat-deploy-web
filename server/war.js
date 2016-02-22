@@ -149,7 +149,9 @@ const test = function (h, username, password) {
         deferred.resolve({status: rs.statusCode, body});
       });
     }).on('error', (e) => {
-      deferred.reject(e);
+      console.error('Error inc calling', e);
+      const body = e.message || 'Error';
+      deferred.reject({status: 404, body});
     });
   } catch (e) {
     console.error(e);

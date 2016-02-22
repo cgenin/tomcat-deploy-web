@@ -20,7 +20,7 @@ router.get('/auth', (req, res) => {
   const username = req.query.username;
   const password = req.query.password;
   war.test(host, username, password).then(
-    (d) => res.json(d), (e) => res.json({status: 0, text: e}));
+    (d) => res.json(d), (e) => res.json(e));
 });
 
 router.post('/', bodyParser.json(), (req, res) => {

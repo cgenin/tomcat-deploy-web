@@ -47,6 +47,20 @@ const Backup = function Backup() {
         }
       });
 
+      this.clean = function (nb) {
+        if (nb) {
+          const filtering = (o, i) => i > nb;
+          const deleteFile = (o) => fs.unlinkSync(`${downloadedDir}/${o.f}`);
+          for (const key of Object.keys(inner)) {
+            const values = inner[key];
+            const v2Delete = values.filter(filtering);
+            v2Delete.forEach(deleteFile);
+          }
+        }
+        this.load();
+        return inner;
+      };
+
       // console.log(JSON.stringify(inner));
     });
   };

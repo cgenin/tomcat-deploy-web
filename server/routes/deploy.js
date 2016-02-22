@@ -30,12 +30,12 @@ module.exports = function (socket, io, ip) {
 
   const data = backup.data();
   socket.emit('versions', data);
+  socket.on('artifact-clean', (nb) => io.sockets.emit('versions', backup.clean(nb)));
 
-
-  socket.on('undeploy', (data) => {
-    inProgress.active();
-    emitInProgress();
-    const recursiveUndeploy = function (artifacts) {
+      socket.on('undeploy', (data) => {
+        inProgress.active();
+        emitInProgress();
+        const recursiveUndeploy = function (artifacts) {
       if (!artifacts || artifacts.length === 0) {
         rc.end();
         inProgress.disable();
