@@ -64,12 +64,6 @@ class Edition extends React.Component {
   }
 
 
-  componentWillReceiveProps(newProps) {
-    const server = newProps.server;
-    const disabled = isDisabled(server);
-    this.setState({server, disabled});
-  }
-
   onClick(e) {
     e.preventDefault();
     const server = this.state.server;
