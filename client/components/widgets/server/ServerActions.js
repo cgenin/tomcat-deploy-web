@@ -40,6 +40,9 @@ const mapDispatchToProps = function (dispatch) {
           dispatch(updateServers(Array.of(data[0])));
         }
       });
+    },
+    onSelect: function (server) {
+      dispatch(updateServers(Array.of(server)));
     }
   };
 };
@@ -51,6 +54,7 @@ class ServerActions extends React.Component {
     this.onEdit = this.onEdit.bind(this);
     this.onCreate = this.onCreate.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.state = {show: false};
   }
@@ -89,6 +93,16 @@ class ServerActions extends React.Component {
     return false;
   }
 
+  onChange(e) {
+    if (e) {
+      e.preventDefault();
+    }
+    const index = this.refs.current.value;
+    const server = this.props.servers[index];
+    this.props.onSelect(server);
+    return false;
+  }
+
   render() {
     const style = {
       position: 'absolute',
@@ -107,7 +121,7 @@ class ServerActions extends React.Component {
       <div className="row">
         <div className="col-md-3 col-md-offset-4 col-xs-12 text-right ">
           <div className="form-group">
-            <select ref="current" className="form-control" style={{marginTop: '-28px'}}>
+            <select ref="current" className="form-control" onChange={this.onChange} style={{marginTop: '-28px'}}>
               {options}
             </select>
           </div>
