@@ -44,6 +44,8 @@ io.on('connection', (socket) => {
   require('../routes/deploy')(socket, io, ip);
 });
 
+require('../routes')(app, io);
+
 /**
  * Normalize a port into a number, string, or false.
  */

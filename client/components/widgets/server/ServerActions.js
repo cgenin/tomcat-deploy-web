@@ -3,7 +3,7 @@ import { connect} from 'react-redux';
 import ReactDOM from 'react-dom';
 import { routeActions } from 'react-router-redux';
 import {Overlay} from 'react-bootstrap';
-import {OverlayStyle} from '../../Styles';
+import {OverlayStyle, StyleFabButt} from '../../Styles';
 import { load, del } from '../../../modules/server/actions';
 import { updateServers } from '../../../modules/actions/actions';
 
@@ -105,8 +105,6 @@ class ServerActions extends React.Component {
   }
 
   render() {
-
-    const styleButt = {marginRight: '5px', marginLeft: '5px'};
     const options = this.props.servers.map((s, i) => (<option key={i} value={i}>{s.host}</option>));
     const disabled = this.props.servers.length === 0;
     return (
@@ -121,16 +119,16 @@ class ServerActions extends React.Component {
         <div className="col-md-5 col-xs-12  text-left">
           <div className="btn-group-sm">
             <a onClick={this.onEdit} className="btn btn-xs btn-success btn-fab" title="Edit current server"
-               disabled={disabled} style={styleButt}>
+               disabled={disabled} style={StyleFabButt}>
               <i className="material-icons">create</i>
             </a>
             <a onClick={this.onCreate} className="btn btn-xs btn-primary btn-fab" title="Add an server"
-               style={styleButt}
+               style={StyleFabButt}
             >
               <i className="material-icons">add</i>
             </a>
             <button ref="target" onClick={this.toggle} className="btn btn-xs btn-danger btn-fab"
-                    title="Remove an server" disabled={disabled} style={styleButt}>
+                    title="Remove an server" disabled={disabled} style={StyleFabButt}>
               <i className="material-icons">remove</i>
             </button>
           </div>

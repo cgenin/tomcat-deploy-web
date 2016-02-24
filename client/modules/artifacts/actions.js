@@ -2,6 +2,15 @@ import fetch from 'isomorphic-fetch';
 export const DELETE = 'ARTIFACTS:DELETE';
 export const UPDATE = 'ARTIFACTS:UPDATE';
 
+export function clean(nb) {
+  return () => fetch(`api/artifact/last/${nb}`, {
+    method: 'delete',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json());
+}
 
 export function save(name, url) {
   const body = JSON.stringify({

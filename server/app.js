@@ -4,8 +4,6 @@ const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const serverRest = require('./routes/server');
-const artifact = require('./routes/artifact');
 require('./backup').load();
 
 const deploydb = require('./deploydb');
@@ -22,10 +20,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
-app.use('/api/server', serverRest);
-app.use('/api/artifact', artifact);
-
-require('./routes')(app);
 
 deploydb.init().then(() => {
   console.log('db started.');

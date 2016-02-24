@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
+import classNames from 'classnames';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import LaunchButton from '../artifacts/LaunchButton';
 import ArtifactVersions from '../versions/ArtifactVersions';
@@ -50,7 +51,7 @@ class ItemStatus extends React.Component {
 
 }
 
-ItemStatus.propTypes = { artifact: React.PropTypes.object.isRequired };
+ItemStatus.propTypes = {artifact: React.PropTypes.object.isRequired};
 
 class ItemName extends React.Component {
   constructor(props) {
@@ -72,7 +73,7 @@ class ItemName extends React.Component {
   }
 }
 
-ItemName.propTypes = { artifact: React.PropTypes.object.isRequired };
+ItemName.propTypes = {artifact: React.PropTypes.object.isRequired};
 
 class ItemList extends React.Component {
 
@@ -124,11 +125,12 @@ class ItemList extends React.Component {
   }
 }
 
-ItemList.propTypes = { artifact: React.PropTypes.object.isRequired };
+ItemList.propTypes = {artifact: React.PropTypes.object.isRequired};
 
 class List extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {asc: true};
   }
 
   componentDidMount() {
@@ -137,8 +139,27 @@ class List extends React.Component {
 
   render() {
     const onDelete = this.props.onDelete;
-    const artifacts = this.props.artifacts.map((artifact, i) => <ItemList key={i} onDelete={onDelete}
-                                                                          artifact={artifact}/>);
+    const sorting = (this.state.asc) ? (a, b) => {
+      if (a.name === b.name) {
+        return 0;
+      }
+      if (a.name < b.name) {
+        return -1;
+      }
+      return 1;
+    } : (a, b) => {
+      if (a.name === b.name) {
+        return 0;
+      }
+      if (a.name < b.name) {
+        return 1;
+      }
+      return -1;
+    };
+    const sortingName = (this.state.asc) ? 'Asc' : 'Desc';
+    const clsName = classNames({fa: true, 'fa-sort-desc': !this.state.desc, 'fa-sort-asc': this.state.asc});
+    const artifacts = this.props.artifacts.sort(sorting).map((artifact, i) => <ItemList key={i} onDelete={onDelete}
+                                                                                        artifact={artifact}/>);
     return (
       <div className="col-xs-offset-1 col-xs-10">
         <table className="table table-hover">
@@ -148,7 +169,9 @@ class List extends React.Component {
             <th className="text-center">
               <AllItemsCheck />
             </th>
-            <th>Name</th>
+            <th title={sortingName} style={{cursor: 'pointer'}} onClick={() => this.setState({asc: !this.state.asc})}>
+              Name&nbsp;&nbsp;<i className={clsName}/>
+            </th>
             <th className="text-center">Deploy</th>
             <th className="text-center">Versions</th>
             <th className="text-center">&nbsp;</th>
@@ -163,6 +186,6 @@ class List extends React.Component {
   }
 }
 
-List.propTypes = { artifacts: React.PropTypes.array.isRequired };
+List.propTypes = {artifacts: React.PropTypes.array.isRequired};
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

@@ -49,7 +49,7 @@ const Backup = function Backup() {
 
       this.clean = function (nb) {
         if (nb) {
-          const filtering = (o, i) => i > nb;
+          const filtering = (o, i) => i >= nb;
           const deleteFile = (o) => fs.unlinkSync(`${downloadedDir}/${o.f}`);
           for (const key of Object.keys(inner)) {
             const values = inner[key];

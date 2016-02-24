@@ -22,6 +22,12 @@ export function hideSnackbar() {
   };
 }
 
+export function showSnackbar() {
+  return {
+    type: SNACKBAR, val: true
+  };
+}
+
 export function progress(stat) {
   return {
     type: IN_PROGRESS, stat

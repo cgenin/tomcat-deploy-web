@@ -8,3 +8,5 @@ export const OverlayStyle = {
   marginTop: 10,
   padding: 10
 };
+
+export const StyleFabButt = {marginRight: '5px', marginLeft: '5px'};
