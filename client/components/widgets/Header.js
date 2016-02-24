@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { connect} from 'react-redux';
 import { Modal, ModalFooter, ModalHeader, ModalTitle, ModalBody, Button} from 'react-bootstrap';
+import CleanHistory from './artifacts/CleanHistory';
 
 const mapStateToProps = function (state) {
   const homeActive = state.routing.location.pathname === '/';
@@ -37,8 +38,9 @@ class Header extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {smShow: false};
+    this.state = {smShow: false, show: false};
     this.onLaunchAbout = this.onLaunchAbout.bind(this);
+    this.onLaunchCleanHistory = this.onLaunchCleanHistory.bind(this);
   }
 
   onLaunchAbout(e) {
@@ -46,10 +48,21 @@ class Header extends React.Component {
     this.setState({smShow: true});
   }
 
+  onLaunchCleanHistory(e) {
+    if (e) {
+      e.preventDefault();
+    }
+    const x = e.clientX;
+    const y = e.clientY;
+    this.setState({show: !this.state.show, x, y});
+    return false;
+  }
+
   render() {
     const clsHome = classNames({active: this.props.homeActive});
     const clsAdd = classNames({active: this.props.addActive});
     const smClose = () => this.setState({smShow: false});
+    const onHideCleanHistory = () => this.setState({show: false});
     return (
       <nav className="navbar navbar-default navbar-static-top" style={{backgroundColor: 'rgb(63, 81, 181)'}}>
         <div className="container-fluid">
@@ -75,11 +88,12 @@ class Header extends React.Component {
                   <i className="fa fa-cog fa-plus"/>&nbsp; Add</a>
               </li>
               <li className="dropdown">
-                <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown"><i className="fa fa-cog" />&nbsp; Configuration
-                  <b className="caret" /></a>
+                <a href="bootstrap-elements.html" data-target="#" className="dropdown-toggle" data-toggle="dropdown"><i
+                  className="fa fa-cog"/>&nbsp; Configuration
+                  <b className="caret"/></a>
                 <ul className="dropdown-menu">
                   <li className="dropdown-header">Artifacts</li>
-                  <li><a href="#" >Clean history</a></li>
+                  <li><a href="#" onClick={this.onLaunchCleanHistory}>Clean history</a></li>
                 </ul>
               </li>
             </ul>
@@ -87,6 +101,7 @@ class Header extends React.Component {
               <li><a href="#" onClick={this.onLaunchAbout}><strong>&nbsp;?&nbsp;</strong></a></li>
             </ul>
             <AboutModal show={this.state.smShow} onHide={smClose}/>
+            <CleanHistory show={this.state.show} x={this.state.x} y={this.state.y} onHide={onHideCleanHistory}/>
           </div>
         </div>
       </nav>

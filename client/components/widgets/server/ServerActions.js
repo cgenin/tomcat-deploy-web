@@ -3,6 +3,7 @@ import { connect} from 'react-redux';
 import ReactDOM from 'react-dom';
 import { routeActions } from 'react-router-redux';
 import {Overlay} from 'react-bootstrap';
+import {OverlayStyle} from '../../Styles';
 import { load, del } from '../../../modules/server/actions';
 import { updateServers } from '../../../modules/actions/actions';
 
@@ -104,16 +105,7 @@ class ServerActions extends React.Component {
   }
 
   render() {
-    const style = {
-      position: 'absolute',
-      backgroundColor: '#EEE',
-      boxShadow: '0 5px 10px rgba(0, 0, 0, 0.2)',
-      border: '1px solid #CCC',
-      borderRadius: 3,
-      marginLeft: 10,
-      marginTop: 10,
-      padding: 10
-    };
+
     const styleButt = {marginRight: '5px', marginLeft: '5px'};
     const options = this.props.servers.map((s, i) => (<option key={i} value={i}>{s.host}</option>));
     const disabled = this.props.servers.length === 0;
@@ -145,7 +137,7 @@ class ServerActions extends React.Component {
           <Overlay
             show={this.state.show} onHide={() => this.setState({ show: false })} placement="bottom" container={this}
             target={() => ReactDOM.findDOMNode(this.refs.target)}>
-            <div style={style}>
+            <div style={OverlayStyle}>
               <strong>Are you sure to delete ?</strong> <a href="#" onClick={this.onDelete}>Yes</a>&nbsp;/&nbsp;
               <a href="#" onClick={this.toggle}>No</a>
             </div>
