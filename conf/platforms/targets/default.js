@@ -35,7 +35,6 @@ module.exports = {
         { type: 'text/javascript', src: '/node_modules/jquery/dist/jquery.js' },
         { type: 'text/javascript', src: '/node_modules/bootstrap/dist/js/bootstrap.min.js' },
         { type: 'text/javascript', src: '/node_modules/bootstrap-material-design/dist/js/material.js' },
-        { type: 'text/javascript', src: '/node_modules/moment/min/moment.min.js' },
         { type: 'text/javascript', src: '/main.js' }
       ]
     }

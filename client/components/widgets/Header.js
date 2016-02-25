@@ -20,7 +20,7 @@ class AboutModal extends React.Component {
           <ModalTitle id="contained-modal-title-sm">About ?</ModalTitle>
         </ModalHeader>
         <ModalBody>
-          <h4>0.4.1</h4>
+          <h4>0.4.2</h4>
           <p>Tu comprends, là on voit qu'on a beaucoup à travailler sur nous-mêmes car il y a de bonnes règles, de
             bonnes rules et c'est une sensation réelle qui se produit si on veut ! Pour te dire comme on a beaucoup
             à apprendre sur la vie !
