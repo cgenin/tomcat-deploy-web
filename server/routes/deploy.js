@@ -23,7 +23,7 @@ module.exports = function (socket, io, ip) {
   const war = require('../war');
   const rc = remoteConsole(io);
   const emitInProgress = function () {
-    io.sockets.emit(inProgress.event, {active: inProgress.isActive(), ip});
+    io.sockets.emit(inProgress.event, { active: inProgress.isActive(), ip });
   };
   rc.log('connected to server.');
 
@@ -32,10 +32,10 @@ module.exports = function (socket, io, ip) {
   socket.emit('versions', data);
   socket.on('artifact-clean', (nb) => io.sockets.emit('versions', backup.clean(nb)));
 
-      socket.on('undeploy', (data) => {
-        inProgress.active();
-        emitInProgress();
-        const recursiveUndeploy = function (artifacts) {
+  socket.on('undeploy', (data) => {
+    inProgress.active();
+    emitInProgress();
+    const recursiveUndeploy = function (artifacts) {
       if (!artifacts || artifacts.length === 0) {
         rc.end();
         inProgress.disable();
@@ -111,6 +111,7 @@ module.exports = function (socket, io, ip) {
                     (wname) => {
                       rc.log(`Updated : ${wname}`);
                       socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK'));
+                      backup.load(o.name).then((d) => io.sockets.emit('versions', d));
                       io.sockets.emit('deploy-end', {});
                       launchInner(array);
                     }, errorLogger('error in deploying', o));
@@ -118,7 +119,7 @@ module.exports = function (socket, io, ip) {
               }, errorLogger('error in downloading', o));
           }, errorLogger('error in managing old war', o));
       };
-      io.sockets.emit('deploy-start', {type: 'Deploy', host: ip});
+      io.sockets.emit('deploy-start', { type: 'Deploy', host: ip });
       rc.start();
 
       rc.log(`selected wars : ${data.length} by ${ip}`);
