@@ -84,6 +84,50 @@ const host = function (configuration) {
   return `http://${configuration.host}`;
 };
 
+const rollback = function (configuration, item, oldVersion) {
+  const deferred = Q.defer();
+  try {
+    const root = host(configuration);
+    const parsingUrl = URL.parse(root);
+    const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
+    const options = {
+      host: parsingUrl.hostname,
+      method: 'PUT',
+      port: parsingUrl.port,
+      path: url,
+      auth: `${configuration.username}:${configuration.password}`
+    };
+    const req = http.request(options, (rs) => {
+      let result = '';
+      rs.on('data', (data) => {
+        result += data;
+      });
+      rs.on('end', () => {
+        if (rs.statusCode === 200) {
+          deferred.resolve(result);
+        } else {
+          deferred.reject(rs);
+        }
+      });
+    }).on('error', (e) => {
+      deferred.reject(e);
+    });
+
+    fs.readFile(`${downloadedDir}/${oldVersion.f}`, (err, data) => {
+      if (err) {
+        deferred.reject(err);
+      } else {
+        req.end(data);
+      }
+    });
+  } catch (e) {
+    console.error(e);
+    deferred.reject(e);
+  }
+  return deferred.promise;
+};
+
+
 const deploy = function (configuration, item) {
   const deferred = Q.defer();
   try {
@@ -204,5 +248,6 @@ module.exports = {
   download: download,
   undeploy: undeploy,
   deploy: deploy,
-  test: test
+  test: test,
+  rollback: rollback
 };

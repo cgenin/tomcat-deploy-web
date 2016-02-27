@@ -10,8 +10,8 @@ const mapStateToProps = function (state) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    onDeploy(server, artifacts) {
-      dispatch(deploy(server, artifacts));
+    onDeploy(server, artifacts, versions) {
+      dispatch(deploy(server, artifacts, versions));
     },
     onUnDeploy(server, artifacts) {
       dispatch(undeploy(server, artifacts));
@@ -30,7 +30,8 @@ class DeployActions extends React.Component {
     e.preventDefault();
     const server = this.props.actions.servers[0];
     const artifacts = this.props.actions.artifacts;
-    this.props.onDeploy(server, artifacts);
+    const versions = this.props.actions.versions;
+    this.props.onDeploy(server, artifacts, versions);
   }
 
   onUnDeploy(e) {

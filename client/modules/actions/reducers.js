@@ -1,8 +1,9 @@
-import {ADD_ARTIFACTS, REMOVE_ARTIFACTS, ARTIFACTS, SERVERS, FORCE_LOGGER, SNACKBAR, IN_PROGRESS, ADD_SERVER, REMOVE_SERVER} from './actions';
+import {UPDATE_HISTORY, ADD_ARTIFACTS, REMOVE_ARTIFACTS, ARTIFACTS, SERVERS, FORCE_LOGGER, SNACKBAR, IN_PROGRESS, ADD_SERVER, REMOVE_SERVER} from './actions';
 
 const defaultState = {
   artifacts: [],
   servers: [],
+  versions: [],
   inProgress: {},
   snackbar: false
 };
@@ -10,6 +11,14 @@ const defaultState = {
 export function actionReducers(state = defaultState, action) {
   let clone;
   switch (action.type) {
+    case UPDATE_HISTORY:
+      clone = Object.assign({}, state);
+      const filter = state.versions.filter(v => v.name !== action.version.name)
+      if (action.version.f) {
+        filter.push(action.version);
+      }
+      clone.versions = filter;
+      return clone;
     case SNACKBAR:
       clone = Object.assign({}, state);
       clone.snackbar = action.val;

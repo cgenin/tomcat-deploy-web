@@ -23,7 +23,7 @@ module.exports = function (socket, io, ip) {
   const war = require('../war');
   const rc = remoteConsole(io);
   const emitInProgress = function () {
-    io.sockets.emit(inProgress.event, { active: inProgress.isActive(), ip });
+    io.sockets.emit(inProgress.event, {active: inProgress.isActive(), ip});
   };
   rc.log('connected to server.');
 
@@ -87,7 +87,7 @@ module.exports = function (socket, io, ip) {
           emitInProgress();
         };
       };
-
+      const versions = data.versions;
       const configuration = data.server;
       const launchInner = (array) => {
         if (!array || array.length === 0) {
@@ -97,29 +97,41 @@ module.exports = function (socket, io, ip) {
           return;
         }
         const o = array.shift();
-        rc.log(`managing old version : ${o.name}`);
-        war.managedOld(o).then(
-          () => {
-            rc.log(`prepare download : ${o.name}`);
-            war.download(o).then(
-              (name) => {
-                rc.log(`deploy : ${name}`);
-                war.undeploy(configuration, o).then(() => {
-                  rc.log(`Undeployed : ${name}`);
+        const v = versions.find(v => v.name === o.name);
+        if (v) {
+          rc.log(`prepare to rollback : ${o.name}`);
+          war.rollback(configuration, o, v).then(() => {
+            rc.log(`rollbacked : ${o.name}`);
+            socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK'));
+            backup.load(o.name).then((d) => io.sockets.emit('versions', d));
+            io.sockets.emit('deploy-end', {});
+            launchInner(array);
+          }, errorLogger('error in rollback', o));
+        } else {
+          rc.log(`managing old version : ${o.name}`);
+          war.managedOld(o).then(
+            () => {
+              rc.log(`prepare download : ${o.name}`);
+              war.download(o).then(
+                (name) => {
+                  rc.log(`deploy : ${name}`);
+                  war.undeploy(configuration, o).then(() => {
+                    rc.log(`Undeployed : ${name}`);
 
-                  war.deploy(configuration, o).then(
-                    (wname) => {
-                      rc.log(`Updated : ${wname}`);
-                      socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK'));
-                      backup.load(o.name).then((d) => io.sockets.emit('versions', d));
-                      io.sockets.emit('deploy-end', {});
-                      launchInner(array);
-                    }, errorLogger('error in deploying', o));
-                }, errorLogger('error in undeploying', o));
-              }, errorLogger('error in downloading', o));
-          }, errorLogger('error in managing old war', o));
+                    war.deploy(configuration, o).then(
+                      (wname) => {
+                        rc.log(`Updated : ${wname}`);
+                        socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK'));
+                        backup.load(o.name).then((d) => io.sockets.emit('versions', d));
+                        io.sockets.emit('deploy-end', {});
+                        launchInner(array);
+                      }, errorLogger('error in deploying', o));
+                  }, errorLogger('error in undeploying', o));
+                }, errorLogger('error in downloading', o));
+            }, errorLogger('error in managing old war', o));
+        }
       };
-      io.sockets.emit('deploy-start', { type: 'Deploy', host: ip });
+      io.sockets.emit('deploy-start', {type: 'Deploy', host: ip});
       rc.start();
 
       rc.log(`selected wars : ${data.length} by ${ip}`);

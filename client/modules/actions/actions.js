@@ -9,6 +9,13 @@ export const REMOVE_SERVER = 'ACTIONS:REMOVE-SERVER';
 export const FORCE_LOGGER = 'ACTIONS:FORCE_LOGGER';
 export const SNACKBAR = 'ACTIONS:SNACKBAR';
 export const IN_PROGRESS = 'ACTIONS:IN_PROGRESS';
+export const UPDATE_HISTORY = 'ACTIONS:UPDATE_HISTORY';
+
+export function updateHistory(version) {
+  return {
+    type: UPDATE_HISTORY, version
+  };
+}
 
 export function hideConsole() {
   return {
@@ -34,8 +41,8 @@ export function progress(stat) {
   };
 }
 
-export function deploy(server, artifacts) {
-  socket.emit('deploy', {server, artifacts});
+export function deploy(server, artifacts, versions) {
+  socket.emit('deploy', {server, artifacts, versions});
   return {
     type: FORCE_LOGGER, val: true
   };
