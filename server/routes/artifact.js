@@ -12,12 +12,11 @@ module.exports = (io) => {
 
 
   router.post('/', bodyParser.json(), (req, res) => {
-    const body = req.body;
+    const artifact = req.body;
     const files = deploydb.files();
-    const tmpHttp = (body.url.indexOf('http://') === -1) ? `http://${body.url}` : body.url;
-    deploydb.insert(files, {
-      name: body.name, url: tmpHttp
-    });
+    const tmpHttp = (artifact.url.indexOf('http://') === -1) ? `http://${artifact.url}` : artifact.url;
+    artifact.url = tmpHttp;
+    deploydb.save(files, artifact);
     res.json(deploydb.files().data);
   });
 

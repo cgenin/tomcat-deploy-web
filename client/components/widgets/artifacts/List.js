@@ -1,7 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import moment from 'moment';
+import { routeActions } from 'react-router-redux';
 import classNames from 'classnames';
+import moment from 'moment';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import LaunchButton from '../artifacts/LaunchButton';
 import ArtifactVersions from '../versions/ArtifactVersions';
@@ -24,9 +25,17 @@ const mapDispatchToProps = function (dispatch) {
     },
     onInit() {
       dispatch(load());
+    },
+    onEdit(artifact) {
+      dispatch(routeActions.push(
+        {
+          pathname: '/edit',
+          query: {i: artifact.name}
+        }));
     }
   };
 };
+
 
 class ItemStatus extends React.Component {
 
@@ -58,7 +67,6 @@ class ItemName extends React.Component {
     super(props);
   }
 
-
   render() {
     const style = {
       cursor: 'pointer'
@@ -80,12 +88,20 @@ class ItemList extends React.Component {
   constructor(props) {
     super(props);
     this.onClick = this.onClick.bind(this);
+    this.onEdit = this.onEdit.bind(this);
   }
 
   onClick(e) {
     e.preventDefault();
     const artifact = this.props.artifact;
     this.props.onDelete(artifact);
+    return false;
+  }
+
+  onEdit(e) {
+    e.preventDefault();
+    const artifact = this.props.artifact;
+    this.props.onEdit(artifact);
     return false;
   }
 
@@ -115,6 +131,7 @@ class ItemList extends React.Component {
               <div className="ripple-container"></div>
             </a>
             <ul className="dropdown-menu">
+              <li><a href="#" onClick={this.onEdit}><i className="fa fa-pencil-square-o"/>&nbsp;Edition</a></li>
               <li><a href="#" onClick={this.onClick}><i className="fa fa-trash"/>&nbsp;Delete</a></li>
             </ul>
             <LaunchButton name={this.props.artifact.name}/>
@@ -139,6 +156,7 @@ class List extends React.Component {
 
   render() {
     const onDelete = this.props.onDelete;
+    const onEdit = this.props.onEdit;
     const sorting = (this.state.asc) ? (a, b) => {
       if (a.name === b.name) {
         return 0;
@@ -159,6 +177,7 @@ class List extends React.Component {
     const sortingName = (this.state.asc) ? 'Asc' : 'Desc';
     const clsName = classNames({fa: true, 'fa-sort-desc': !this.state.desc, 'fa-sort-asc': this.state.asc});
     const artifacts = this.props.artifacts.sort(sorting).map((artifact, i) => <ItemList key={i} onDelete={onDelete}
+                                                                                        onEdit={onEdit}
                                                                                         artifact={artifact}/>);
     return (
       <div className="col-xs-offset-1 col-xs-10">

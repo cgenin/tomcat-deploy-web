@@ -12,11 +12,8 @@ export function clean(nb) {
   }).then(res => res.json());
 }
 
-export function save(name, url) {
-  const body = JSON.stringify({
-    name,
-    url
-  });
+export function save(artifact) {
+  const body = JSON.stringify(artifact);
   return () => fetch('api/artifact', {
     method: 'post',
     headers: {
