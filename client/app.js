@@ -14,6 +14,7 @@ import {mReducers} from './modules/message/reducers';
 import {actionReducers} from './modules/actions/reducers';
 import {loggerReducers} from './modules/logger/reducers';
 import {versionsReducers} from './modules/versions/reducers';
+import {nexusReducers} from './modules/nexus/reducers';
 import {initialize} from './socket';
 
 
@@ -30,7 +31,8 @@ const rootReducer = combineReducers(Object.assign({}, {
   actions: actionReducers,
   logger: loggerReducers,
   testUrl: testReducers,
-  versions: versionsReducers
+  versions: versionsReducers,
+  nexus: nexusReducers
 }));
 
 export const store = compose(
@@ -41,7 +43,6 @@ export const store = compose(
   )
 )(createStore)(rootReducer);
 
-// Needed befor react 1.0 release
 injectTapEventPlugin();
 
 initialize(store.dispatch);

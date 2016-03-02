@@ -4,7 +4,6 @@ const war = require('../war');
 const router = express.Router();
 const bodyParser = require('body-parser');
 
-/* GET users listing. */
 router.get('/', (req, res) => {
   const config = deploydb.config() || {data: [{}]};
   const data = Array.from(config.data);

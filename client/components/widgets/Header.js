@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { connect} from 'react-redux';
 import { Modal, ModalFooter, ModalHeader, ModalTitle, ModalBody, Button} from 'react-bootstrap';
 import CleanHistory from './artifacts/CleanHistory';
+import Configuration from './nexus/Configuration';
 
 const mapStateToProps = function (state) {
   const homeActive = state.routing.location.pathname === '/';
@@ -38,9 +39,10 @@ class Header extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {smShow: false, show: false};
+    this.state = {smShow: false, show: false, nexusConfiguration: false};
     this.onLaunchAbout = this.onLaunchAbout.bind(this);
     this.onLaunchCleanHistory = this.onLaunchCleanHistory.bind(this);
+    this.onNexusConfiguration = this.onNexusConfiguration.bind(this);
   }
 
   onLaunchAbout(e) {
@@ -58,11 +60,23 @@ class Header extends React.Component {
     return false;
   }
 
+  onNexusConfiguration(e) {
+    if (e) {
+      e.preventDefault();
+    }
+    const x = e.clientX;
+    const y = e.clientY;
+    this.setState({nexusConfiguration: !this.state.nexusConfiguration, x, y});
+    return false;
+  }
+
+
   render() {
     const clsHome = classNames({active: this.props.homeActive});
     const clsAdd = classNames({active: this.props.addActive});
     const smClose = () => this.setState({smShow: false});
     const onHideCleanHistory = () => this.setState({show: false});
+    const onHideNexusConfiguration = () => this.setState({nexusConfiguration: false});
     return (
       <nav className="navbar navbar-default navbar-static-top" style={{backgroundColor: 'rgb(63, 81, 181)'}}>
         <div className="container-fluid">
@@ -92,6 +106,8 @@ class Header extends React.Component {
                   className="fa fa-cog"/>&nbsp; Configuration
                   <b className="caret"/></a>
                 <ul className="dropdown-menu">
+                  <li className="dropdown-header">Nexus</li>
+                  <li><a href="#" onClick={this.onNexusConfiguration}>Configuration</a></li>
                   <li className="dropdown-header">Artifacts</li>
                   <li><a href="#" onClick={this.onLaunchCleanHistory}>Clean history</a></li>
                 </ul>
@@ -102,6 +118,8 @@ class Header extends React.Component {
             </ul>
             <AboutModal show={this.state.smShow} onHide={smClose}/>
             <CleanHistory show={this.state.show} x={this.state.x} y={this.state.y} onHide={onHideCleanHistory}/>
+            <Configuration show={this.state.nexusConfiguration} x={this.state.x} y={this.state.y}
+                           onHide={onHideNexusConfiguration}/>
           </div>
         </div>
       </nav>

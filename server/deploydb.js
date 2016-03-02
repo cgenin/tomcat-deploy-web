@@ -2,6 +2,7 @@ const DeployDB = function DeployDB() {
   const Q = require('q');
   const fileCollection = 'files';
   const configCollection = 'configuration';
+  const nexusCollection = 'nexus';
   const loki = require('lokijs');
   const db = new loki('db/data.json', {autoload: true});
   const createIfNotExist = function (name) {
@@ -17,6 +18,7 @@ const DeployDB = function DeployDB() {
     db.loadDatabase({}, () => {
       createIfNotExist(fileCollection);
       createIfNotExist(configCollection);
+      createIfNotExist(nexusCollection);
       deferred.resolve(db);
     });
     return deferred.promise;
@@ -29,6 +31,11 @@ const DeployDB = function DeployDB() {
   this.config = function () {
     return db.getCollection(configCollection);
   };
+
+  this.nexus = function () {
+    return db.getCollection(nexusCollection);
+  };
+
   this.insert = function (collection, item) {
     collection.insert(item);
     db.saveDatabase();
