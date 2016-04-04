@@ -44,6 +44,7 @@ module.exports = function (socket, io, ip) {
       }
 
       try {
+
         const last = artifacts.slice(-1)[0];
         const rest = artifacts.slice(0, -1);
         rc.log(`undeploy : ${last.name}`);
@@ -68,6 +69,7 @@ module.exports = function (socket, io, ip) {
         emitInProgress();
       }
     };
+    rc.log(`target server : ${data.server.host}`);
     recursiveUndeploy(data.artifacts);
   });
 
@@ -133,7 +135,7 @@ module.exports = function (socket, io, ip) {
       };
       io.sockets.emit('deploy-start', {type: 'Deploy', host: ip});
       rc.start();
-
+      rc.log(`target server : ${configuration.host}`);
       rc.log(`selected wars : ${data.length} by ${ip}`);
       war.makedirectory().then(() => {
         rc.log('root directory : OK.');
