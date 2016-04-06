@@ -147,7 +147,7 @@ const deploy = function (configuration, item) {
         result += data;
       });
       rs.on('end', () => {
-        if (rs.statusCode === 200) {
+        if (rs.statusCode === 200 && result.indexOf('ECHEC') !== -1 && result.indexOf('FAIL') !== -1) {
           deferred.resolve(result);
         } else {
           deferred.reject(rs);
@@ -190,12 +190,12 @@ const test = function (h, username, password) {
         bodyChunks.push(chunk);
       }).on('end', () => {
         const body = Buffer.concat(bodyChunks).toString('utf8');
-        deferred.resolve({status: rs.statusCode, body});
+        deferred.resolve({ status: rs.statusCode, body });
       });
     }).on('error', (e) => {
       console.error('Error inc calling', e);
       const body = e.message || 'Error';
-      deferred.reject({status: 404, body});
+      deferred.reject({ status: 404, body });
     });
   } catch (e) {
     console.error(e);

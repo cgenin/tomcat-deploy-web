@@ -1,13 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { routeActions } from 'react-router-redux';
+import {routeActions} from 'react-router-redux';
 import classNames from 'classnames';
 import moment from 'moment';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import LaunchButton from '../artifacts/LaunchButton';
 import ArtifactVersions from '../versions/ArtifactVersions';
-import { del, load } from '../../../modules/artifacts/actions';
-import { removeArtifacts} from '../../../modules/actions/actions';
+import {del, load} from '../../../modules/artifacts/actions';
+import {removeArtifacts} from '../../../modules/actions/actions';
 import ItemCheck from './../actions/ItemCheck';
 import AllItemsCheck from './../actions/AllItemsCheck';
 
@@ -30,7 +30,7 @@ const mapDispatchToProps = function (dispatch) {
       dispatch(routeActions.push(
         {
           pathname: '/edit',
-          query: {i: artifact.name}
+          query: { i: artifact.name }
         }));
     }
   };
@@ -44,23 +44,25 @@ class ItemStatus extends React.Component {
     if (!status) {
       return null;
     }
-    const formattedDate = moment(status.dt).format('YYYY/MM/DD HH:mm:ss');
+    const formattedDate = moment(status.dt).format('YYYY/MM/DD HH:mm');
     if (status.state === 'KO') {
-      return (<span className="text-danger">
-                <i className="fa  fa-frown-o "/> {formattedDate}
-      </span>);
+      return (
+        <span className="text-danger">
+                <i className="fa fa-frown-o"/> {formattedDate} on {status.host}
+      </span>
+      );
     }
 
     return (
       <span className="text-success">
-      <i className="fa fa-check"/> {formattedDate}
+      <i className="fa fa-check"/> {formattedDate} on {status.host}
       </span>
     );
   }
 
 }
 
-ItemStatus.propTypes = {artifact: React.PropTypes.object.isRequired};
+ItemStatus.propTypes = { artifact: React.PropTypes.object.isRequired };
 
 class ItemName extends React.Component {
   constructor(props) {
@@ -81,7 +83,7 @@ class ItemName extends React.Component {
   }
 }
 
-ItemName.propTypes = {artifact: React.PropTypes.object.isRequired};
+ItemName.propTypes = { artifact: React.PropTypes.object.isRequired };
 
 class ItemList extends React.Component {
 
@@ -142,12 +144,12 @@ class ItemList extends React.Component {
   }
 }
 
-ItemList.propTypes = {artifact: React.PropTypes.object.isRequired};
+ItemList.propTypes = { artifact: React.PropTypes.object.isRequired };
 
 class List extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {asc: true};
+    this.state = { asc: true };
   }
 
   componentDidMount() {
@@ -175,7 +177,7 @@ class List extends React.Component {
       return -1;
     };
     const sortingName = (this.state.asc) ? 'Asc' : 'Desc';
-    const clsName = classNames({fa: true, 'fa-sort-desc': !this.state.desc, 'fa-sort-asc': this.state.asc});
+    const clsName = classNames({ fa: true, 'fa-sort-desc': !this.state.desc, 'fa-sort-asc': this.state.asc });
     const artifacts = this.props.artifacts.sort(sorting).map((artifact, i) => <ItemList key={i} onDelete={onDelete}
                                                                                         onEdit={onEdit}
                                                                                         artifact={artifact}/>);
@@ -205,6 +207,6 @@ class List extends React.Component {
   }
 }
 
-List.propTypes = {artifacts: React.PropTypes.array.isRequired};
+List.propTypes = { artifacts: React.PropTypes.array.isRequired };
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

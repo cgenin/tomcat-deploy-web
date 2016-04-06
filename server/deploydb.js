@@ -4,7 +4,7 @@ const DeployDB = function DeployDB() {
   const configCollection = 'configuration';
   const nexusCollection = 'nexus';
   const loki = require('lokijs');
-  const db = new loki('db/data.json', {autoload: true});
+  const db = new loki('db/data.json', { autoload: true });
   const createIfNotExist = function (name) {
     console.log(`createIfNotExist : ${name}`);
     if (!db.getCollection(name)) {
@@ -50,12 +50,12 @@ const DeployDB = function DeployDB() {
     db.saveDatabase();
   };
 
-  this.updateStatus = function (collection, item, state) {
+  this.updateStatus = function (collection, item, state, host) {
     if (item.$loki) {
       const filter = collection.data.filter((i) => i.$loki === item.$loki);
       if (filter && filter.length > 0) {
         filter[0].status = {
-          state: state,
+          state, host,
           dt: new Date()
         };
         collection.update(filter[0]);
