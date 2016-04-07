@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect} from 'react-redux';
+import connect from 'react-redux/lib/components/connect';
 import TestModal from '../test/TestModal';
 import { save, load } from '../../../modules/server/actions';
 import { testServer } from '../../../modules/test/actions';

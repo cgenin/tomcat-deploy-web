@@ -1,7 +1,7 @@
 import React from 'react';
 import Title from '../../widgets/Title';
 import ServerEdit from '../../widgets/server/Edition';
-import { connect} from 'react-redux';
+import connect from 'react-redux/lib/components/connect';
 
 
 const mapStateToProps = function (state) {

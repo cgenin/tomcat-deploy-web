@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {Tabs, Tab} from 'react-bootstrap';
+import Tabs from 'react-bootstrap/lib/Tabs';
+import Tab from 'react-bootstrap/lib/Tab';
 import Logger from './../../widgets/logger/Logger';
 import Message from '../../widgets/message/Message';
 import ServerActions from './../../widgets/server/ServerActions';

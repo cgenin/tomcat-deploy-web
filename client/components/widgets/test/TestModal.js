@@ -1,6 +1,11 @@
 import React from 'react';
-import { connect} from 'react-redux';
-import { Modal, ModalFooter, ModalHeader, ModalTitle, ModalBody, Button} from 'react-bootstrap';
+import connect from 'react-redux/lib/components/connect';
+import Modal from 'react-bootstrap/lib/Modal';
+import ModalFooter from 'react-bootstrap/lib/ModalFooter';
+import ModalHeader from 'react-bootstrap/lib/ModalHeader';
+import ModalTitle from 'react-bootstrap/lib/ModalTitle';
+import ModalBody from 'react-bootstrap/lib/ModalBody';
+import Button from 'react-bootstrap/lib/Button';
 
 const mapStateToProps = function (state) {
   const test = state.testUrl;

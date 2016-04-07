@@ -54,13 +54,14 @@ const DeployDB = function DeployDB() {
     if (item.$loki) {
       const filter = collection.data.filter((i) => i.$loki === item.$loki);
       if (filter && filter.length > 0) {
-        filter[0].status = {
-          state, host,
-          dt: new Date()
+        const selected = filter[0];
+        selected.deployStates = selected.deployStates || {};
+        selected.deployStates[host] = {
+          state, dt: new Date()
         };
-        collection.update(filter[0]);
+        collection.update(selected);
         db.saveDatabase();
-        return filter[0];
+        return selected;
       }
     }
     return item;

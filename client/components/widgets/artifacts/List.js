@@ -3,7 +3,8 @@ import {connect} from 'react-redux';
 import {routeActions} from 'react-router-redux';
 import classNames from 'classnames';
 import moment from 'moment';
-import {OverlayTrigger, Tooltip} from 'react-bootstrap';
+import Tooltip from 'react-bootstrap/lib/Tooltip';
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import LaunchButton from '../artifacts/LaunchButton';
 import ArtifactVersions from '../versions/ArtifactVersions';
 import {del, load} from '../../../modules/artifacts/actions';
@@ -36,28 +37,35 @@ const mapDispatchToProps = function (dispatch) {
   };
 };
 
+function transform(server, value) {
+  const formattedDate = moment(value.dt).format('YYYY/MM/DD HH:mm');
+  if (value.state === 'KO') {
+    return (
+      <div>
+      <span className="text-danger">
+                <i className="fa fa-frown-o"/> {formattedDate} on {server}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+    <span className="text-success">
+      <i className="fa fa-check"/> {formattedDate} on {server}
+      </span>
+    </div>
+  );
+}
 
 class ItemStatus extends React.Component {
 
   render() {
-    const status = this.props.artifact.status;
+    const status = this.props.artifact.deployStates;
     if (!status) {
       return null;
     }
-    const formattedDate = moment(status.dt).format('YYYY/MM/DD HH:mm');
-    if (status.state === 'KO') {
-      return (
-        <span className="text-danger">
-                <i className="fa fa-frown-o"/> {formattedDate} on {status.host}
-      </span>
-      );
-    }
-
-    return (
-      <span className="text-success">
-      <i className="fa fa-check"/> {formattedDate} on {status.host}
-      </span>
-    );
+    return (<div>{Object.keys(status).map((k) => transform(k, status[k]))}</div>);
   }
 
 }

@@ -1,7 +1,13 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
-import { connect} from 'react-redux';
-import { Modal, ModalFooter, ModalHeader, ModalTitle, ModalBody, Button} from 'react-bootstrap';
+import connect from 'react-redux/lib/components/connect';
+import Modal from 'react-bootstrap/lib/Modal';
+import ModalFooter from 'react-bootstrap/lib/ModalFooter';
+import ModalHeader from 'react-bootstrap/lib/ModalHeader';
+import ModalTitle from 'react-bootstrap/lib/ModalTitle';
+import ModalBody from 'react-bootstrap/lib/ModalBody';
+import Button from 'react-bootstrap/lib/Button';
 import CleanHistory from './artifacts/CleanHistory';
 import Configuration from './nexus/Configuration';
 
@@ -14,6 +20,13 @@ const mapStateToProps = function (state) {
 };
 
 class AboutModal extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
+
   render() {
     return (
       <Modal {...this.props} bsSize="small" aria-labelledby="contained-modal-title-sm">

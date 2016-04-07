@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect} from 'react-redux';
+import connect from 'react-redux/lib/components/connect';
 import { hide, TYPE_ERROR, TYPE_SUCCESS } from '../../../modules/message/actions';
 
 const mapStateToProps = function (state) {

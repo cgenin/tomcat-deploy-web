@@ -1,7 +1,7 @@
 import React from 'react';
-import { connect} from 'react-redux';
+import connect from 'react-redux/lib/components/connect';
 import ReactDOM from 'react-dom';
-import {Overlay} from 'react-bootstrap';
+import Overlay from 'react-bootstrap/lib/Overlay';
 import {OverlayStyle, StyleFabButt} from '../../Styles';
 import {save, load} from '../../../modules/nexus/actions';
 

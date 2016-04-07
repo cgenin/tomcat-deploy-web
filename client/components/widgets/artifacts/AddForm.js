@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect} from 'react-redux';
+import connect from 'react-redux/lib/components/connect';
 import { save } from '../../../modules/artifacts/actions';
 import { routeActions } from 'react-router-redux';
 

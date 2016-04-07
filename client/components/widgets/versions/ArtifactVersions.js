@@ -1,6 +1,7 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import moment from 'moment';
-import {connect} from 'react-redux';
+import connect from 'react-redux/lib/components/connect';
 import {updateHistory} from '../../../modules/actions/actions';
 
 
@@ -22,8 +23,15 @@ const mapDispatchToProps = function (dispatch) {
 
 
 class History extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
+
   render() {
-    if (this.props.versions === 0) {
+    if (this.props.versions.length === 0) {
       return null;
     }
     const opts = this.props.versions.map((v) => (
@@ -35,6 +43,8 @@ class History extends React.Component {
     );
   }
 }
+
+History.propTypes = {versions: React.PropTypes.array.isRequired};
 
 class ArtifactVersions extends React.Component {
   constructor(props) {
@@ -65,5 +75,7 @@ class ArtifactVersions extends React.Component {
     );
   }
 }
+
+ArtifactVersions.propTypes = {versions: React.PropTypes.array.isRequired};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArtifactVersions);

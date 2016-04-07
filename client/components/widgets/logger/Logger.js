@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { connect} from 'react-redux';
+import connect from 'react-redux/lib/components/connect';
 import { clear } from '../../../modules/logger/actions';
 
 const mapStateToProps = function (state) {

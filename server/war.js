@@ -147,7 +147,7 @@ const deploy = function (configuration, item) {
         result += data;
       });
       rs.on('end', () => {
-        if (rs.statusCode === 200 && result.indexOf('ECHEC') !== -1 && result.indexOf('FAIL') !== -1) {
+        if (rs.statusCode === 200 && result.indexOf('ECHEC') === -1 && result.indexOf('FAIL') === -1) {
           deferred.resolve(result);
         } else {
           deferred.reject(rs);

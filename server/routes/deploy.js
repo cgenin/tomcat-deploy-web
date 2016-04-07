@@ -74,10 +74,12 @@ module.exports = function (socket, io, ip) {
   socket.on('deploy', (data) => {
       inProgress.active();
       emitInProgress();
+      const versions = data.versions;
+      const configuration = data.server;
       const errorLogger = function (msg, o) {
         return function (err) {
           if (o) {
-            socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'KO'));
+            socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'KO', configuration.host));
           }
           io.sockets.emit('deploy-end', {});
           rc.error(msg);
@@ -87,8 +89,8 @@ module.exports = function (socket, io, ip) {
           emitInProgress();
         };
       };
-      const versions = data.versions;
-      const configuration = data.server;
+
+
       const launchInner = (array) => {
         if (!array || array.length === 0) {
           rc.end();

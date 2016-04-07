@@ -1,5 +1,6 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import connect from 'react-redux/lib/components/connect';
+
 const mapStateToProps = function (state, ownProps) {
   if (state.actions.servers.length === 0) {
     return {url: '', hide: true};
