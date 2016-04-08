@@ -12,7 +12,6 @@ import {syncHistory, routeReducer} from 'react-router-redux';
 import {reducers} from './modules/server/reducers';
 import {testReducers} from './modules/test/reducers';
 import {areducers} from './modules/artifacts/reducers';
-import {mReducers} from './modules/message/reducers';
 import {actionReducers} from './modules/actions/reducers';
 import {loggerReducers} from './modules/logger/reducers';
 import {versionsReducers} from './modules/versions/reducers';
@@ -27,7 +26,6 @@ const rootReducer = combineReducers(Object.assign({}, {
   routing: routeReducer,
   servers: reducers,
   artifacts: areducers,
-  messaging: mReducers,
   actions: actionReducers,
   logger: loggerReducers,
   testUrl: testReducers,

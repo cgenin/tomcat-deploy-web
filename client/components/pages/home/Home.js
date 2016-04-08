@@ -1,9 +1,9 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import connect from 'react-redux/lib/components/connect';
 import Tabs from 'react-bootstrap/lib/Tabs';
 import Tab from 'react-bootstrap/lib/Tab';
 import Logger from './../../widgets/logger/Logger';
-import Message from '../../widgets/message/Message';
 import ServerActions from './../../widgets/server/ServerActions';
 import List from './../../widgets/artifacts/List';
 import Title from '../../widgets/Title';
@@ -31,6 +31,7 @@ class HomePage extends React.Component {
       key: 1
     };
     this.handleSelect = this.handleSelect.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {
@@ -57,11 +58,6 @@ class HomePage extends React.Component {
     return (
       <div>
         <Title text="List and deploy"/>
-        <div className="row">
-          <div className="col-xs-offset-3 col-xs-6 text-center">
-            <Message />
-          </div>
-        </div>
         <div className="row">
           <div className="panel panel-default col-xs-offset-1 col-xs-10">
             <div className="panel-body">
