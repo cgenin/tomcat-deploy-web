@@ -104,7 +104,7 @@ module.exports = function (socket, io, ip) {
           rc.log(`prepare to rollback : ${o.name}`);
           war.rollback(configuration, o, v).then(() => {
             rc.log(`rollbacked : ${o.name}`);
-            socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK'));
+            socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK', configuration.host));
             backup.load(o.name).then((d) => io.sockets.emit('versions', d));
             io.sockets.emit('deploy-end', {});
             launchInner(array);
