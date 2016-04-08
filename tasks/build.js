@@ -6,7 +6,8 @@ module.exports = () => {
       seq: [
         'css',
         'build-src',
-        'copy-html'
+        'copy-html',
+        'copy-fonts'
       ],
       description: 'Bundle the client package and copy it in the public folder. ' +
       'Run \'npm run build\' to prepare a production environment.'

@@ -11,6 +11,9 @@
   "author": "Davide Fiorello <davide@codeflyer.com>",
   "license": "ISC",
   "dependencies": {
+    "bootstrap": "^3.3.5",
+    "bootstrap-material-design": "^0.5.7",
+    "font-awesome": "^4.4.0",
     "babel-polyfill": "^6.5.0",
     "bluebird": "^3.2.1",
     "body-parser": "^1.14.2",
@@ -72,6 +75,7 @@
     "eslint-plugin-react": "^3.16.1",
     "gulp": "^3.9.0",
     "gulp-commonjs-tasks": "^1.2.0",
+    "gulp-concat-css": "^2.2.0",
     "gulp-css-globbing": "^0.1.8",
     "gulp-eslint": "^1.1.1",
     "gulp-mocha-co": "^0.4.1-co.3",

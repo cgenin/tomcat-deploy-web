@@ -39,3 +39,5 @@ Thumbs.db
 .flooignore
 
 public/main.js
+public/fonts
+public/css

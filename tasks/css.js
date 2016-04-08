@@ -12,6 +12,7 @@ module.exports = (gulp, config) => {
   function cssTask() {
     const sass = require('gulp-sass');
     const cssGlobbing = require('gulp-css-globbing');
+    const concatCss = require('gulp-concat-css');
 
     return gulp.src(['client/styles.scss'])
       .pipe(cssGlobbing({
@@ -29,6 +30,8 @@ module.exports = (gulp, config) => {
         }
       }))
       .pipe(sass().on('error', sass.logError))
-      .pipe(gulp.dest(config.folders.build));
+      .pipe(concatCss('bundle.css', {
+        rebaseUrls: false
+      })) .pipe(gulp.dest(config.folders.css));
   }
 };

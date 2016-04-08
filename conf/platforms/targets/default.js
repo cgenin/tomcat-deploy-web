@@ -6,36 +6,28 @@ module.exports = {
     name: 'Tomcat - Deploy - Web',
     title: 'Tomcat - Deploy - Web'
   },
-  downloadedDir :'download',
+  downloadedDir: 'download',
   server: {
     port: 5000
   },
   folders: {
-    build: path.join(__dirname, '../../../public')
+    build: path.join(__dirname, '../../../public'),
+    css: path.join(__dirname, '../../../public/css'),
+    fontsSrc: [
+      path.join(__dirname, '../../..//node_modules/bootstrap/dist/fonts'),
+      path.join(__dirname, '../../..//node_modules/font-awesome/fonts')
+    ],
+    fontsBuild: path.join(__dirname, '../../../public/fonts')
   },
   build: {},
   services: {
     html: {
       links: [
-       /* {
-          rel: 'stylesheet',
-          crossorigin: 'anonymous',
-          href: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
-          integrity: 'sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7'
-        },*/
-        { rel: 'stylesheet', type: 'text/css', href: '/node_modules/bootstrap/dist/css/bootstrap.min.css' },
-        { rel: 'stylesheet', type: 'text/css', href: '/node_modules/font-awesome/css/font-awesome.min.css' },
-        { rel: 'stylesheet', type: 'text/css', href: '/node_modules/bootstrap-material-design/dist/css/bootstrap-material-design.css' },
-        { rel: 'stylesheet', type: 'text/css', href: '/node_modules/bootstrap-material-design/dist/css/ripples.min.css' },
-        { rel: 'stylesheet', type: 'text/css', href: '/styles.css' }
+        {rel: 'stylesheet', type: 'text/css', href: '/css/bundle.css'}
       ],
       scripts: [
-        { type: 'text/javascript', src: '/node_modules/babel-polyfill/dist/polyfill.js' },
-        { type: 'text/javascript', src: '/socket.io/socket.io.js' },
-        // { type: 'text/javascript', src: '/node_modules/jquery/dist/jquery.js' },
-        // { type: 'text/javascript', src: '/node_modules/bootstrap/dist/js/bootstrap.min.js' },
-        // { type: 'text/javascript', src: '/node_modules/bootstrap-material-design/dist/js/material.js' },
-        { type: 'text/javascript', src: '/main.js' }
+        {type: 'text/javascript', src: '/socket.io/socket.io.js'},
+        {type: 'text/javascript', src: '/main.js'}
       ]
     }
   }
