@@ -123,7 +123,7 @@ class ItemList extends React.Component {
     this.props.onEdit(artifact);
     return false;
   }
-
+//
   render() {
     return (
       <tr>
