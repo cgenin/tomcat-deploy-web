@@ -8,7 +8,6 @@ import {updateHistory} from '../../../modules/actions/actions';
 const mapStateToProps = function (state, ownProps) {
   const ref = state.versions.ref;
   const versions = ref[ownProps.name] || [];
-  console.log(versions)
   return {
     versions
   };
@@ -27,16 +26,16 @@ class History extends React.Component {
 
   constructor(props) {
     super(props);
-   // this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
 
   render() {
     if (this.props.versions.length === 0) {
-      return  <optgroup label="History"/>;
+      return <optgroup label="History"/>;
     }
     const opts = this.props.versions.map((v, i) => (
-      <option value={v.dt}>{moment(v.date).format('YYYY/MM/DD HH:mm:ss')}</option>));
+      <option key={i} value={v.dt}>{moment(v.date).format('YYYY/MM/DD HH:mm:ss')}</option>));
     return (
       <optgroup label="History">
         {opts}
@@ -64,7 +63,6 @@ class ArtifactVersions extends React.Component {
   }
 
   render() {
-    console.log(":"+this.props.versions);
     const disabled = this.props.versions.length === 0;
     return (
       <div className="form-group">
