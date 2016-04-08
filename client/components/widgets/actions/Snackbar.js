@@ -1,4 +1,5 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import connect from 'react-redux/lib/components/connect';
 import { hideSnackbar } from '../../../modules/actions/actions';
 
@@ -23,6 +24,7 @@ class Snackbar extends React.Component {
     super(props);
     this.refresh = this.refresh.bind(this);
     this.hide = this.hide.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillReceiveProps(newProps) {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import moment from 'moment';
 import connect from 'react-redux/lib/components/connect';
 import { clear } from '../../../modules/logger/actions';
@@ -18,6 +19,10 @@ const mapDispatchToProps = function (dispatch) {
 };
 
 class LogItem extends React.Component {
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
   render() {
     const formattedDate = moment(this.props.log.dt).format('YYYY/MM/DD HH:mm:ss SSSSSSSSS');
     if (this.props.log.error) {
@@ -34,6 +39,7 @@ class Logger extends React.Component {
   constructor(props) {
     super(props);
     this.onClick = this.onClick.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   onClick(e) {

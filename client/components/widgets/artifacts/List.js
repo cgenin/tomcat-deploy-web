@@ -1,10 +1,14 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+import connect from 'react-redux/lib/components/connect';
 import {routeActions} from 'react-router-redux';
 import classNames from 'classnames';
 import moment from 'moment';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
+import DropdownButton from 'react-bootstrap/lib/DropdownButton';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
 import LaunchButton from '../artifacts/LaunchButton';
 import ArtifactVersions from '../versions/ArtifactVersions';
 import {del, load} from '../../../modules/artifacts/actions';
@@ -31,7 +35,7 @@ const mapDispatchToProps = function (dispatch) {
       dispatch(routeActions.push(
         {
           pathname: '/edit',
-          query: { i: artifact.name }
+          query: {i: artifact.name}
         }));
     }
   };
@@ -41,7 +45,7 @@ function transform(server, value) {
   const formattedDate = moment(value.dt).format('YYYY/MM/DD HH:mm');
   if (value.state === 'KO') {
     return (
-      <div>
+      <div key={value.dt}>
       <span className="text-danger">
                 <i className="fa fa-frown-o"/> {formattedDate} on {server}
         </span>
@@ -50,7 +54,7 @@ function transform(server, value) {
   }
 
   return (
-    <div>
+    <div key={value.dt}>
     <span className="text-success">
       <i className="fa fa-check"/> {formattedDate} on {server}
       </span>
@@ -59,6 +63,10 @@ function transform(server, value) {
 }
 
 class ItemStatus extends React.Component {
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
 
   render() {
     const status = this.props.artifact.deployStates;
@@ -70,28 +78,29 @@ class ItemStatus extends React.Component {
 
 }
 
-ItemStatus.propTypes = { artifact: React.PropTypes.object.isRequired };
+ItemStatus.propTypes = {artifact: React.PropTypes.object.isRequired};
 
 class ItemName extends React.Component {
   constructor(props) {
     super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   render() {
     const style = {
       cursor: 'pointer'
     };
-    const popup = `URL : ${this.props.artifact.url}`;
+    const popup = `URL : ${this.props.url}`;
     const tool = (<Tooltip id="0"><strong>{popup}</strong></Tooltip>);
     return (
       <OverlayTrigger placement="right" overlay={tool}>
-        <a href="#" style={style}>{this.props.artifact.name}</a>
+        <a href="#" style={style}>{this.props.name}</a>
       </OverlayTrigger>
     );
   }
 }
 
-ItemName.propTypes = { artifact: React.PropTypes.object.isRequired };
+ItemName.propTypes = {name: React.PropTypes.string.isRequired, url: React.PropTypes.string.isRequired};
 
 class ItemList extends React.Component {
 
@@ -122,42 +131,37 @@ class ItemList extends React.Component {
           <ItemCheck artifact={this.props.artifact} checked={this.props.checked}/>
         </td>
         <td className="text-left" style={{paddingTop: '14px'}}>
-          <ItemName artifact={this.props.artifact}/>
+          <ItemName name={this.props.artifact.name} url={this.props.artifact.url}/>
         </td>
-        <td className="text-center" style={{paddingTop: '18px'}}>
+        <td className="text-left" style={{paddingTop: '18px'}}>
           <ItemStatus artifact={this.props.artifact}/>
         </td>
         <td>
           <ArtifactVersions name={this.props.artifact.name}/>
         </td>
-        <td className="text-center" style={{paddingTop: '2px'}}>
-
-          <div className="btn-group" style={{marginTop: '11px'}}>
-            <a href="bootstrap-elements.html" data-target="#"
-               className="btn btn-raised btn-sm dropdown-toggle" data-toggle="dropdown"
-               aria-expanded="false">
-              <li className="fa fa-cogs"/>
-              <span className="caret"/>
-              <div className="ripple-container"></div>
-            </a>
-            <ul className="dropdown-menu">
-              <li><a href="#" onClick={this.onEdit}><i className="fa fa-pencil-square-o"/>&nbsp;Edition</a></li>
-              <li><a href="#" onClick={this.onClick}><i className="fa fa-trash"/>&nbsp;Delete</a></li>
-            </ul>
-            <LaunchButton name={this.props.artifact.name}/>
-          </div>
+        <td className="text-right" style={{paddingTop: '2px'}}>
+          <div style={{display: 'flex', margin: 'auto', flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <ButtonToolbar>
+              <DropdownButton id={this.props.artifact.name} title={<li className="fa fa-cogs"/>}>
+                <MenuItem eventKey="1" onClick={this.onEdit}><i className="fa fa-pencil-square-o"/>&nbsp;
+                  Edition</MenuItem>
+                <MenuItem eventKey="2" onClick={this.onClick}><i className="fa fa-trash"/>&nbsp;Delete</MenuItem>
+              </DropdownButton>
+            </ButtonToolbar>
+            <LaunchButton name={this.props.artifact.name}/></div>
         </td>
       </tr>
     );
   }
 }
 
-ItemList.propTypes = { artifact: React.PropTypes.object.isRequired };
+ItemList.propTypes = {artifact: React.PropTypes.object.isRequired};
 
 class List extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { asc: true };
+    this.state = {asc: true};
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentDidMount() {
@@ -185,13 +189,13 @@ class List extends React.Component {
       return -1;
     };
     const sortingName = (this.state.asc) ? 'Asc' : 'Desc';
-    const clsName = classNames({ fa: true, 'fa-sort-desc': !this.state.desc, 'fa-sort-asc': this.state.asc });
-    const artifacts = this.props.artifacts.sort(sorting).map((artifact, i) => <ItemList key={i} onDelete={onDelete}
-                                                                                        onEdit={onEdit}
-                                                                                        artifact={artifact}/>);
+    const clsName = classNames({fa: true, 'fa-sort-desc': !this.state.asc, 'fa-sort-asc': this.state.asc});
+    const artifacts = this.props.artifacts.sort(sorting).map(
+      (artifact, i) => <ItemList key={i} onDelete={onDelete} onEdit={onEdit} artifact={artifact}/>
+    );
     return (
-      <div className="col-xs-offset-1 col-xs-10">
-        <table className="table table-hover">
+      <div className="col-sm-offset-1 col-sm-10 col-xs-12 ">
+        <table className="table table-hover table-responsive">
           <caption> Results {this.props.artifacts.length}.</caption>
           <thead>
           <tr>
@@ -215,6 +219,6 @@ class List extends React.Component {
   }
 }
 
-List.propTypes = { artifacts: React.PropTypes.array.isRequired };
+List.propTypes = {artifacts: React.PropTypes.array.isRequired};
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

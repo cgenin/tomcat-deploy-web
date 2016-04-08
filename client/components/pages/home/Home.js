@@ -1,5 +1,5 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import connect from 'react-redux/lib/components/connect';
 import Tabs from 'react-bootstrap/lib/Tabs';
 import Tab from 'react-bootstrap/lib/Tab';
 import Logger from './../../widgets/logger/Logger';

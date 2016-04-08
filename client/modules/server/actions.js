@@ -18,7 +18,7 @@ function update(servers) {
 
 export function save(server) {
   const body = JSON.stringify(server);
-  return dispatch => fetch('api/server', {
+  return dispatch => fetch('/api/server', {
     method: 'post',
     headers: {
       'Accept': 'application/json',
@@ -32,7 +32,7 @@ export function save(server) {
 
 export function del(server) {
   const body = JSON.stringify(server);
-  return dispatch => fetch('api/server', {
+  return dispatch => fetch('/api/server', {
     method: 'delete',
     headers: {
       Accept: 'application/json',
@@ -45,7 +45,7 @@ export function del(server) {
 }
 
 export function load() {
-  return dispatch => fetch('api/server').then(res => res.json()).then(json => {
+  return dispatch => fetch('/api/server').then(res => res.json()).then(json => {
     dispatch(update(json));
     return new Promise((resolve) => resolve(json));
   });

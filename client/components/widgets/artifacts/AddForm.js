@@ -1,7 +1,7 @@
 import React from 'react';
 import connect from 'react-redux/lib/components/connect';
-import { save } from '../../../modules/artifacts/actions';
-import { routeActions } from 'react-router-redux';
+import {save} from '../../../modules/artifacts/actions';
+import {routeActions} from 'react-router-redux';
 
 function isDisabled(artifact) {
   return !artifact.name || artifact.name.length === 0;
@@ -26,8 +26,11 @@ const mapStateToProps = function (state, ownProps) {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    onSave: function (artifact) {
+    onSave(artifact) {
       dispatch(save(artifact)).then(() => dispatch(routeActions.push('/')));
+    },
+    onCancel() {
+      dispatch(routeActions.push('/'));
     }
   };
 };
@@ -110,7 +113,7 @@ class AddForm extends React.Component {
           </div>
         </div>
         <div className="col-xs-offset-4 col-xs-4">
-          <a href="#/" className="btn btn-default">
+          <a href="#" onClick={(e) => { e.preventDefault();this.props.onCancel();}} className="btn btn-default">
             <li className="fa fa-backward"/>
             &nbsp;Cancel
           </a>

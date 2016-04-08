@@ -25,7 +25,7 @@ function inprogress(url) {
 export function testServer(host, username, password) {
   return dispatch => {
     dispatch(inprogress(`http://${host}/manager/text/list`));
-    fetch(`api/server/auth?host=${encodeURIComponent(host)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
+    fetch(`/api/server/auth?host=${encodeURIComponent(host)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
       method: 'get',
       headers: {
         'Accept': 'text/plain;charset=utf-8'

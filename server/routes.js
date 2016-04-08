@@ -1,10 +1,11 @@
 const routes = require('./routes/index');
 
 module.exports = (app, io) => {
-  app.use('/', routes);
   app.use('/api/server', require('./routes/server'));
   app.use('/api/nexus', require('./routes/nexus'));
   app.use('/api/artifact', require('./routes/artifact')(io));
+
+  app.use('/*', routes);
 
 // catch 404 and forward to error handler
   app.use((req, res, next) => {

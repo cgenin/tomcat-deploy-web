@@ -19,7 +19,7 @@ function update(nexus) {
 export function save(server) {
   const body = JSON.stringify(server);
   console.log(server);
-  return dispatch => fetch('api/nexus', {
+  return dispatch => fetch('/api/nexus', {
     method: 'put',
     headers: {
       'Accept': 'application/json',
@@ -33,7 +33,7 @@ export function save(server) {
 
 
 export function load() {
-  return dispatch => fetch('api/nexus').then(res => res.json()).then(json => {
+  return dispatch => fetch('/api/nexus').then(res => res.json()).then(json => {
     dispatch(update(json));
     return new Promise((resolve) => resolve(json));
   });

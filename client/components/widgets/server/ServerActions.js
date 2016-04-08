@@ -1,4 +1,5 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import connect from 'react-redux/lib/components/connect';
 import ReactDOM from 'react-dom';
 import { routeActions } from 'react-router-redux';
@@ -52,13 +53,14 @@ const mapDispatchToProps = function (dispatch) {
 class ServerActions extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {show: false};
     this.onEdit = this.onEdit.bind(this);
     this.onCreate = this.onCreate.bind(this);
     this.onDelete = this.onDelete.bind(this);
     this.onChange = this.onChange.bind(this);
     this.toggle = this.toggle.bind(this);
-    this.state = {show: false};
-  }
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+ }
 
   componentDidMount() {
     this.props.onInit();
@@ -109,14 +111,14 @@ class ServerActions extends React.Component {
     const disabled = this.props.servers.length === 0;
     return (
       <div className="row">
-        <div className="col-md-3 col-md-offset-4 col-xs-12 text-right ">
+        <div className="col-sm-3 col-sm-offset-4 col-xs-12 text-right ">
           <div className="form-group">
             <select ref="current" className="form-control" onChange={this.onChange} style={{marginTop: '-28px'}}>
               {options}
             </select>
           </div>
         </div>
-        <div className="col-md-5 col-xs-12  text-left">
+        <div className="col-sm-offset-0 col-sm-5 col-xs-offset-3 col-xs-6  text-left">
           <div className="btn-group-sm">
             <a onClick={this.onEdit} className="btn btn-xs btn-success btn-fab" title="Edit current server"
                disabled={disabled} style={StyleFabButt}>

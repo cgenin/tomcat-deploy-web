@@ -1,4 +1,5 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import connect from 'react-redux/lib/components/connect';
 import { deploy, undeploy } from '../../../modules/actions/actions';
 
@@ -24,6 +25,7 @@ class DeployActions extends React.Component {
     super(props);
     this.onDeploy = this.onDeploy.bind(this);
     this.onUnDeploy = this.onUnDeploy.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   onDeploy(e) {
@@ -46,7 +48,7 @@ class DeployActions extends React.Component {
       return (
         <div className="row">
           <div className="alert alert-dismissible alert-warning col-xs-6 col-xs-offset-3 text-center">
-            <h3>Deploiement in progress <i className="fa fa-refresh fa-spin"/></h3>
+            <h3>Deploiement in progress <i className="fa fa-refresh fa-spin fa-2x"/></h3>
           </div>
         </div>
       );

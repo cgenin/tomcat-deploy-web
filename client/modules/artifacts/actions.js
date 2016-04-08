@@ -3,7 +3,7 @@ export const DELETE = 'ARTIFACTS:DELETE';
 export const UPDATE = 'ARTIFACTS:UPDATE';
 
 export function clean(nb) {
-  return () => fetch(`api/artifact/last/${nb}`, {
+  return () => fetch(`/api/artifact/last/${nb}`, {
     method: 'delete',
     headers: {
       Accept: 'application/json',
@@ -14,7 +14,7 @@ export function clean(nb) {
 
 export function save(artifact) {
   const body = JSON.stringify(artifact);
-  return () => fetch('api/artifact', {
+  return () => fetch('/api/artifact', {
     method: 'post',
     headers: {
       Accept: 'application/json',
@@ -25,7 +25,7 @@ export function save(artifact) {
 
 export function del(artifact) {
   const body = JSON.stringify(artifact);
-  return dispatch => fetch('api/artifact', {
+  return dispatch => fetch('/api/artifact', {
     method: 'delete',
     headers: {
       Accept: 'application/json',
@@ -37,7 +37,7 @@ export function del(artifact) {
 }
 
 export function load() {
-  return dispatch => fetch('api/artifact').then(res => res.json()).then(json => dispatch(update(json)));
+  return dispatch => fetch('/api/artifact').then(res => res.json()).then(json => dispatch(update(json)));
 }
 
 export function update(artifacts) {

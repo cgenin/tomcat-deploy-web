@@ -4,9 +4,6 @@ import Snackbar from '../widgets/actions/Snackbar';
 
 class MainLayout extends React.Component {
 
-  componentDidMount() {
-    window.$.material.init();
-  }
 
   render() {
     return (

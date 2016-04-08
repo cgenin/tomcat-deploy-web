@@ -1,4 +1,5 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import Title from '../../widgets/Title';
 import ServerEdit from '../../widgets/server/Edition';
 import connect from 'react-redux/lib/components/connect';
@@ -15,6 +16,12 @@ const mapStateToProps = function (state) {
 
 
 class ServerEditPage extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
   render() {
     return (
       <div>

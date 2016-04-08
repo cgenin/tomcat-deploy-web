@@ -1,4 +1,5 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import connect from 'react-redux/lib/components/connect';
 
 const mapStateToProps = function (state, ownProps) {
@@ -13,13 +14,18 @@ const mapStateToProps = function (state, ownProps) {
 };
 
 class LaunchButton extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
   render() {
     if (this.props.hide) {
       return null;
     }
     const title = `open in a new window ${this.props.name}.`;
     return (
-      <a href={this.props.url} className="btn btn-primary" target="_blanck"
+      <a href={this.props.url} className="btn btn-primary hidden-xs" target="_blanck"
          style={{paddingTop: '0', paddingBottom: '0'}} title={title}><i className="fa fa-send-o fa-2x"/></a>
     );
   }
