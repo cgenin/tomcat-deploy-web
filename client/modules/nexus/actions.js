@@ -38,3 +38,26 @@ export function load() {
     return new Promise((resolve) => resolve(json));
   });
 }
+
+export function test(host, port) {
+  return dispatch => fetch(`/api/nexus/test?host=${host}&port=${port}`, {
+    method: 'get',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json());
+}
+
+export function testArtifact(host, port, groupId, artifactId) {
+  return dispatch => fetch(`/api/nexus/artifact?host=${host}&port=${port}&g=${groupId}&a=${artifactId}`, {
+    method: 'get',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json());
+}
+
+
+

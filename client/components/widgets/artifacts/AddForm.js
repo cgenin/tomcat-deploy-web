@@ -1,5 +1,6 @@
 import React from 'react';
 import connect from 'react-redux/lib/components/connect';
+import TestArtifact from '../../widgets/nexus/TestArtifact';
 import {save} from '../../../modules/artifacts/actions';
 import {routeActions} from 'react-router-redux';
 
@@ -43,7 +44,8 @@ class AddForm extends React.Component {
         name: '',
         url: ''
       },
-      disabled: true
+      disabled: true,
+      showTest: false
     };
     this.onClick = this.onClick.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -52,7 +54,7 @@ class AddForm extends React.Component {
   componentWillMount() {
     const artifact = this.props.artifact;
     const disabled = isDisabled(this.props.artifact);
-    this.setState({artifact, disabled});
+    this.setState({ artifact, disabled });
   }
 
   onClick(e) {
@@ -67,12 +69,14 @@ class AddForm extends React.Component {
     const url = this.refs.url.value;
     const groupId = this.refs.groupId.value;
     const artifactId = this.refs.artifactId.value;
-    const artifact = Object.assign({}, this.props.artifact, {name, url, groupId, artifactId});
+    const artifact = Object.assign({}, this.props.artifact, { name, url, groupId, artifactId });
     const disabled = name.length === 0 && (url.length === 0 || (groupId.length === 0 && artifactId.length === 0));
-    this.setState({artifact, disabled});
+    this.setState({ artifact, disabled });
   }
 
   render() {
+    const testModal = (this.state.showTest) ?
+      <TestArtifact artifact={this.state.artifact} onHide={() => this.setState({showTest: false})}/> : <div/>;
     return (
       <form >
 
@@ -110,7 +114,13 @@ class AddForm extends React.Component {
                      onChange={this.onChange} ref="artifactId"
               />
             </div>
+            <div className="col-xs-offset-3 col-xs-6 col-sm-offset-8 col-sm-4">
+              <button type="button" className="btn btn-raised btn-info" onClick={() => this.setState({showTest: true})}>
+                Test nexus
+              </button>
+            </div>
           </div>
+
         </div>
         <div className="col-xs-offset-4 col-xs-4">
           <a href="#" onClick={(e) => { e.preventDefault();this.props.onCancel();}} className="btn btn-default">
@@ -124,11 +134,12 @@ class AddForm extends React.Component {
             &nbsp;Submit
           </button>
         </div>
+        {testModal}
       </form>
     );
   }
 }
 
-AddForm.propTypes = {routing: React.PropTypes.object.isRequired, artifact: React.PropTypes.object.isRequired};
+AddForm.propTypes = { routing: React.PropTypes.object.isRequired, artifact: React.PropTypes.object.isRequired };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddForm);
