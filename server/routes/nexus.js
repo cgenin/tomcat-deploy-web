@@ -15,6 +15,14 @@ router.get('/test', (req, res) => {
   nexus.up(host, port).then(d => res.json(d), d => res.json(d));
 });
 
+
+router.get('/artifact/search', (req, res) => {
+  const host = req.query.host;
+  const port = req.query.port;
+  const q = req.query.q;
+  nexus.search(host, port, q).then(d => res.json(d), d => res.json(d));
+});
+
 router.get('/artifact', (req, res) => {
   const host = req.query.host;
   const port = req.query.port;

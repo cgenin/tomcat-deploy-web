@@ -8,7 +8,7 @@ import ModalTitle from 'react-bootstrap/lib/ModalTitle';
 import ModalBody from 'react-bootstrap/lib/ModalBody';
 import Button from 'react-bootstrap/lib/Button';
 
-import {testArtifact,search} from '../../../modules/nexus/actions';
+import {testArtifact, search} from '../../../modules/nexus/actions';
 
 const mapStateToProps = function (state) {
   const nexus = state.nexus;
@@ -26,21 +26,58 @@ const mapDispatchToProps = function (dispatch) {
   };
 };
 
+class SuccessTr extends React.Component {
+
+  render() {
+    return (
+      <tr>
+        <td className="search-artifact-td">
+          <button className="btn btn-defaul"
+                  onClick={() => this.props.onSelect(this.props.nexusArtifact.groupId, this.props.nexusArtifact.artifactId)}
+          >Select</button>
+        </td>
+        <td className="search-artifact-td">{this.props.nexusArtifact.groupId}</td>
+        <td className="search-artifact-td">{this.props.nexusArtifact.artifactId}</td>
+      </tr>);
+  }
+}
+
 class SuccessResult extends React.Component {
   render() {
     const data = this.props.result.body.data || [];
-    const versions = data.map(d => <li key={`${d.version}`}>{d.version}</li>)
+    const reduce = data.reduce((arr, item) => {
+      const index = arr.findIndex(a => item.groupId === a.groupId && item.artifactId === a.artifactId);
+      if (index !== -1) {
+        return arr;
+      }
+      const res = Array.from(arr);
+      res.push(item);
+      return res;
+    }, []);
+    const versions = reduce.map(d => <SuccessTr key={`${d.groupId}${d.artifactId}`} onSelect={this.props.onSelect}
+                                                nexusArtifact={d}/>);
+
     return (
       <div className="text-center">
         <div className="message success" style={{margin: '2em', paddingTop: '30px', paddingLeft: '5px'}}>
           <div className="text-center">
-            <h3>Total Count : {this.props.result.body.totalCount}</h3>
+            <h3>Total Count : {reduce.length}</h3>
           </div>
-          <div className="text-left">
-            <ul>
-              {versions}
-            </ul>
-          </div>
+
+        </div>
+        <div className="text-left">
+          <table className="table table-striped table-hover ">
+            <thead>
+            <tr>
+              <th>#</th>
+              <th>Group Id</th>
+              <th>Artifact Id</th>
+            </tr>
+            </thead>
+            <tbody>
+            {versions}
+            </tbody>
+          </table>
         </div>
       </div>
     );
@@ -76,7 +113,7 @@ class Result extends React.Component {
     if (error) {
       return <ErrorResult result={this.props.result}/>;
     }
-    return <SuccessResult result={this.props.result}/>;
+    return <SuccessResult onSelect={this.props.onSelect} result={this.props.result}/>;
   }
 }
 
@@ -89,17 +126,18 @@ class TestArtifact extends React.Component {
   }
 
   componentDidMount() {
-    this.props.onTest(this.props.nexus, this.props.artifact).then(
+    this.props.onSearch(this.props.nexus, this.props.artifact).then(
       r => this.setState({ waiting: false, result: r }));
   }
 
   render() {
-    const waiting = (this.state.waiting) ? <TimeSpinner /> : <Result result={this.state.result}/>;
+    const waiting = (this.state.waiting) ? <TimeSpinner /> :
+      <Result onSelect={this.props.onSelect} result={this.state.result}/>;
 
     return (
-      <Modal show={true} aria-labelledby="contained-modal-title-sm">
+      <Modal bsSize="large" show={true} aria-labelledby="contained-modal-title-sm">
         <ModalHeader>
-          <ModalTitle>Get Version of Nexus</ModalTitle>
+          <ModalTitle>Search on Nexus</ModalTitle>
         </ModalHeader>
         <ModalBody>
           <div className="text-center">

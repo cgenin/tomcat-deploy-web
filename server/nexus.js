@@ -36,10 +36,11 @@ const up = function (host, port) {
   return deferred.promise;
 };
 
-const valid = function (host, port, groupid, artifactid) {
+const search = function (host, port, q) {
 // http://intserv:8081
   const deferred = Q.defer();
-  const url = `http://${host}:${port}/nexus/service/local/lucene/search?q=${artifactid}`;
+
+  const url = `http://${host}:${port}/nexus/service/local/lucene/search?q=${q}`;
   try {
     const options = {
       host,
@@ -76,6 +77,46 @@ const valid = function (host, port, groupid, artifactid) {
   return deferred.promise;
 };
 
+const valid = function (host, port, groupid, artifactid) {
+  const deferred = Q.defer();
+  const url = `http://${host}:${port}/nexus/service/local/lucene/search?g=${groupid}&a=${artifactid}`;
+  try {
+    const options = {
+      host,
+      port,
+      method: 'GET',
+      path: url,
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+    };
+    const req = http.request(options, (rs) => {
+      let respString = '';
+      rs.on('data', (d) => {
+        respString += d;
+      });
+      rs.on('end', () => {
+        const statusCode = rs.statusCode;
+        const body = JSON.parse(respString);
+        deferred.resolve({ statusCode, url, body });
+      });
+      rs.on('error', (e) => {
+        console.error(e);
+        deferred.resolve({ statusCode: 500, url });
+      });
+    });
+    req.on('error', (e) => {
+      console.error(e);
+      deferred.resolve({ statusCode: 500, url });
+    });
+
+    req.end();
+  } catch (e) {
+    console.error(e);
+    deferred.reject({ statusCode: 500, url });
+  }
+  return deferred.promise;
+};
+
+
 module.exports = {
-  up, valid
+  up, valid, search
 };

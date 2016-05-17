@@ -1,5 +1,6 @@
 import React from 'react';
 import connect from 'react-redux/lib/components/connect';
+import SearchArtifact from '../../widgets/nexus/SearchArtifact';
 import TestArtifact from '../../widgets/nexus/TestArtifact';
 import {save} from '../../../modules/artifacts/actions';
 import {routeActions} from 'react-router-redux';
@@ -45,7 +46,8 @@ class AddForm extends React.Component {
         url: ''
       },
       disabled: true,
-      showTest: false
+      searchNexus: false,
+      testNexus: false
     };
     this.onClick = this.onClick.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -75,8 +77,18 @@ class AddForm extends React.Component {
   }
 
   render() {
-    const testModal = (this.state.showTest) ?
-      <TestArtifact artifact={this.state.artifact} onHide={() => this.setState({showTest: false})}/> : <div/>;
+    const onSelectSearch = (groupId, artifactId) => {
+      const artifact = this.state.artifact;
+      artifact.groupId = groupId;
+      artifact.artifactId = artifactId;
+      this.setState({ artifact, searchNexus: false });
+    };
+
+    const searchModal = (this.state.searchNexus) ?
+      <SearchArtifact artifact={this.state.artifact}
+                      onSelect={onSelectSearch} onHide={() => this.setState({searchNexus: false})}/> : <div/>;
+    const testNexusModal = (this.state.testNexus) ?
+      <TestArtifact artifact={this.state.artifact} onHide={() => this.setState({testNexus: false})}/> : <div/>;
     return (
       <form >
 
@@ -97,7 +109,18 @@ class AddForm extends React.Component {
         </div>
         <div className="panel panel-danger">
           <div className="panel-heading">
-            <h3 className="panel-title">Nexus datas</h3>
+            <div className="row">
+              <div className="col-xs-3  col-sm-8 " style={{marginTop: '15px'}}>
+                <h2 className="panel-title" style={{fontSize: '30px', margin: 'auto'}}>Nexus datas</h2>
+              </div>
+              <div className="col-xs-6 col-sm-4">
+                <button type="button" className="btn btn-raised btn-info"
+                        onClick={() => this.setState({searchNexus: true})}>
+                  <li className="fa fa-search fa-2x"/>
+                  &nbsp;search in nexus
+                </button>
+              </div>
+            </div>
           </div>
           <div className="panel-body">
             <div className="form-group">
@@ -114,16 +137,14 @@ class AddForm extends React.Component {
                      onChange={this.onChange} ref="artifactId"
               />
             </div>
-            <div className="col-xs-offset-3 col-xs-6 col-sm-offset-8 col-sm-4">
-              <button type="button" className="btn btn-raised btn-info" onClick={() => this.setState({showTest: true})}>
-                Test nexus
-              </button>
+            <div className="text-right">
+              <button type="button" className="btn btn-default" onClick={() => this.setState({testNexus: true})}>Test on nexus</button>
             </div>
           </div>
 
         </div>
         <div className="col-xs-offset-4 col-xs-4">
-          <a href="#" onClick={(e) => { e.preventDefault();this.props.onCancel();}} className="btn btn-default">
+          <a href="#" onClick={(e) => { e.preventDefault(); this.props.onCancel();}} className="btn btn-default">
             <li className="fa fa-backward"/>
             &nbsp;Cancel
           </a>
@@ -134,7 +155,8 @@ class AddForm extends React.Component {
             &nbsp;Submit
           </button>
         </div>
-        {testModal}
+        {searchModal}
+        {testNexusModal}
       </form>
     );
   }

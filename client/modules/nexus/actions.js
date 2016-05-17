@@ -59,5 +59,14 @@ export function testArtifact(host, port, groupId, artifactId) {
   }).then(res => res.json());
 }
 
+export function search(host, port, q) {
+  return dispatch => fetch(`/api/nexus/artifact/search?host=${host}&port=${port}&q=${q}`, {
+    method: 'get',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json());
+}
 
 
