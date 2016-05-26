@@ -1,4 +1,5 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import connect from 'react-redux/lib/components/connect';
 import {TimeSpinner} from '../../widgets/Spinner';
 import Modal from 'react-bootstrap/lib/Modal';
@@ -8,7 +9,7 @@ import ModalTitle from 'react-bootstrap/lib/ModalTitle';
 import ModalBody from 'react-bootstrap/lib/ModalBody';
 import Button from 'react-bootstrap/lib/Button';
 
-import {testArtifact,search} from '../../../modules/nexus/actions';
+import {testArtifact, search} from '../../../modules/nexus/actions';
 
 const mapStateToProps = function (state) {
   const nexus = state.nexus;
@@ -27,6 +28,12 @@ const mapDispatchToProps = function (dispatch) {
 };
 
 class SuccessResult extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
   render() {
     const data = this.props.result.body.data || [];
     const versions = data.map(d => <li key={`${d.version}`}>{d.version}</li>)
@@ -48,6 +55,11 @@ class SuccessResult extends React.Component {
 }
 
 class ErrorResult extends React.Component {
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
   render() {
     const totalCount = (this.props.result.statusCode !== 200) ? 0 : this.props.result.body.totalCount || 0;
     return (
@@ -71,6 +83,11 @@ class ErrorResult extends React.Component {
 
 class Result extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
   render() {
     const error = (this.props.result.statusCode !== 200) || !this.props.result.body || this.props.result.body.totalCount === 0;
     if (error) {
@@ -86,6 +103,7 @@ class TestArtifact extends React.Component {
   constructor(props) {
     super(props);
     this.state = { waiting: true, result: {} };
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentDidMount() {

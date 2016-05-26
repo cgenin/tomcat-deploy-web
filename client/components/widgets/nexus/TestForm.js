@@ -1,4 +1,5 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import connect from 'react-redux/lib/components/connect';
 import {TimeSpinner} from '../../widgets/Spinner';
 
@@ -17,6 +18,11 @@ const mapDispatchToProps = function (dispatch) {
 };
 
 class Results extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
 
   render() {
     if (this.props.result.statusCode === 200) {
@@ -45,11 +51,14 @@ class Results extends React.Component {
   }
 }
 
+Results.propTypes = { result: React.PropTypes.object.isRequired };
+
 class TestForm extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = { waiting: true, result: {} };
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentDidMount() {

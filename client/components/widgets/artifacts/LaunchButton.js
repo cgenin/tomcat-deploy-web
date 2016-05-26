@@ -1,6 +1,7 @@
 import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import connect from 'react-redux/lib/components/connect';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
 
 const mapStateToProps = function (state, ownProps) {
   if (state.actions.servers.length === 0) {
@@ -25,8 +26,8 @@ class LaunchButton extends React.Component {
     }
     const title = `open in a new window ${this.props.name}.`;
     return (
-      <a href={this.props.url} className="btn btn-primary hidden-xs" target="_blanck"
-         style={{paddingTop: '0', paddingBottom: '0'}} title={title}><i className="fa fa-send-o fa-2x"/></a>
+      <MenuItem eventKey="0" href={this.props.url} target="_blanck"
+         title={title}><i className="fa fa-send-o"/> Launch</MenuItem>
     );
   }
 }
