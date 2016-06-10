@@ -71,7 +71,7 @@ class NexusArtifact extends React.Component {
   render() {
     const { groupId, artifactId } = this.props.artifact;
     if (groupId && artifactId && groupId.length > 0 && artifactId.length > 0) {
-      return (<img src="/images/nexus.png" width="28" height="28" style={{margin: 'auto'}}/>);
+      return (<img src="/images/nexus.png" width="28" height="28"  style={{margin: 'auto'}} title="Artifact present in nexus "/>);
     }
     return (<div />);
   }
@@ -158,9 +158,9 @@ class ItemList extends React.Component {
         <td className="text-left" style={{paddingTop: '18px'}}>
           <ItemStatus artifact={this.props.artifact}/>
         </td>
-        <td><NexusArtifact artifact={this.props.artifact}/></td>
-        <td>
-          <ArtifactVersions name={this.props.artifact.name}/>
+        <td className="text-center"><NexusArtifact artifact={this.props.artifact}/></td>
+        <td className="text-center" >
+          <ArtifactVersions name={this.props.artifact.name} id={this.props.artifact.$loki}/>
         </td>
         <td className="text-right" style={{paddingTop: '2px'}}>
           <div style={{display: 'flex', margin: 'auto', flexDirection: 'row', justifyContent: 'flex-end'}}>

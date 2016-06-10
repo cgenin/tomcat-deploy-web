@@ -16,6 +16,7 @@ import {actionReducers} from './modules/actions/reducers';
 import {loggerReducers} from './modules/logger/reducers';
 import {versionsReducers} from './modules/versions/reducers';
 import {nexusReducers} from './modules/nexus/reducers';
+import {nexusVersionReducers} from './modules/nexus-versions/reducers';
 import {initialize} from './socket';
 import routes from './routes';
 
@@ -30,7 +31,8 @@ const rootReducer = combineReducers(Object.assign({}, {
   logger: loggerReducers,
   testUrl: testReducers,
   versions: versionsReducers,
-  nexus: nexusReducers
+  nexus: nexusReducers,
+  nexusVersions: nexusVersionReducers
 }));
 
 export const store = compose(

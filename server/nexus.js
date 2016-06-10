@@ -116,7 +116,37 @@ const valid = function (host, port, groupid, artifactid) {
   return deferred.promise;
 };
 
+const reload = function (host, port, artifacts) {
+  const deferred = Q.defer();
+  Q.all(artifacts.map(a => {
+    const artifactId = a.artifactId;
+    const groupId = a.groupId;
+    return valid(host, port, groupId, artifactId);
+  })).then((results) => {
+    const res = results.map(r => {
+      return r.body;
+    })
+      .map(obj => {
+        return {
+          artifactId: obj.data[0].artifactId,
+          groupId: obj.data[0].groupId,
+          versions: obj.data.map(d => d.version)
+        };
+      })
+      .map(obj => {
+        const artifact = artifacts.find(a => a.artifactId === obj.artifactId && a.groupId === obj.groupId);
+        return { id: artifact.$loki, nexus: obj };
+      });
+    deferred.resolve(res);
+  }).catch(e => {
+    console.error(e);
+    deferred.reject(e);
+  });
+  return deferred.promise;
+};
+
 
 module.exports = {
-  up, valid, search
+  up, valid, search, reload
+
 };

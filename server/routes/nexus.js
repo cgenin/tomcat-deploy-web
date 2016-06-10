@@ -23,6 +23,14 @@ router.get('/artifact/search', (req, res) => {
   nexus.search(host, port, q).then(d => res.json(d), d => res.json(d));
 });
 
+router.get('/artifact/versions', (req, res) => {
+  const nexusDb = deploydb.nexus() || { data: [{}] };
+  const config = nexusDb.data[0];
+  const db = deploydb.files() || { data: [] };
+  const nexusArtifacts = db.data.filter(a => a.groupId && a.artifactId);
+  nexus.reload(config.host, config.port, nexusArtifacts).then(d => res.json(d), d => res.json(d));
+});
+
 router.get('/artifact', (req, res) => {
   const host = req.query.host;
   const port = req.query.port;

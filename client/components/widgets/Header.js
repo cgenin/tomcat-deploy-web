@@ -16,6 +16,8 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 import CleanHistory from './artifacts/CleanHistory';
 import Configuration from './nexus/Configuration';
 
+import {reload} from '../../modules/nexus-versions/actions';
+
 const mapStateToProps = function (state) {
   const homeActive = state.routing.location.pathname === '/';
   const addActive = state.routing.location.pathname === '/add';
@@ -31,6 +33,9 @@ const mapDispatchToProps = function (dispatch) {
     },
     onAddArtifact() {
       dispatch(routeActions.push('/add'));
+    },
+    onRefreshNexus() {
+      dispatch(reload());
     }
   };
 };
@@ -50,10 +55,14 @@ class AboutModal extends React.Component {
           <ModalTitle id="contained-modal-title-sm">About ?</ModalTitle>
         </ModalHeader>
         <ModalBody>
-          <h4>0.4.2</h4>
-          <p>Tu comprends, là on voit qu'on a beaucoup à travailler sur nous-mêmes car il y a de bonnes règles, de
-            bonnes rules et c'est une sensation réelle qui se produit si on veut ! Pour te dire comme on a beaucoup
-            à apprendre sur la vie !
+          <h4>0.4.3</h4>
+          <p>Tu vois, là on voit qu'on a beaucoup à travailler sur nous-mêmes car on est tous capables de donner des
+            informations à chacun et cela même si les gens ne le savent pas ! Pour te dire comme on a beaucoup à
+            apprendre sur la vie !
+          </p>
+          <p>Je ne voudrais pas rentrer dans des choses trop dimensionnelles, mais, premièrement, il faut toute la
+            splendeur du aware puisque the final conclusion of the spirit is perfection C'est pour ça que j'ai fait des
+            films avec des replicants.
           </p>
         </ModalBody>
         <ModalFooter>
@@ -68,7 +77,7 @@ class Header extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {smShow: false, show: false, nexusConfiguration: false};
+    this.state = { smShow: false, show: false, nexusConfiguration: false };
     this.onLaunchAbout = this.onLaunchAbout.bind(this);
     this.onLaunchCleanHistory = this.onLaunchCleanHistory.bind(this);
     this.onNexusConfiguration = this.onNexusConfiguration.bind(this);
@@ -77,7 +86,7 @@ class Header extends React.Component {
 
   onLaunchAbout(e) {
     e.preventDefault();
-    this.setState({smShow: true});
+    this.setState({ smShow: true });
   }
 
   onLaunchCleanHistory(e) {
@@ -86,7 +95,7 @@ class Header extends React.Component {
     }
     const x = e.clientX;
     const y = e.clientY;
-    this.setState({show: !this.state.show, x, y});
+    this.setState({ show: !this.state.show, x, y });
     return false;
   }
 
@@ -96,15 +105,15 @@ class Header extends React.Component {
     }
     const x = e.clientX;
     const y = e.clientY;
-    this.setState({nexusConfiguration: !this.state.nexusConfiguration, x, y});
+    this.setState({ nexusConfiguration: !this.state.nexusConfiguration, x, y });
     return false;
   }
 
 
   render() {
-    const smClose = () => this.setState({smShow: false});
-    const onHideCleanHistory = () => this.setState({show: false});
-    const onHideNexusConfiguration = () => this.setState({nexusConfiguration: false});
+    const smClose = () => this.setState({ smShow: false });
+    const onHideCleanHistory = () => this.setState({ show: false });
+    const onHideNexusConfiguration = () => this.setState({ nexusConfiguration: false });
     return (
       <div>
         <Navbar inverse={true} fluid={true}>
@@ -128,6 +137,7 @@ class Header extends React.Component {
                            id="config-dropdown">
                 <MenuItem eventKey={3.0} header>Nexus</MenuItem>
                 <MenuItem eventKey={3.1} onClick={this.onNexusConfiguration}>Nexus Configuration</MenuItem>
+                <MenuItem eventKey={3.4} onClick={this.props.onRefreshNexus}>Refresh Versions</MenuItem>
                 <MenuItem divider/>
                 <MenuItem eventKey={3.2} header>Artifacts</MenuItem>
                 <MenuItem eventKey={3.3} onClick={this.onLaunchCleanHistory}>Clean history</MenuItem>
