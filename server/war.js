@@ -63,6 +63,11 @@ const download = function (item) {
     const path = fullpath(name);
     const file = fs.createWriteStream(path);
     http.get(url, (response) => {
+      if (response.statusCode !== 200) {
+        console.error(`download item failure ${response.statusCode}`);
+        deferred.reject(response);
+        return;
+      }
       response.pipe(file);
       file.on('finish', () => {
         file.close(() => {
