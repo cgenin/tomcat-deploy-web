@@ -48,7 +48,7 @@ class DeployActions extends React.Component {
       return (
         <div className="row">
           <div className="alert alert-dismissible alert-warning col-xs-6 col-xs-offset-3 text-center">
-            <h3>Deploiement in progress <i className="fa fa-refresh fa-spin fa-2x"/></h3>
+            <h3>Deployement in progress <i className="fa fa-refresh fa-spin fa-2x"/></h3>
           </div>
         </div>
       );
