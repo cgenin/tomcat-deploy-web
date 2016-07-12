@@ -14,5 +14,8 @@ export function reload() {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     }
-  }).then(res => res.json()).then(j => dispatch(update(j)));
+  }).then(res => res.json()).then(j => {
+    dispatch(update(j));
+    return new Promise((resolve) => resolve(true));
+  });
 }

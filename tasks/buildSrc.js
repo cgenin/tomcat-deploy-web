@@ -14,11 +14,11 @@ module.exports = (gulp, config) => {
     const uglifyify = require('uglifyify');
     const vinylSourceStream = require('vinyl-source-stream');
     const depCaseVerify = require('dep-case-verify');
-
-    const browserifyBundle =
-      browserify('client/app.js', { debug: false })
-        .transform(babelify)
-        .plugin(depCaseVerify);
+    const envify = require('envify/custom');
+    console.log(envify({ NODE_ENV: 'production' }));
+    const browserifyBundle = (config.build.production) ?
+      browserify('client/app.js', { debug: false }).transform(envify({ NODE_ENV: 'production' })).transform(babelify).plugin(depCaseVerify)
+      : browserify('client/app.js', { debug: false }).transform(babelify).plugin(depCaseVerify);
 
     if (config.build.uglify) {
       browserifyBundle.transform(config.build.uglify, uglifyify);

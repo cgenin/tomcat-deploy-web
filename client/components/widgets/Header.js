@@ -14,6 +14,7 @@ import NavItem from 'react-bootstrap/lib/NavItem';
 import NavDropdown from 'react-bootstrap/lib/NavDropdown';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import CleanHistory from './artifacts/CleanHistory';
+import BlockUI from './Blockui';
 import Configuration from './nexus/Configuration';
 
 import {reload} from '../../modules/nexus-versions/actions';
@@ -35,7 +36,7 @@ const mapDispatchToProps = function (dispatch) {
       dispatch(routeActions.push('/add'));
     },
     onRefreshNexus() {
-      dispatch(reload());
+     return dispatch(reload());
     }
   };
 };
@@ -77,10 +78,11 @@ class Header extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { smShow: false, show: false, nexusConfiguration: false };
+    this.state = { smShow: false, show: false, nexusConfiguration: false, refreshNexusVersion: false };
     this.onLaunchAbout = this.onLaunchAbout.bind(this);
     this.onLaunchCleanHistory = this.onLaunchCleanHistory.bind(this);
     this.onNexusConfiguration = this.onNexusConfiguration.bind(this);
+    this.onRefresh = this.onRefresh.bind(this);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
@@ -107,6 +109,14 @@ class Header extends React.Component {
     const y = e.clientY;
     this.setState({ nexusConfiguration: !this.state.nexusConfiguration, x, y });
     return false;
+  }
+
+  onRefresh(e) {
+    if (e) {
+      e.preventDefault();
+    }
+    this.setState({ refreshNexusVersion: true });
+    this.props.onRefreshNexus().then(() => this.setState({refreshNexusVersion: false}))
   }
 
 
@@ -137,7 +147,7 @@ class Header extends React.Component {
                            id="config-dropdown">
                 <MenuItem eventKey={3.0} header>Nexus</MenuItem>
                 <MenuItem eventKey={3.1} onClick={this.onNexusConfiguration}>Nexus Configuration</MenuItem>
-                <MenuItem eventKey={3.4} onClick={this.props.onRefreshNexus}>Refresh Versions</MenuItem>
+                <MenuItem eventKey={3.4} onClick={this.onRefresh}>Refresh Versions</MenuItem>
                 <MenuItem divider/>
                 <MenuItem eventKey={3.2} header>Artifacts</MenuItem>
                 <MenuItem eventKey={3.3} onClick={this.onLaunchCleanHistory}>Clean history</MenuItem>
@@ -152,6 +162,7 @@ class Header extends React.Component {
         <CleanHistory show={this.state.show} x={this.state.x} y={this.state.y} onHide={onHideCleanHistory}/>
         <Configuration show={this.state.nexusConfiguration} x={this.state.x} y={this.state.y}
                        onHide={onHideNexusConfiguration}/>
+          <BlockUI show={this.state.refreshNexusVersion}/>
       </div>
     );
   }

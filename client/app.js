@@ -35,13 +35,9 @@ const rootReducer = combineReducers(Object.assign({}, {
   nexusVersions: nexusVersionReducers
 }));
 
-export const store = compose(
-  applyMiddleware(
-    thunkMiddleware,
-    logMiddleware(),
-    reduxRouterMiddleware
-  )
-)(createStore)(rootReducer);
+export const store = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+  ? compose(applyMiddleware(thunkMiddleware, logMiddleware(), reduxRouterMiddleware))(createStore)(rootReducer)
+  : compose(applyMiddleware(thunkMiddleware, reduxRouterMiddleware))(createStore)(rootReducer);
 
 injectTapEventPlugin();
 

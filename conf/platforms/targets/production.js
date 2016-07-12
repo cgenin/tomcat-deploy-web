@@ -9,6 +9,7 @@ module.exports = () => defaultsDeep({}, defaultValues, {
       sourcemap: false,
       mangle: true,
       compress: true
-    }
+    },
+    productionMode: true
   }
 });
