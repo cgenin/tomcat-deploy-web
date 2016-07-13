@@ -11,6 +11,7 @@ import DropdownButton from 'react-bootstrap/lib/DropdownButton';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import LaunchButton from '../artifacts/LaunchButton';
 import ArtifactVersions from '../versions/ArtifactVersions';
+import {NexusVersions, NexusArtifact} from '../Nexus';
 import {del, load} from '../../../modules/artifacts/actions';
 import {removeArtifacts} from '../../../modules/actions/actions';
 import ItemCheck from './../actions/ItemCheck';
@@ -18,7 +19,8 @@ import AllItemsCheck from './../actions/AllItemsCheck';
 
 const mapStateToProps = function (state) {
   return {
-    artifacts: state.artifacts
+    artifacts: state.artifacts,
+    nexusVersions: state.nexusVersions
   };
 };
 
@@ -62,23 +64,19 @@ function transform(server, value) {
   );
 }
 
-class NexusArtifact extends React.Component {
-  constructor(props) {
-    super(props);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
-  }
-
-  render() {
-    const { groupId, artifactId } = this.props.artifact;
-    if (groupId && artifactId && groupId.length > 0 && artifactId.length > 0) {
-      return (<img src="/images/nexus.png" width="28" height="28"  style={{margin: 'auto'}} title="Artifact present in nexus "/>);
+function sortFactory(asc) {
+  const df = (asc) ? 1 : -1;
+  return (a, b) => {
+    if (a.name === b.name) {
+      return 0;
     }
-    return (<div />);
-  }
-
+    if (a.name < b.name) {
+      return -1 * df;
+    }
+    return df;
+  };
 }
 
-NexusArtifact.propTypes = { artifact: React.PropTypes.object.isRequired };
 
 class ItemStatus extends React.Component {
   constructor(props) {
@@ -144,9 +142,6 @@ class ItemList extends React.Component {
 
 //
   render() {
-    const title = `open in a new window ${this.props.name}.`;
-
-
     return (
       <tr>
         <td className="text-center" scope="row" style={{paddingTop: '12px'}}>
@@ -159,14 +154,14 @@ class ItemList extends React.Component {
           <ItemStatus artifact={this.props.artifact}/>
         </td>
         <td className="text-center"><NexusArtifact artifact={this.props.artifact}/></td>
-        <td className="text-center" >
+        <td className="text-center">
           <ArtifactVersions name={this.props.artifact.name} id={this.props.artifact.$loki}/>
         </td>
         <td className="text-right" style={{paddingTop: '2px'}}>
           <div style={{display: 'flex', margin: 'auto', flexDirection: 'row', justifyContent: 'flex-end'}}>
             <ButtonToolbar>
               <DropdownButton id={this.props.artifact.name} title={<li className="fa fa-cogs"/>}>
-                <LaunchButton name={this.props.artifact.name} />
+                <LaunchButton name={this.props.artifact.name}/>
                 <MenuItem divider/>
                 <MenuItem eventKey="1" onClick={this.onEdit}><i className="fa fa-pencil-square-o"/>&nbsp;
                   Edition</MenuItem>
@@ -176,7 +171,7 @@ class ItemList extends React.Component {
           </div>
         </td>
       </tr>
-    ); 
+    );
   }
 }
 
@@ -196,32 +191,24 @@ class List extends React.Component {
   render() {
     const onDelete = this.props.onDelete;
     const onEdit = this.props.onEdit;
-    const sorting = (this.state.asc) ? (a, b) => {
-      if (a.name === b.name) {
-        return 0;
-      }
-      if (a.name < b.name) {
-        return -1;
-      }
-      return 1;
-    } : (a, b) => {
-      if (a.name === b.name) {
-        return 0;
-      }
-      if (a.name < b.name) {
-        return 1;
-      }
-      return -1;
-    };
     const sortingName = (this.state.asc) ? 'Asc' : 'Desc';
     const clsName = classNames({ fa: true, 'fa-sort-desc': !this.state.asc, 'fa-sort-asc': this.state.asc });
-    const artifacts = this.props.artifacts.sort(sorting).map(
+    const artifacts = this.props.artifacts.sort(sortFactory(this.state.asc)).map(
       (artifact, i) => <ItemList key={i} onDelete={onDelete} onEdit={onEdit} artifact={artifact}/>
     );
     return (
       <div className="col-xs-12 ">
         <table className="table table-hover table-responsive">
-          <caption> Results {this.props.artifacts.length}.</caption>
+          <caption>
+            <div className="row">
+              <div className="col-xs-6">
+                Results {this.props.artifacts.length}.
+              </div>
+              <div className="col-xs-4 text-right">
+                <NexusVersions nexusVersions={this.props.nexusVersions}/>
+              </div>
+            </div>
+          </caption>
           <thead>
           <tr>
             <th className="text-center">
@@ -244,7 +231,6 @@ class List extends React.Component {
     );
   }
 }
-
 List.propTypes = { artifacts: React.PropTypes.array.isRequired };
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);
