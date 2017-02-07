@@ -10,28 +10,30 @@ module.exports = (gulp, config) => {
   return tasks;
 
   function cssTask() {
-    const sass = require('gulp-sass');
+    // const sass = require('gulp-sass');
+    const less = require('gulp-less');
     const cssGlobbing = require('gulp-css-globbing');
     const concatCss = require('gulp-concat-css');
 
-    return gulp.src(['client/styles.scss'])
+    return gulp.src(['client/styles.less'])
       .pipe(cssGlobbing({
-        extensions: ['.css', '.scss'],
+        extensions: ['.css', '.less'],
         ignoreFolders: ['../styles'],
         autoReplaceBlock: {
           onOff: true,
           globBlockBegin: 'cssGlobbingBegin',
           globBlockEnd: 'cssGlobbingEnd',
-          globBlockContents: '../**/*.scss'
+          globBlockContents: '../**/*.less'
         },
         scssImportPath: {
           leading_underscore: false,
           filename_extension: false
         }
       }))
-      .pipe(sass().on('error', sass.logError))
+      .pipe(less())
       .pipe(concatCss('bundle.css', {
         rebaseUrls: false
-      })) .pipe(gulp.dest(config.folders.css));
+      }))
+      .pipe(gulp.dest(config.folders.css));
   }
 };

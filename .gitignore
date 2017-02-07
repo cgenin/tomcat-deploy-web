@@ -41,3 +41,5 @@ Thumbs.db
 public/main.js
 public/fonts
 public/css
+
+db/data.json

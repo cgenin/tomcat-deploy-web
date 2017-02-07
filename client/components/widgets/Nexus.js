@@ -15,7 +15,7 @@ export class NexusVersions extends React.Component {
     if (this.props.nexusVersions && this.props.nexusVersions.length > 0) {
       return (<strong>{this.props.nexusVersions.length} nexus versions loaded.</strong>);
     }
-    return (<strong>No nexus versions loaded.</strong>);
+    return (<strong>No nexus versions loaded. To update : Configuration -> Nexus -> Refresh Versions</strong>);
   }
 }
 

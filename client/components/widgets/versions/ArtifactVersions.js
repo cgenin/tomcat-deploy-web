@@ -7,9 +7,13 @@ import {updateHistory} from '../../../modules/actions/actions';
 
 const mapStateToProps = function (state, ownProps) {
   const ref = state.versions.ref;
-  const versions = ref[ownProps.name] || [];
+  const name = ownProps.name;
+  const versions = (ref[name] || [])
+    .map(v => Object.assign({ type: 'history' }, v));
   const vs = state.nexusVersions.find(n => n.id === ownProps.id) || { nexus: { versions: [] } };
-  const nexusVersions = vs.nexus.versions;
+  const nexusVersions = vs.nexus.versions.map(version => {
+    return { type: 'nexus', version, name };
+  });
   return {
     versions,
     nexusVersions
@@ -38,7 +42,7 @@ class History extends React.Component {
       return <optgroup label="History"/>;
     }
     const opts = this.props.versions.map((v, i) => (
-      <option key={i} value={v.dt}>{moment(v.date).format('YYYY/MM/DD HH:mm:ss')}</option>));
+      <option key={i} value={JSON.stringify(v)}>{moment(v.date).format('YYYY/MM/DD HH:mm:ss')}</option>));
     return (
       <optgroup label="History">
         {opts}
@@ -46,6 +50,7 @@ class History extends React.Component {
     );
   }
 }
+History.propTypes = { versions: React.PropTypes.array.isRequired };
 
 class Nexus extends React.Component {
 
@@ -60,7 +65,7 @@ class Nexus extends React.Component {
       return <optgroup label="Nexus"/>;
     }
     const opts = this.props.versions.map((v, i) => (
-      <option key={v} value={v}>{v}</option>));
+      <option key={i} value={JSON.stringify(v)}>{v.version}</option>));
     return (
       <optgroup label="Nexus">
         {opts}
@@ -69,7 +74,7 @@ class Nexus extends React.Component {
   }
 }
 
-History.propTypes = { versions: React.PropTypes.array.isRequired };
+Nexus.propTypes = { versions: React.PropTypes.array.isRequired };
 
 class ArtifactVersions extends React.Component {
   constructor(props) {
@@ -80,7 +85,7 @@ class ArtifactVersions extends React.Component {
   onChange() {
     const value = this.refs.version.value;
     if (value !== '') {
-      const version = this.props.versions.find(v => `${v.dt}` === value);
+      const version = JSON.parse(value);
       this.props.onSelect(version);
     } else {
       this.props.onSelect({ name: this.props.name });
@@ -91,7 +96,7 @@ class ArtifactVersions extends React.Component {
     const disabled = this.props.versions.length === 0 && this.props.nexusVersions.length === 0;
     return (
       <div className="form-group">
-        <select ref="version" onChange={this.onChange} className="form-control" style={{marginTop: '-28px'}}
+        <select ref="version" onChange={this.onChange} className="form-control" style={{ marginTop: '-28px' }}
                 disabled={disabled}>
           <option value="">Latest Jenkins</option>
           <History versions={this.props.versions}/>
@@ -102,6 +107,10 @@ class ArtifactVersions extends React.Component {
   }
 }
 
-ArtifactVersions.propTypes = { versions: React.PropTypes.array, nexusVersions: React.PropTypes.array };
+ArtifactVersions.propTypes = {
+  versions: React.PropTypes.array,
+  nexusVersions: React.PropTypes.array,
+  name: React.PropTypes.string
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArtifactVersions);

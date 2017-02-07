@@ -83,10 +83,12 @@ class Edition extends React.Component {
   onChange(e) {
     e.preventDefault();
     const host = this.refs.host.value;
+    const name = this.refs.name.value;
     const username = this.refs.username.value;
     const password = this.refs.password.value;
     const server = this.state.server;
     server.host = host;
+    server.name = name;
     server.username = username;
     server.password = password;
     const disabled = isDisabled(server);
@@ -97,8 +99,18 @@ class Edition extends React.Component {
     return (
       <div className="row">
         <form className="form-inline">
-          <div className=" col-md-offset-2  col-md-8 col-xs-12">
+          <div className="col-md-4 col-xs-12">
             <div className="form-group col-xs-12">
+              <label htmlFor="name" className="hidden-sm">Name :&nbsp;&nbsp;</label>
+                <input type="text" id="name" className="form-control" ref="name"
+                       value={this.state.server.name} aria-label="The title"
+                       placeholder="The title in the interface" onChange={this.onChange} />
+            </div>
+          </div>
+
+          <div className="col-md-8 col-xs-12">
+
+            <div className="form-group col-xs-12"  >
               <label htmlFor="server" className="hidden-sm">Server :&nbsp;&nbsp;</label>
 
               <div className="input-group col-xs-11">

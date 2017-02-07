@@ -107,7 +107,7 @@ class ServerActions extends React.Component {
   }
 
   render() {
-    const options = this.props.servers.map((s, i) => (<option key={i} value={i}>{s.host}</option>));
+    const options = this.props.servers.map((s, i) => (<option key={i} value={i}>{s.name} ({s.host})</option>));
     const disabled = this.props.servers.length === 0;
     return (
       <div className="row">

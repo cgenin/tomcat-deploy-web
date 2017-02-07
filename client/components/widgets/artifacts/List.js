@@ -144,21 +144,21 @@ class ItemList extends React.Component {
   render() {
     return (
       <tr>
-        <td className="text-center" scope="row" style={{paddingTop: '12px'}}>
+        <td className="text-center" scope="row" style={{ paddingTop: '12px' }}>
           <ItemCheck artifact={this.props.artifact} checked={this.props.checked}/>
         </td>
-        <td className="text-left" style={{paddingTop: '14px'}}>
+        <td className="text-left" style={{ paddingTop: '14px' }}>
           <ItemName name={this.props.artifact.name} url={this.props.artifact.url}/>
         </td>
-        <td className="text-left" style={{paddingTop: '18px'}}>
+        <td className="text-left" style={{ paddingTop: '18px' }}>
           <ItemStatus artifact={this.props.artifact}/>
         </td>
         <td className="text-center"><NexusArtifact artifact={this.props.artifact}/></td>
         <td className="text-center">
           <ArtifactVersions name={this.props.artifact.name} id={this.props.artifact.$loki}/>
         </td>
-        <td className="text-right" style={{paddingTop: '2px'}}>
-          <div style={{display: 'flex', margin: 'auto', flexDirection: 'row', justifyContent: 'flex-end'}}>
+        <td className="text-right" style={{ paddingTop: '2px' }}>
+          <div style={{ display: 'flex', margin: 'auto', flexDirection: 'row', justifyContent: 'flex-end' }}>
             <ButtonToolbar>
               <DropdownButton id={this.props.artifact.name} title={<li className="fa fa-cogs"/>}>
                 <LaunchButton name={this.props.artifact.name}/>
@@ -180,20 +180,29 @@ ItemList.propTypes = { artifact: React.PropTypes.object.isRequired };
 class List extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { asc: true };
+    this.state = { asc: true, filter: '' };
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    this.onFilter = this.onFilter.bind(this);
   }
 
   componentDidMount() {
     this.props.onInit();
   }
 
+  onFilter(e) {
+    this.setState({ filter: e.target.value });
+  }
+
+
   render() {
     const onDelete = this.props.onDelete;
     const onEdit = this.props.onEdit;
     const sortingName = (this.state.asc) ? 'Asc' : 'Desc';
     const clsName = classNames({ fa: true, 'fa-sort-desc': !this.state.asc, 'fa-sort-asc': this.state.asc });
-    const artifacts = this.props.artifacts.sort(sortFactory(this.state.asc)).map(
+    const arr = (this.state.filter !== '') ? this.props.artifacts.filter(a => JSON.stringify(a).indexOf(this.state.filter) !== -1) : this.props.artifacts;
+
+
+    const artifacts = arr.sort(sortFactory(this.state.asc)).map(
       (artifact, i) => <ItemList key={i} onDelete={onDelete} onEdit={onEdit} artifact={artifact}/>
     );
     return (
@@ -202,10 +211,16 @@ class List extends React.Component {
           <caption>
             <div className="row">
               <div className="col-xs-6">
-                Results {this.props.artifacts.length}.
+                Results {arr.length}.
               </div>
-              <div className="col-xs-4 text-right">
+              <div className="col-xs-6 text-right">
                 <NexusVersions nexusVersions={this.props.nexusVersions}/>
+              </div>
+              <div className="col-xs-4">
+                <div className="form-group" style={{ marginTop: 0 }}>
+                  <input type="text" className="form-control" defaultValue={this.state.filter} onChange={this.onFilter}
+                         placeholder="Filter..."/>
+                </div>
               </div>
             </div>
           </caption>
@@ -214,7 +229,8 @@ class List extends React.Component {
             <th className="text-center">
               <AllItemsCheck />
             </th>
-            <th title={sortingName} style={{cursor: 'pointer'}} onClick={() => this.setState({asc: !this.state.asc})}>
+            <th title={sortingName} style={{ cursor: 'pointer' }}
+                onClick={() => this.setState({ asc: !this.state.asc })}>
               Name&nbsp;&nbsp;<i className={clsName}/>
             </th>
             <th className="text-center">Deploy</th>

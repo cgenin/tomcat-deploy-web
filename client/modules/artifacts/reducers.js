@@ -2,6 +2,8 @@ import {UPDATE, DELETE} from './actions';
 
 const defaultState = [];
 
+
+
 export function areducers(state = defaultState, action) {
   switch (action.type) {
     case UPDATE:

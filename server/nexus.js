@@ -6,12 +6,12 @@ const Q = require('q');
 const up = function (host, port) {
   const deferred = Q.defer();
   try {
-    const url = `http://${host}:${port}/nexus/service/local/repositories`;
+    const url = `http://${host}:${port}/nexus`;
 
     const options = {
       host,
       port,
-      path: `/nexus/service/local/repositories`
+      path: `/nexus`
     };
     http.get(options, (rs) => {
       rs.on('data', (d) => {

@@ -25,7 +25,7 @@ class Results extends React.Component {
   }
 
   render() {
-    if (this.props.result.statusCode === 200) {
+    if (this.props.result.statusCode < 400) {
       return (
         <div className="text-center">
           <div className="message success" style={{margin: '2em', padding: '2px'}}>
