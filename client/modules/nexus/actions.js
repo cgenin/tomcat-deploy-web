@@ -39,8 +39,8 @@ export function load() {
   });
 }
 
-export function test(host, port) {
-  return dispatch => fetch(`/api/nexus/test?host=${host}&port=${port}`, {
+export function test(host, port, context) {
+  return () => fetch(`/api/nexus/test?host=${host}&port=${port}&context=${context}`, {
     method: 'get',
     headers: {
       'Accept': 'application/json',
@@ -50,7 +50,7 @@ export function test(host, port) {
 }
 
 export function testArtifact(host, port, groupId, artifactId) {
-  return dispatch => fetch(`/api/nexus/artifact?host=${host}&port=${port}&g=${groupId}&a=${artifactId}`, {
+  return () => fetch(`/api/nexus/artifact?host=${host}&port=${port}&g=${groupId}&a=${artifactId}`, {
     method: 'get',
     headers: {
       'Accept': 'application/json',
@@ -60,7 +60,7 @@ export function testArtifact(host, port, groupId, artifactId) {
 }
 
 export function search(host, port, q) {
-  return dispatch => fetch(`/api/nexus/artifact/search?host=${host}&port=${port}&q=${q}`, {
+  return () => fetch(`/api/nexus/artifact/search?host=${host}&port=${port}&q=${q}`, {
     method: 'get',
     headers: {
       'Accept': 'application/json',

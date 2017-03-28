@@ -199,9 +199,9 @@ class List extends React.Component {
     const onEdit = this.props.onEdit;
     const sortingName = (this.state.asc) ? 'Asc' : 'Desc';
     const clsName = classNames({ fa: true, 'fa-sort-desc': !this.state.asc, 'fa-sort-asc': this.state.asc });
-    const arr = (this.state.filter !== '') ? this.props.artifacts.filter(a => JSON.stringify(a).indexOf(this.state.filter) !== -1) : this.props.artifacts;
-
-
+    const arr = (this.state.filter !== '') ? this.props.artifacts
+        .filter(a => JSON.stringify(a).indexOf(this.state.filter) !== -1) :
+      this.props.artifacts;
     const artifacts = arr.sort(sortFactory(this.state.asc)).map(
       (artifact, i) => <ItemList key={i} onDelete={onDelete} onEdit={onEdit} artifact={artifact}/>
     );

@@ -11,8 +11,8 @@ const mapStateToProps = function () {
 
 const mapDispatchToProps = function (dispatch) {
   return {
-    onTest(host, port) {
-      return dispatch(test(host, port || 80));
+    onTest(host, port, context) {
+      return dispatch(test(host, port || 80, context || '/'));
     }
   };
 };
@@ -62,7 +62,7 @@ class TestForm extends React.Component {
   }
 
   componentDidMount() {
-    this.props.onTest(this.props.host, this.props.port).then(
+    this.props.onTest(this.props.host, this.props.port, this.props.context).then(
       r => this.setState({ waiting: false, result: r }));
   }
 
@@ -82,5 +82,12 @@ class TestForm extends React.Component {
     );
   }
 }
+
+TestForm.propTypes = {
+  onTest: React.PropTypes.func.isRequired,
+  host: React.PropTypes.string.isRequired,
+  port: React.PropTypes.string,
+  context: React.PropTypes.string
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(TestForm);

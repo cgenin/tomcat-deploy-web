@@ -12,7 +12,8 @@ router.get('/', (req, res) => {
 router.get('/test', (req, res) => {
   const host = req.query.host;
   const port = req.query.port;
-  nexus.up(host, port).then(d => res.json(d), d => res.json(d));
+  const context = req.query.context;
+  nexus.up(host, port, context).then(d => res.json(d), d => res.json(d));
 });
 
 
@@ -42,7 +43,9 @@ router.get('/artifact', (req, res) => {
 router.put('/', bodyParser.json(), (req, res) => {
   const body = req.body;
   const config = deploydb.nexus();
-  deploydb.save(config, body);
+  const data = Object.assign({}, config.data[0], body);
+  config.data.filter((d, i) => i > 0).forEach(d => deploydb.remove(config, d));
+  deploydb.save(config, data);
   res.json(body);
 });
 

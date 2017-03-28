@@ -1,15 +1,15 @@
-var express = require('express');
+const express = require('express');
 const http = require('http');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
 
 
-var app = express();
-var http = require('http');
+const app = express();
+const http = require('http');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -51,15 +51,15 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function (err, req, res) {
+app.use( (err, req, res) => {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
         error: {}
     });
 });
-deploydb.init().then(function () {
-    console.log('db started.')
+deploydb.init().then(() => {
+    console.log('db started.');
 });
 
 /**

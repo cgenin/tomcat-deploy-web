@@ -32,7 +32,7 @@ class FormPage extends React.Component {
     super(props);
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
-    this.state = { nexus: { host: '', port: '' }, test: false };
+    this.state = { nexus: { host: '', port: '', context: '' }, test: false };
   }
 
 
@@ -40,6 +40,7 @@ class FormPage extends React.Component {
     const nexus = Object.assign({}, this.state.nexus);
     nexus.host = this.refs.host.value;
     nexus.port = this.refs.port.value;
+    nexus.context = this.refs.context.value;
     this.props.onSaveState(nexus);
   }
 
@@ -54,7 +55,7 @@ class FormPage extends React.Component {
     const formGroupStyle = { marginTop: '0px', marginLeft: '0px', marginRight: '0px' };
     return (
       <div >
-        <div className="text-center" style={{fontSize: '24px'}}>
+        <div className="text-center" style={{ fontSize: '24px' }}>
           <strong>Nexus Configuration</strong>
         </div>
         <form className="form-horizontal">
@@ -71,12 +72,18 @@ class FormPage extends React.Component {
                      value={this.props.nexus.port} onChange={this.onChange} ref="port"
               />
             </div>
+            <div className="form-group" style={formGroupStyle}>
+              <label className="control-label" htmlFor="context">Context</label>
+              <input type="text" className="form-control" id="context" placeholder="/"
+                     value={this.props.nexus.context} onChange={this.onChange} ref="context"
+              />
+            </div>
           </fieldset>
         </form>
         <div className="text-right">
           <button className="btn btn-default btn-fab btn-fab-mini" onClick={() => this.props.onTest()}
                   title="Test connection"
-                  style={StyleFabButt}><i className="material-icons" style={{color: 'black'}}>swap_vert</i></button>
+                  style={StyleFabButt}><i className="material-icons" style={{ color: 'black' }}>swap_vert</i></button>
           <button className="btn btn-danger btn-fab btn-fab-mini" onClick={() => this.props.onHide()} title="close"
                   style={StyleFabButt}><i className="material-icons">clear</i></button>
           <button className="btn btn-primary btn-fab btn-fab-mini" title="Save"
@@ -93,7 +100,7 @@ class View extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { nexus: { host: '', port: '' }, test: false };
+    this.state = { nexus: { host: '', port: '', context: '' }, test: false };
     this.handleTest = this.handleTest.bind(this);
   }
 
@@ -115,9 +122,9 @@ class View extends React.Component {
   render() {
     const vnexus = this.state.nexus || {};
     const testPage = (this.state.test) ?
-      <TestForm host={vnexus.host} port={vnexus.port} onClose={this.handleTest}/> : (
-      <FormPage nexus={vnexus} onSaveState={(nexus) => this.setState({ nexus })}
-                onTest={this.handleTest} onAction={this.props.onAction} onHide={this.props.onHide}/>);
+      <TestForm host={vnexus.host} port={vnexus.port} context={vnexus.context} onClose={this.handleTest}/> : (
+        <FormPage nexus={vnexus} onSaveState={(nexus) => this.setState({ nexus })}
+                  onTest={this.handleTest} onAction={this.props.onAction} onHide={this.props.onHide}/>);
     return (
       <div>
         {testPage}

@@ -6,7 +6,8 @@ export const OverlayStyle = {
   borderRadius: 3,
   marginLeft: 10,
   marginTop: 10,
-  padding: 10
+  padding: 10,
+  zIndex: 2000
 };
 
-export const StyleFabButt = {marginRight: '5px', marginLeft: '5px'};
+export const StyleFabButt = { marginRight: '5px', marginLeft: '5px' };

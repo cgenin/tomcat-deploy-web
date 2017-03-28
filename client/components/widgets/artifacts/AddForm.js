@@ -77,18 +77,6 @@ class AddForm extends React.Component {
   }
 
   render() {
-    const onSelectSearch = (groupId, artifactId) => {
-      const artifact = this.state.artifact;
-      artifact.groupId = groupId;
-      artifact.artifactId = artifactId;
-      this.setState({ artifact, searchNexus: false });
-    };
-
-    const searchModal = (this.state.searchNexus) ?
-      <SearchArtifact artifact={this.state.artifact}
-                      onSelect={onSelectSearch} onHide={() => this.setState({searchNexus: false})}/> : <div/>;
-    const testNexusModal = (this.state.testNexus) ?
-      <TestArtifact artifact={this.state.artifact} onHide={() => this.setState({testNexus: false})}/> : <div/>;
     return (
       <form >
 
@@ -113,13 +101,6 @@ class AddForm extends React.Component {
               <div className="col-xs-3  col-sm-8 " style={{marginTop: '15px'}}>
                 <h2 className="panel-title" style={{fontSize: '30px', margin: 'auto'}}>Nexus datas</h2>
               </div>
-              <div className="col-xs-6 col-sm-4">
-                <button type="button" className="btn btn-raised btn-info"
-                        onClick={() => this.setState({searchNexus: true})}>
-                  <li className="fa fa-search fa-2x"/>
-                  &nbsp;search in nexus
-                </button>
-              </div>
             </div>
           </div>
           <div className="panel-body">
@@ -137,9 +118,6 @@ class AddForm extends React.Component {
                      onChange={this.onChange} ref="artifactId"
               />
             </div>
-            <div className="text-right">
-              <button type="button" className="btn btn-default" onClick={() => this.setState({testNexus: true})}>Test on nexus</button>
-            </div>
           </div>
 
         </div>
@@ -155,8 +133,6 @@ class AddForm extends React.Component {
             &nbsp;Submit
           </button>
         </div>
-        {searchModal}
-        {testNexusModal}
       </form>
     );
   }

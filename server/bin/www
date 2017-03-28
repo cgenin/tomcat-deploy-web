@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
   }
   console.log(`connection of ${ip}`);
   if (inProgress.isActive()) {
-    socket.emit(inProgress.event, {active: true});
+    socket.emit(inProgress.event, { active: true });
   }
   require('../routes/deploy')(socket, io, ip);
 });

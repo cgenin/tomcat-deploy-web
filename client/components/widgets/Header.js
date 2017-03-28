@@ -12,7 +12,6 @@ import BlockUI from './Blockui';
 import AboutModal from './AboutModal';
 import Configuration from './nexus/Configuration';
 
-import {reload} from '../../modules/nexus-versions/actions';
 
 const mapStateToProps = function (state) {
   const homeActive = state.routing.location.pathname === '/';
@@ -29,9 +28,6 @@ const mapDispatchToProps = function (dispatch) {
     },
     onAddArtifact() {
       dispatch(routeActions.push('/add'));
-    },
-    onRefreshNexus() {
-     return dispatch(reload());
     }
   };
 };
@@ -45,7 +41,6 @@ class Header extends React.Component {
     this.onLaunchAbout = this.onLaunchAbout.bind(this);
     this.onLaunchCleanHistory = this.onLaunchCleanHistory.bind(this);
     this.onNexusConfiguration = this.onNexusConfiguration.bind(this);
-    this.onRefresh = this.onRefresh.bind(this);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
@@ -72,14 +67,6 @@ class Header extends React.Component {
     const y = e.clientY;
     this.setState({ nexusConfiguration: !this.state.nexusConfiguration, x, y });
     return false;
-  }
-
-  onRefresh(e) {
-    if (e) {
-      e.preventDefault();
-    }
-    this.setState({ refreshNexusVersion: true });
-    this.props.onRefreshNexus().then(() => this.setState({refreshNexusVersion: false}))
   }
 
 
@@ -110,7 +97,6 @@ class Header extends React.Component {
                            id="config-dropdown">
                 <MenuItem eventKey={3.0} header>Nexus</MenuItem>
                 <MenuItem eventKey={3.1} onClick={this.onNexusConfiguration}>Nexus Configuration</MenuItem>
-                <MenuItem eventKey={3.4} onClick={this.onRefresh}>Refresh Versions</MenuItem>
                 <MenuItem divider/>
                 <MenuItem eventKey={3.2} header>Artifacts</MenuItem>
                 <MenuItem eventKey={3.3} onClick={this.onLaunchCleanHistory}>Clean history</MenuItem>

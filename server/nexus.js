@@ -3,15 +3,16 @@
 const http = require('http');
 const Q = require('q');
 
-const up = function (host, port) {
+const up = function (host, port, context) {
   const deferred = Q.defer();
+  const url = `http://${host}:${port}${context}`;
   try {
-    const url = `http://${host}:${port}/nexus`;
+
 
     const options = {
       host,
       port,
-      path: `/nexus`
+      path: `${context}`
     };
     http.get(options, (rs) => {
       rs.on('data', (d) => {
