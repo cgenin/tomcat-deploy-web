@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 
 router.get('/', (req, res) => {
   const config = deploydb.nexus() || { data: [{}] };
-  res.json(config.data[0]);
+  const json = config.data[0] || {};
+  res.json(json);
 });
 
 router.get('/test', (req, res) => {

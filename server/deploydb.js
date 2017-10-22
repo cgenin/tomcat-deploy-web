@@ -4,7 +4,7 @@ const DeployDB = function DeployDB() {
   const configCollection = 'configuration';
   const nexusCollection = 'nexus';
   const loki = require('lokijs');
-  const db = new loki('db/data.json', { autoload: true });
+  const db = new loki('db/data.json', { autoload: false });
   const createIfNotExist = function (name) {
     console.log(`createIfNotExist : ${name}`);
     if (!db.getCollection(name)) {

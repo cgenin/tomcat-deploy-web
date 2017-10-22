@@ -23,7 +23,7 @@ module.exports = function (socket, io, ip) {
   const war = require('../war');
   const rc = remoteConsole(io);
   const emitInProgress = function () {
-    io.sockets.emit(inProgress.event, { active: inProgress.isActive(), ip });
+    io.sockets.emit('deploiement-in-progress', { active: inProgress.isActive(), ip });
   };
   rc.log('connected to server.');
 
