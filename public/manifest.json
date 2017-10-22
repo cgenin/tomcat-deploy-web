@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "tomcat-web-deploy",
+  "name": "Deploy war on tomcat for devloppement",
   "icons": [
     {
       "src": "favicon.ico",
