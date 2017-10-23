@@ -1,29 +1,20 @@
-'use strict';
-
 const http = require('http');
 const fs = require('fs');
 const URL = require('url');
-const Q = require('q');
+const Rx = require('rxjs/Rx');
 const config = require('./config');
 const downloadedDir = config.downloadedDir;
 
 const makeDirectory = function () {
-  const deferred = Q.defer();
-
-  fs.stat(downloadedDir, (exist) => {
-    if (!exist) {
-      deferred.resolve(downloadedDir);
-      return;
-    }
-    fs.mkdir(downloadedDir, (err) => {
-      if (err) {
-        deferred.reject(err);
-        return;
+  const stat = Rx.Observable.bindNodeCallback(fs.stat);
+  return stat(downloadedDir)
+    .flatMap((exist) => {
+      if (exist) {
+        return Rx.Observable.of(downloadedDir);
       }
-      deferred.resolve(downloadedDir);
+      return Rx.Observable.bindNodeCallback(fs.mkdir)
+        .map(() => downloadedDir);
     });
-  });
-  return deferred.promise;
 };
 
 const warname = function (name) {
@@ -34,55 +25,39 @@ const fullpath = function (name) {
   return `${downloadedDir}/${warname(name)}`;
 };
 const managedOld = function (item) {
-  const deferred = Q.defer();
   const name = item.name;
   const path = fullpath(name);
-  try {
-    fs.stat(path, (err) => {
-      if (err) {
-        deferred.resolve(false);
-        return;
-      }
-      const time = new Date().getTime();
-      fs.renameSync(path, `${path}.${time}`);
-      deferred.resolve(true);
-    });
-  } catch (e) {
-    console.error(e);
-    deferred.reject(e);
-  }
-  return deferred.promise;
+  const stat = Rx.Observable.bindNodeCallback(fs.stat);
+  return stat(path).flatMap(() => {
+    const time = new Date().getTime();
+    const renameSync = Rx.Observable.bindNodeCallback(fs.rename);
+    return renameSync(path, `${path}.${time}`);
+  }).catch(() => Rx.Observable.of(item))
 };
 
 const download = function (item) {
-  const deferred = Q.defer();
-  try {
-    const name = item.name;
-    const url = item.url;
-    const war = warname(name);
-    const path = fullpath(name);
-    const file = fs.createWriteStream(path);
-    http.get(url, (response) => {
+  const name = item.name;
+  const url = item.url;
+  const war = warname(name);
+  const path = fullpath(name);
+  const file = fs.createWriteStream(path);
+  const g = Rx.Observable.bindCallback(http.get);
+  return g(url)
+    .flatMap((response) => {
       if (response.statusCode !== 200) {
         console.error(`download item failure ${response.statusCode}`);
-        deferred.reject(response);
-        return;
+        return Rx.Observable.throw(response);
       }
       response.pipe(file);
-      file.on('finish', () => {
-        file.close(() => {
-          deferred.resolve(war);
-        });
-      });
-    }).on('error', (err) => {
-      fs.unlink(path);
-      deferred.reject(err);
+      return Rx.Observable.create((sub) =>
+        file.on('finish', () => {
+          file.close(() => {
+            sub.next(war);
+            sub.complete();
+          });
+        })
+      );
     });
-  } catch (e) {
-    console.error(e);
-    deferred.reject(e);
-  }
-  return deferred.promise;
 };
 
 const host = function (configuration) {
@@ -90,139 +65,120 @@ const host = function (configuration) {
 };
 
 const rollback = function (configuration, item, oldVersion) {
-  const deferred = Q.defer();
-  try {
-    const root = host(configuration);
-    const parsingUrl = URL.parse(root);
-    const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
-    const options = {
-      host: parsingUrl.hostname,
-      method: 'PUT',
-      port: parsingUrl.port,
-      path: url,
-      auth: `${configuration.username}:${configuration.password}`
-    };
-    const req = http.request(options, (rs) => {
-      let result = '';
-      rs.on('data', (data) => {
-        result += data;
-      });
-      rs.on('end', () => {
-        if (rs.statusCode === 200) {
-          deferred.resolve(result);
-        } else {
-          deferred.reject(rs);
-        }
-      });
-    }).on('error', (e) => {
-      deferred.reject(e);
-    });
+  const root = host(configuration);
+  const parsingUrl = URL.parse(root);
+  const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
+  const options = {
+    host: parsingUrl.hostname,
+    method: 'PUT',
+    port: parsingUrl.port,
+    path: url,
+    auth: `${configuration.username}:${configuration.password}`
+  };
+  const readFile = Rx.Observable.bindNodeCallback(fs.readFile);
+  return readFile(`${downloadedDir}/${oldVersion.f}`)
+    .flatMap(d => {
+        return Rx.Observable.create((subscriber) => {
+          const req = http.request(options, (rs) => {
+            let result = '';
+            rs.on('data', (data) => {
+              result += data;
+            });
+            rs.on('end', () => {
+              if (rs.statusCode === 200) {
+                subscriber.next(result);
+                subscriber.complete();
+              } else {
+                subscriber.error(rs);
+              }
+            });
+          }).on('error', (e) => {
+            subscriber.error(e);
+          });
 
-    fs.readFile(`${downloadedDir}/${oldVersion.f}`, (err, data) => {
-      if (err) {
-        deferred.reject(err);
-      } else {
-        req.end(data);
+          req.end(d);
+        });
       }
-    });
-  } catch (e) {
-    console.error(e);
-    deferred.reject(e);
-  }
-  return deferred.promise;
+    );
 };
 
 
 const deploy = function (configuration, item) {
-  const deferred = Q.defer();
-  try {
-    const root = host(configuration);
-    const parsingUrl = URL.parse(root);
-    const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
-    const options = {
-      host: parsingUrl.hostname,
-      method: 'PUT',
-      port: parsingUrl.port,
-      path: url,
-      auth: `${configuration.username}:${configuration.password}`
-    };
-    const req = http.request(options, (rs) => {
-      let result = '';
-      rs.on('data', (data) => {
-        result += data;
+  const root = host(configuration);
+  const parsingUrl = URL.parse(root);
+  const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
+  const options = {
+    host: parsingUrl.hostname,
+    method: 'PUT',
+    port: parsingUrl.port,
+    path: url,
+    auth: `${configuration.username}:${configuration.password}`
+  };
+  const readFile = Rx.Observable.bindNodeCallback(fs.readFile);
+  return readFile(fullpath(item.name)).flatMap(d => {
+    return Rx.Observable.create((subscriber) => {
+      const req = http.request(options, (rs) => {
+        let result = '';
+        rs.on('data', (data) => {
+          result += data;
+        });
+        rs.on('end', () => {
+          if (rs.statusCode === 200 && result.indexOf('ECHEC') === -1 && result.indexOf('FAIL') === -1) {
+            subscriber.next(result);
+            subscriber.complete();
+          } else {
+            subscriber.error(rs);
+          }
+        });
+      }).on('error', (e) => {
+        subscriber.error(e);
       });
-      rs.on('end', () => {
-        if (rs.statusCode === 200 && result.indexOf('ECHEC') === -1 && result.indexOf('FAIL') === -1) {
-          deferred.resolve(result);
-        } else {
-          deferred.reject(rs);
-        }
-      });
-    }).on('error', (e) => {
-      deferred.reject(e);
+      req.end(d);
     });
-
-    fs.readFile(fullpath(item.name), (err, data) => {
-      if (err) {
-        deferred.reject(err);
-      } else {
-        req.end(data);
-      }
-    });
-  } catch (e) {
-    console.error(e);
-    deferred.reject(e);
-  }
-  return deferred.promise;
+  });
 };
 
 const test = function (h, username, password) {
-  const deferred = Q.defer();
-  try {
-    const root = `http://${h}`;
-    const parsingUrl = URL.parse(root);
-    const url = `${root}/manager/text/list`;
-    const options = {
-      host: parsingUrl.hostname,
-      method: 'GET',
-      port: parsingUrl.port,
-      path: url,
-      auth: `${username}:${password}`
-    };
+  const root = `http://${h}`;
+  const parsingUrl = URL.parse(root);
+  const url = `${root}/manager/text/list`;
+  const options = {
+    host: parsingUrl.hostname,
+    method: 'GET',
+    port: parsingUrl.port,
+    path: url,
+    auth: `${username}:${password}`
+  };
+  return Rx.Observable.create((subscriber) => {
     http.get(options, (rs) => {
       const bodyChunks = [];
       rs.on('data', (chunk) => {
         bodyChunks.push(chunk);
       }).on('end', () => {
         const body = Buffer.concat(bodyChunks).toString('utf8');
-        deferred.resolve({ status: rs.statusCode, body });
+        subscriber.next({status: rs.statusCode, body});
+        subscriber.complete();
       });
     }).on('error', (e) => {
       console.error('Error inc calling', e);
       const body = e.message || 'Error';
-      deferred.reject({ status: 404, body });
+      subscriber.error({status: 404, body});
     });
-  } catch (e) {
-    console.error(e);
-    deferred.reject(e);
-  }
-  return deferred.promise;
+  });
 };
 
 const undeploy = function (configuration, item) {
-  const deferred = Q.defer();
-  try {
-    const root = host(configuration);
-    const parsingUrl = URL.parse(root);
-    const url = `${root}/manager/text/undeploy?path=/${item.name}`;
-    const options = {
-      host: parsingUrl.hostname,
-      method: 'GET',
-      port: parsingUrl.port,
-      path: url,
-      auth: `${configuration.username}:${configuration.password}`
-    };
-
+  const root = host(configuration);
+  const parsingUrl = URL.parse(root);
+  const url = `${root}/manager/text/undeploy?path=/${item.name}`;
+  const options = {
+    host: parsingUrl.hostname,
+    method: 'GET',
+    port: parsingUrl.port,
+    path: url,
+    auth: `${configuration.username}:${configuration.password}`
+  };
+  return Rx.Observable.create((subscriber) => {
     http.get(options, (rs) => {
       let result = '';
       rs.on('data', (data) => {
@@ -230,29 +186,24 @@ const undeploy = function (configuration, item) {
       });
       rs.on('end', () => {
         if (rs.statusCode === 200) {
-          deferred.resolve(result);
+          subscriber.next(result);
+          subscriber.complete();
         } else {
-          deferred.reject(rs);
+          subscriber.error(rs);
         }
       });
     }).on('error', (e) => {
-      deferred.reject(e);
+      subscriber.error(e);
     });
-  } catch (e) {
-    console.error(e);
-    deferred.reject(e);
-  }
-
-
-  return deferred.promise;
+  });
 };
 
 module.exports = {
-  makedirectory: makeDirectory,
-  managedOld: managedOld,
-  download: download,
-  undeploy: undeploy,
-  deploy: deploy,
-  test: test,
-  rollback: rollback
+  makeDirectory,
+  managedOld,
+  download,
+  undeploy,
+  deploy,
+  test,
+  rollback
 };

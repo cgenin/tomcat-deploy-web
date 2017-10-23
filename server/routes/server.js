@@ -18,7 +18,7 @@ router.get('/auth', (req, res) => {
   const host = req.query.host;
   const username = req.query.username;
   const password = req.query.password;
-  war.test(host, username, password).then(
+  war.test(host, username, password).subscribe(
     (d) => res.json(d), (e) => res.json(e));
 });
 
