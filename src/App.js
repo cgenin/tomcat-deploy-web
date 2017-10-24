@@ -16,11 +16,7 @@ import {initialize} from './socket';
 import Routes from './routes';
 
 
-//const history = browserHistory;
-//const reduxRouterMiddlewarNe = syncHistory(history);
-
 const rootReducer = combineReducers(Object.assign({}, {
-  //routing: routeReducer,
   servers: reducers,
   artifacts: areducers,
   actions: actionReducers,

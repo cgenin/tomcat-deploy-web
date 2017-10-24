@@ -49,14 +49,19 @@ export function test(host, port, context) {
   }).then(res => res.json());
 }
 
-export function testArtifact(host, port, groupId, artifactId) {
-  return () => fetch(`/api/nexus/artifact?host=${host}&port=${port}&g=${groupId}&a=${artifactId}`, {
+export function testArtifact(groupId, artifactId) {
+  return () => fetch(`/api/nexus/artifact?&g=${groupId}&a=${artifactId}`, {
     method: 'get',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     }
-  }).then(res => res.json());
+  }).then(res => {
+    const statusCode = res.status;
+    return res.json().then(body => {
+      return Promise.resolve({statusCode, body});
+    });
+  });
 }
 
 export function search(host, port, q) {

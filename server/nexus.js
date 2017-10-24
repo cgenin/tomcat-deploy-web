@@ -2,6 +2,8 @@
 
 const http = require('http');
 const Q = require('q');
+const Rx = require('rxjs/Rx');
+const {execFile} = require('child_process');
 
 const up = function (host, port, context) {
   const deferred = Q.defer();
@@ -20,19 +22,19 @@ const up = function (host, port, context) {
       });
       rs.on('end', () => {
         const statusCode = rs.statusCode;
-        deferred.resolve({ statusCode, url });
+        deferred.resolve({statusCode, url});
       });
       rs.on('error', (e) => {
         console.error(e);
-        deferred.resolve({ statusCode: 500, url });
+        deferred.resolve({statusCode: 500, url});
       });
     }).on('error', (e) => {
       console.error(e);
-      deferred.resolve({ statusCode: 500, url });
+      deferred.resolve({statusCode: 500, url});
     });
   } catch (e) {
     console.error(e);
-    deferred.reject({ statusCode: 500, url });
+    deferred.reject({statusCode: 500, url});
   }
   return deferred.promise;
 };
@@ -48,7 +50,7 @@ const search = function (host, port, q) {
       port,
       method: 'GET',
       path: url,
-      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
     };
     const req = http.request(options, (rs) => {
       let respString = '';
@@ -58,63 +60,47 @@ const search = function (host, port, q) {
       rs.on('end', () => {
         const statusCode = rs.statusCode;
         const body = JSON.parse(respString);
-        deferred.resolve({ statusCode, url, body });
+        deferred.resolve({statusCode, url, body});
       });
       rs.on('error', (e) => {
         console.error(e);
-        deferred.resolve({ statusCode: 500, url });
+        deferred.resolve({statusCode: 500, url});
       });
     });
     req.on('error', (e) => {
       console.error(e);
-      deferred.resolve({ statusCode: 500, url });
+      deferred.resolve({statusCode: 500, url});
     });
 
     req.end();
   } catch (e) {
     console.error(e);
-    deferred.reject({ statusCode: 500, url });
+    deferred.reject({statusCode: 500, url});
   }
   return deferred.promise;
 };
 
-const valid = function (host, port, groupid, artifactid) {
-  const deferred = Q.defer();
-  const url = `http://${host}:${port}/nexus/service/local/lucene/search?g=${groupid}&a=${artifactid}`;
-  try {
-    const options = {
-      host,
-      port,
-      method: 'GET',
-      path: url,
-      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-    };
-    const req = http.request(options, (rs) => {
-      let respString = '';
-      rs.on('data', (d) => {
-        respString += d;
-      });
-      rs.on('end', () => {
-        const statusCode = rs.statusCode;
-        const body = JSON.parse(respString);
-        deferred.resolve({ statusCode, url, body });
-      });
-      rs.on('error', (e) => {
-        console.error(e);
-        deferred.resolve({ statusCode: 500, url });
-      });
-    });
-    req.on('error', (e) => {
-      console.error(e);
-      deferred.resolve({ statusCode: 500, url });
-    });
-
-    req.end();
-  } catch (e) {
-    console.error(e);
-    deferred.reject({ statusCode: 500, url });
-  }
-  return deferred.promise;
+const valid = function (groupId, artifactId, packaging = 'war', version = 'LATEST') {
+  const ef = Rx.Observable.bindNodeCallback(execFile);
+  return ef('mvn.bat', [
+    'dependency:get',
+    `-DgroupId=${groupId}`,
+    `-DartifactId=${artifactId}`,
+    `-Dversion=${version}`,
+    `-Dpackaging=${packaging}`,
+    '-Dtransitive=false'
+  ], {encoding: 'utf8'})
+    .map((arr) => {
+        const stdout = arr[0];
+        const stderr = arr[1];
+        if (stderr !== '') {
+          console.error(stderr)
+          throw new Error(`${groupId}.${artifactId} - version : ${version} - not found`)
+        }
+        const found =  /SUCCESS/g.test(stdout);
+        return {found, stdout};
+      }
+    );
 };
 
 const reload = function (host, port, artifacts) {
@@ -136,7 +122,7 @@ const reload = function (host, port, artifacts) {
       })
       .map(obj => {
         const artifact = artifacts.find(a => a.artifactId === obj.artifactId && a.groupId === obj.groupId);
-        return { id: artifact.$loki, nexus: obj };
+        return {id: artifact.$loki, nexus: obj};
       });
     deferred.resolve(res);
   }).catch(e => {

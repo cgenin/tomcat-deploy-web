@@ -1,6 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router'
 import {connect} from 'react-redux';
+import TestArtifact from '../nexus/TestArtifact';
 import {save} from '../../../modules/artifacts/actions';
 import PropTypes from 'prop-types';
 
@@ -40,18 +41,26 @@ class AddForm extends React.Component {
         url: ''
       },
       disabled: true,
-      searchNexus: false,
       testNexus: false
     };
     this.onClick = this.onClick.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onTest = this.onTest.bind(this);
   }
 
   componentWillMount() {
     const artifact = this.props.artifact;
     const disabled = isDisabled(this.props.artifact);
     this.setState({artifact, disabled});
+  }
+
+  onTest(e) {
+    if (e) {
+      e.preventDefault();
+    }
+    const testNexus = !this.state.testNexus;
+    this.setState({testNexus})
   }
 
   onCancel(e) {
@@ -79,6 +88,9 @@ class AddForm extends React.Component {
   }
 
   render() {
+
+    const testNexusModal = (this.state.testNexus) ? <TestArtifact artifact={this.state.artifact} onHide={this.onTest} /> : null;
+
     return (
       <form>
 
@@ -92,7 +104,8 @@ class AddForm extends React.Component {
           <label className="control-label" htmlFor="url">Jenkins url</label>
           <div className="input-group">
             <span className="input-group-addon">http://</span>
-            <input type="text" className="form-control" id="url" placeholder="Url" defaultValue={this.state.artifact.url}
+            <input type="text" className="form-control" id="url" placeholder="Url"
+                   defaultValue={this.state.artifact.url}
                    onChange={this.onChange} ref="url"
             />
           </div>
@@ -123,18 +136,25 @@ class AddForm extends React.Component {
           </div>
 
         </div>
-        <div className="col-xs-offset-4 col-xs-4">
+        <div className="col-xs-4 text-center">
           <a href="/" onClick={this.onCancel} className="btn btn-default">
             <li className="fa fa-backward"/>
             &nbsp;Cancel
           </a>
         </div>
-        <div className=" col-xs-4">
+        <div className="col-xs-4 text-center">
+          <a href="/" onClick={this.onTest} className="btn btn-default">
+            <li className="fa fa-retweet"/>
+            &nbsp;Test
+          </a>
+        </div>
+        <div className="col-xs-4 text-center">
           <button type="button" onClick={this.onClick} className="btn btn-primary" disabled={this.state.disabled}>
             <li className="glyphicon glyphicon-ok"/>
             &nbsp;Submit
           </button>
         </div>
+        {testNexusModal}
       </form>
     );
   }
