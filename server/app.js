@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 
-require('./backup').load();
+require('./backup').load().subscribe((inner)=> console.log('backup versions initialized'), err => console.error(err));
 
 const deploydb = require('./deploydb');
 

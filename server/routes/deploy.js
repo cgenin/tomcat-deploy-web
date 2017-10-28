@@ -31,7 +31,7 @@ module.exports = function (socket, io, ip) {
 
 
   socket.emit('versions', backup.data());
-  socket.on('artifact-clean', (nb) => io.sockets.emit('versions', backup.clean(nb)));
+  socket.on('artifact-clean', (nb) => backup.clean(nb).subscribe(v => io.sockets.emit('versions', v)));
 
   socket.on('undeploy', (data) => {
     inProgress.active();
@@ -122,7 +122,7 @@ module.exports = function (socket, io, ip) {
         .subscribe(
           (o) => {
             socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK', configuration.host));
-            backup.load(o.name).then((d) => io.sockets.emit('versions', d));
+            backup.load(o.name).subscribe((d) => io.sockets.emit('versions', d));
             io.sockets.emit('deploy-end', {});
           },
           (err) => {

@@ -22,8 +22,14 @@ module.exports = (io) => {
 
   router.delete('/last/:nb', (req, res) => {
     const nb = req.params.nb;
-    res.json(backup.clean(nb));
-    io.sockets.emit('snackbar', {});
+    backup.clean(nb).subscribe((i) => {
+      res.json(i);
+      io.sockets.emit('snackbar', {});
+    }, err => {
+      console.error(err);
+      res.json(backup.data())
+    });
+
   });
 
 
