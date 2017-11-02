@@ -2,19 +2,20 @@ import React from 'react';
 import {withRouter} from 'react-router'
 import {connect} from 'react-redux';
 import TestArtifact from '../nexus/TestArtifact';
-import {save} from '../../../modules/artifacts/actions';
+import {save, load} from '../../../modules/artifacts/actions';
 import PropTypes from 'prop-types';
 
 function isDisabled(artifact) {
-  return !artifact.name || artifact.name.length === 0;
+  return !artifact.name || artifact.name.length === 0 || (artifact.url.length === 0 && (artifact.groupId.length === 0 && artifact.artifactId.length === 0));
 }
 
 const mapStateToProps = function (state, ownProps) {
-  if (ownProps.name) {
-    const artifact = state.artifacts.find(a => a.name === ownProps.name);
+  if (ownProps.id) {
+    const artifact = state.artifacts.find(a => `${a.$loki}` === ownProps.id);
     if (artifact) {
       return {
-        artifact
+        artifact, id: ownProps.id
+
       };
     }
   }
@@ -28,6 +29,9 @@ const mapDispatchToProps = function (dispatch) {
   return {
     onSave(artifact, history) {
       dispatch(save(artifact)).then(() => history.push('/'));
+    },
+    onInit() {
+      dispatch(load());
     }
   };
 };
@@ -47,12 +51,27 @@ class AddForm extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.onTest = this.onTest.bind(this);
+    this._update = this._update.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.onInit();
   }
 
   componentWillMount() {
     const artifact = this.props.artifact;
-    const disabled = isDisabled(this.props.artifact);
+    this._update(artifact);
+  }
+
+  _update(artifact) {
+    const disabled = isDisabled(artifact);
     this.setState({artifact, disabled});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.artifact.$loki !== nextProps.artifact.$loki) {
+      this._update(nextProps.artifact);
+    }
   }
 
   onTest(e) {
@@ -77,19 +96,22 @@ class AddForm extends React.Component {
     return false;
   }
 
-  onChange() {
-    const name = this.refs.name.value;
-    const url = this.refs.url.value;
-    const groupId = this.refs.groupId.value;
-    const artifactId = this.refs.artifactId.value;
-    const artifact = Object.assign({}, this.props.artifact, {name, url, groupId, artifactId});
-    const disabled = name.length === 0 && (url.length === 0 || (groupId.length === 0 && artifactId.length === 0));
-    this.setState({artifact, disabled});
+  onChange(attr) {
+    return (evt) => {
+      const {name, url, groupId, artifactId} =  this.state.artifact;
+      const n = {name, url, groupId, artifactId};
+      n[attr] = evt.target.value;
+      const artifact = Object.assign({}, this.props.artifact, n);
+      const disabled = isDisabled(artifact);
+      this.setState({artifact, disabled});
+    };
+
   }
 
   render() {
 
-    const testNexusModal = (this.state.testNexus) ? <TestArtifact artifact={this.state.artifact} onHide={this.onTest} /> : null;
+    const testNexusModal = (this.state.testNexus) ?
+      <TestArtifact artifact={this.state.artifact} onHide={this.onTest}/> : null;
 
     return (
       <form>
@@ -97,7 +119,7 @@ class AddForm extends React.Component {
         <div className="form-group ">
           <label className="control-label" htmlFor="name">Name</label>
           <input type="text" className="form-control" id="name" placeholder="Name"
-                 defaultValue={this.state.artifact.name} onChange={this.onChange} ref="name"
+                 value={this.state.artifact.name} onChange={this.onChange('name')}
           />
         </div>
         <div className="form-group">
@@ -105,8 +127,8 @@ class AddForm extends React.Component {
           <div className="input-group">
             <span className="input-group-addon">http://</span>
             <input type="text" className="form-control" id="url" placeholder="Url"
-                   defaultValue={this.state.artifact.url}
-                   onChange={this.onChange} ref="url"
+                   value={this.state.artifact.url}
+                   onChange={this.onChange('url')}
             />
           </div>
         </div>
@@ -122,15 +144,15 @@ class AddForm extends React.Component {
             <div className="form-group">
               <label className="control-label" htmlFor="group-id">Group Id</label>
               <input type="text" className="form-control" id="group-id" placeholder="Group Id"
-                     defaultValue={this.state.artifact.groupId}
-                     onChange={this.onChange} ref="groupId"
+                     value={this.state.artifact.groupId}
+                     onChange={this.onChange('groupId')}
               />
             </div>
             <div className="form-group">
               <label className="control-label" htmlFor="artifact-id">Artifact Id</label>
               <input type="text" className="form-control" id="artifact-id" placeholder="Artifact Id"
-                     defaultValue={this.state.artifact.artifactId}
-                     onChange={this.onChange} ref="artifactId"
+                     value={this.state.artifact.artifactId}
+                     onChange={this.onChange('artifactId')}
               />
             </div>
           </div>

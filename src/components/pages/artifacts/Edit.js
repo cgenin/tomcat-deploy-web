@@ -5,12 +5,11 @@ import AddForm from '../../widgets/artifacts/AddForm';
 import Title from '../../widgets/Title';
 
 const mapStateToProps = function (state, props) {
-  const query = props.location.query || {};
-  if (!query.i) {
+  const query = props.match.params || {};
+  if (!query.loki) {
     return {};
   }
-  const name = query.i;
-  return {name};
+  return {id: query.loki};
 };
 
 
@@ -21,7 +20,7 @@ const EditPage = (props) => {
       <div className="row">
         <div className="panel panel-default col-xs-offset-1 col-xs-10">
           <div className="panel-body">
-            <AddForm name={props.name}/>
+            <AddForm id={props.id}/>
           </div>
         </div>
       </div>

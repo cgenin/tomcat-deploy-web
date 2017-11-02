@@ -7,6 +7,7 @@ import AddPage from './components/pages/artifacts/Add';
 import EditPage from './components/pages/artifacts/Edit';
 import ServerEditPage from './components/pages/server/ServerEditPage';
 import ServerAddPage from './components/pages/server/ServerAddPage';
+import routesMd from './components/pages/Markdowns'
 import {ADD_ARTIFACT, EDIT_ARTIFACT, ADD_SERVER, EDIT_SERVER} from './routesConstant';
 
 const routes = () => (
@@ -18,9 +19,9 @@ const routes = () => (
       <Route path={EDIT_ARTIFACT.CST} component={EditPage}/>
       <Route path={ADD_SERVER.CST} component={ServerAddPage}/>
       <Route path={EDIT_SERVER.CST} component={ServerEditPage}/>
+      {routesMd.map(r=> <Route path={r.path} component={r.component}/>)}
     </MainLayout>
   </BrowserRouter>
-
 );
 
 export default routes;

@@ -5,7 +5,7 @@ export const ADD_ARTIFACT = {
 };
 
 export const EDIT_ARTIFACT = {
-  CST: '/edit'
+  CST: '/edit/:loki'
 };
 
 export const ADD_SERVER = {

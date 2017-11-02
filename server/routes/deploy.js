@@ -22,7 +22,7 @@ const remoteConsole = function (io) {
 
 
 module.exports = function (socket, io, ip) {
-  const war = require('../war');
+  const war = require('../war-manager');
   const rc = remoteConsole(io);
   const emitInProgress = function () {
     io.sockets.emit('deploiement-in-progress', {active: inProgress.isActive(), ip});
@@ -68,6 +68,7 @@ module.exports = function (socket, io, ip) {
   socket.on('deploy', (data) => {
       inProgress.active();
       emitInProgress();
+      console.log(data);
       const versions = data.versions;
       const configuration = data.server;
       io.sockets.emit('deploy-start', {type: 'Deploy', host: ip});

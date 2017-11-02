@@ -174,8 +174,7 @@ class List extends React.PureComponent {
   onEdit(artifact) {
     this.props.history.push(
       {
-        pathname: '/edit',
-        query: {i: artifact.name}
+        pathname: `/edit/${artifact.$loki}`
       });
   }
 

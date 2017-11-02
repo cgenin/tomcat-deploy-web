@@ -29,6 +29,7 @@ class Header extends React.PureComponent {
     this.onLaunchAbout = this.onLaunchAbout.bind(this);
     this.onLaunchCleanHistory = this.onLaunchCleanHistory.bind(this);
     this.onHome = this.onHome.bind(this);
+    this.onHelpPage = this.onHelpPage.bind(this);
     this.onAddArtifact = this.onAddArtifact.bind(this);
 
   }
@@ -44,6 +45,12 @@ class Header extends React.PureComponent {
     if (e)
       e.preventDefault();
     this.props.history.push('/add');
+  }
+
+  onHelpPage(e) {
+    if (e)
+      e.preventDefault();
+    this.props.history.push('/md/help');
   }
 
   onLaunchAbout(e) {
@@ -94,7 +101,10 @@ class Header extends React.PureComponent {
               </NavDropdown>
             </Nav>
             <Nav pullRight>
-              <NavItem eventKey={4} onClick={this.onLaunchAbout}><strong>&nbsp;?&nbsp;</strong></NavItem>
+              <NavDropdown eventKey={4} title={<strong>&nbsp;?&nbsp;</strong>}>
+                <MenuItem eventKey={4.1} onClick={this.onHelpPage}>Help</MenuItem>
+                <MenuItem eventKey={4.2} onClick={this.onLaunchAbout}>About</MenuItem>
+              </NavDropdown>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
