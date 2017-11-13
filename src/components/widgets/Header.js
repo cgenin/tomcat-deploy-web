@@ -10,7 +10,6 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 import CleanHistory from './artifacts/CleanHistory';
 import BlockUI from './Blockui';
 import AboutModal from './AboutModal';
-import Configuration from './nexus/Configuration';
 
 
 const mapStateToProps = function (state, props) {
@@ -29,7 +28,6 @@ class Header extends React.PureComponent {
     this.state = {smShow: false, show: false, nexusConfiguration: false, refreshNexusVersion: false};
     this.onLaunchAbout = this.onLaunchAbout.bind(this);
     this.onLaunchCleanHistory = this.onLaunchCleanHistory.bind(this);
-    this.onNexusConfiguration = this.onNexusConfiguration.bind(this);
     this.onHome = this.onHome.bind(this);
     this.onAddArtifact = this.onAddArtifact.bind(this);
 
@@ -64,21 +62,11 @@ class Header extends React.PureComponent {
     return false;
   }
 
-  onNexusConfiguration(e) {
-    if (e) {
-      e.preventDefault();
-    }
-    const x = e.clientX;
-    const y = e.clientY;
-    this.setState({nexusConfiguration: !this.state.nexusConfiguration, x, y});
-    return false;
-  }
 
 
   render() {
     const smClose = () => this.setState({smShow: false});
     const onHideCleanHistory = () => this.setState({show: false});
-    const onHideNexusConfiguration = () => this.setState({nexusConfiguration: false});
     return (
       <div>
         <Navbar inverse={true} fluid={true}>
@@ -100,9 +88,7 @@ class Header extends React.PureComponent {
               </NavItem>
               <NavDropdown eventKey={3} title={<span><i className="fa fa-cog"/>&nbsp; Configuration</span>}
                            id="config-dropdown">
-                <MenuItem eventKey={3.0} header>Nexus</MenuItem>
-                <MenuItem eventKey={3.1} onClick={this.onNexusConfiguration}>Nexus Configuration</MenuItem>
-                <MenuItem divider/>
+
                 <MenuItem eventKey={3.2} header>Artifacts</MenuItem>
                 <MenuItem eventKey={3.3} onClick={this.onLaunchCleanHistory}>Clean history</MenuItem>
               </NavDropdown>
@@ -114,8 +100,7 @@ class Header extends React.PureComponent {
         </Navbar>
         <AboutModal show={this.state.smShow} onHide={smClose}/>
         <CleanHistory show={this.state.show} x={this.state.x} y={this.state.y} onHide={onHideCleanHistory}/>
-        <Configuration show={this.state.nexusConfiguration} x={this.state.x} y={this.state.y}
-                       onHide={onHideNexusConfiguration}/>
+
         <BlockUI show={this.state.refreshNexusVersion}/>
       </div>
     );

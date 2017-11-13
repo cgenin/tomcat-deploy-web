@@ -37,7 +37,9 @@ export function del(artifact) {
 }
 
 export function load() {
-  return dispatch => fetch('/api/artifact').then(res => res.json()).then(json => dispatch(update(json)));
+  return dispatch => fetch('/api/artifact')
+    .then(res => res.json())
+    .then(json => dispatch(update(json)));
 }
 
 export function update(artifacts) {

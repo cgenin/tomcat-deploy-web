@@ -198,9 +198,6 @@ class List extends React.PureComponent {
               <div className="col-xs-6">
                 Results {arr.length}.
               </div>
-              <div className="col-xs-6 text-right">
-                <NexusVersions nexusVersions={this.props.nexusVersions}/>
-              </div>
               <div className="col-xs-4">
                 <div className="form-group" style={{marginTop: 0}}>
                   <input type="text" className="form-control" defaultValue={this.state.filter} onChange={this.onFilter}

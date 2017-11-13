@@ -89,19 +89,22 @@ const valid = function (groupId, artifactId, packaging = 'war', version = 'LATES
     `-Dversion=${version}`,
     `-Dpackaging=${packaging}`,
     '-Dtransitive=false'
-  ], {encoding: 'utf8'})
+  ], {encoding: 'utf8', maxBuffer: 1024 * 300})
     .map((arr) => {
-        const stdout = arr[0];
+        const brut = arr[0];
         const stderr = arr[1];
         if (stderr !== '') {
           console.error(stderr)
           throw new Error(`${groupId}.${artifactId} - version : ${version} - not found`)
         }
-        const found =  /SUCCESS/g.test(stdout);
+        const found =  /SUCCESS/g.test(brut);
+        const stdout =brut.replace(/[0-9]+\/[0-9]+ KB/g, '').replace(/[\s]*[\r]*[\n]+/g, '\n');
         return {found, stdout};
       }
     );
 };
+
+
 
 const reload = function (host, port, artifacts) {
   const deferred = Q.defer();

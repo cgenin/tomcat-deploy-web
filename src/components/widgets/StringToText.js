@@ -5,10 +5,9 @@ const StringToText = (props) => {
   const text = (props.value && props.value.length > 0 ) ? props.value : '';
   const regexp = /([^\n]+)[\r]{0,1}\n/g;
   const txt = [];
-  let exec;
-  while ((exec = regexp.exec(text)) !== null) {
-    console.log(exec[1])
-    txt.push((<span>{exec[1]}<br/></span>))
+  let match;
+  while ((match = regexp.exec(text)) !== null) {
+    txt.push((<span>{match[1]}<br/></span>))
   }
   return (<div>{txt}</div>);
 };
