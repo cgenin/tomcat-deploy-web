@@ -3,6 +3,8 @@ npm-debug.log
 node_modules
 mocha.json
 coverage
+build
+yarn.lock
 
 .tmp
 

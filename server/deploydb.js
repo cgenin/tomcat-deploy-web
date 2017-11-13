@@ -1,10 +1,10 @@
 const DeployDB = function DeployDB() {
-  const Q = require('q');
+  const Rx = require('rxjs/Rx');
   const fileCollection = 'files';
   const configCollection = 'configuration';
   const nexusCollection = 'nexus';
   const loki = require('lokijs');
-  const db = new loki('db/data.json', { autoload: true });
+  const db = new loki('db/data.json', { autoload: false });
   const createIfNotExist = function (name) {
     console.log(`createIfNotExist : ${name}`);
     if (!db.getCollection(name)) {
@@ -14,14 +14,15 @@ const DeployDB = function DeployDB() {
   };
 
   this.init = function () {
-    const deferred = Q.defer();
-    db.loadDatabase({}, () => {
-      createIfNotExist(fileCollection);
-      createIfNotExist(configCollection);
-      createIfNotExist(nexusCollection);
-      deferred.resolve(db);
+    return Rx.Observable.create((sub)=>{
+      db.loadDatabase({}, () => {
+        createIfNotExist(fileCollection);
+        createIfNotExist(configCollection);
+        createIfNotExist(nexusCollection);
+        sub.next(db);
+        sub.complete();
+      });
     });
-    return deferred.promise;
   };
 
   this.files = function () {

@@ -13,7 +13,7 @@ const deploydb = require('./deploydb');
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+//app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
@@ -22,10 +22,10 @@ app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../build')));
 
-deploydb.init().then(() => {
-  console.log('db started.');
+deploydb.init().subscribe((db) => {
+  console.log('db started.' + db);
 });
 
 module.exports = app;
