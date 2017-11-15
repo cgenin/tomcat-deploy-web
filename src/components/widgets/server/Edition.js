@@ -1,10 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import TestModal from '../test/TestModal';
-import { save, load } from '../../../modules/server/actions';
-import { testServer } from '../../../modules/test/actions';
-import { withRouter } from 'react-router';
+import {save, load} from '../../../modules/server/actions';
+import {testServer} from '../../../modules/test/actions';
+import {withRouter} from 'react-router';
 import PropTypes from 'prop-types';
+import {HOME} from "../../../routesConstant";
 
 function isDisabled(server) {
   return !server.host || server.host.length === 0 || !server.username || server.username.length === 0
@@ -15,7 +16,7 @@ const mapStateToProps = function (state, ownProps) {
   if (ownProps.add === true) {
     return {server: {}, disabled: true};
   }
-  const server = state.servers.find(s => s.host === ownProps.id);
+  const server = state.servers.find(s => `${s.$loki}` === ownProps.id);
   if (!server) {
     return {server: {}, disabled: true};
   }
@@ -25,7 +26,7 @@ const mapStateToProps = function (state, ownProps) {
 const mapDispatchToProps = function (dispatch) {
   return {
     onSave: function (server, history) {
-      dispatch(save(server)).then(()=>history.push('/'));
+      dispatch(save(server)).then(() => history.push(HOME.path()));
     },
     onTest: function (host, username, password) {
       dispatch(testServer(host, username, password));
@@ -45,6 +46,7 @@ class Edition extends React.Component {
     this.onClick = this.onClick.bind(this);
     this.onTest = this.onTest.bind(this);
     this.onBack = this.onBack.bind(this);
+    this._update = this._update.bind(this);
     this.state = {
       server: {},
       disabled: true,
@@ -54,6 +56,10 @@ class Edition extends React.Component {
 
   componentWillMount() {
     const server = this.props.server;
+    this._update(server);
+  }
+
+  _update(server) {
     const disabled = isDisabled(server);
     this.setState({server, disabled});
   }
@@ -62,15 +68,21 @@ class Edition extends React.Component {
     this.props.onInit();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.state.server.$loki !== nextProps.server.$loki) {
+      this._update(nextProps.server);
+    }
+  }
+
 
   onBack(e) {
     e.preventDefault();
-    this.props.history.push('/');
+    this.props.history.push(HOME.path());
   }
 
   onClick(e) {
     e.preventDefault();
-    const server = this.state.server;
+    const server = Object.assign({}, this.props.server, this.state.server);
     this.props.onSave(server, this.props.history);
     return false;
   }
@@ -78,26 +90,21 @@ class Edition extends React.Component {
   onTest(e) {
     e.preventDefault();
     this.setState({testShow: true});
-    const host = this.refs.host.value;
-    const username = this.refs.username.value;
-    const password = this.refs.password.value;
+    const {host, username, password} = this.state.server;
     this.props.onTest(host, username, password);
   }
 
-  onChange(e) {
-    e.preventDefault();
-    const host = this.refs.host.value;
-    const name = this.refs.name.value;
-    const username = this.refs.username.value;
-    const password = this.refs.password.value;
-    const server = this.state.server;
-    server.host = host;
-    server.name = name;
-    server.username = username;
-    server.password = password;
-    const disabled = isDisabled(server);
-    this.setState({server, disabled});
+  onChange(attr) {
+    return (e) => {
+      e.preventDefault();
+      const {host, name, username, password} = this.state.server;
+      const server = {host, name, username, password};
+      server[attr] = e.target.value;
+      this._update(server);
+    }
+
   }
+
 
   render() {
     return (
@@ -106,22 +113,22 @@ class Edition extends React.Component {
           <div className="col-xs-12">
             <div className="form-group col-xs-12">
               <label htmlFor="name" className="hidden-sm">Name :&nbsp;&nbsp;</label>
-                <input type="text" id="name" className="form-control" ref="name"
-                       defaultValue={this.state.server.name} aria-label="The title" style={{width:'60%'}}
-                       placeholder="The title in the interface" onChange={this.onChange} />
+              <input type="text" id="name" className="form-control"
+                     value={this.state.server.name} aria-label="The title" style={{width: '60%'}}
+                     placeholder="The title in the interface" onChange={this.onChange('name')}/>
             </div>
           </div>
 
           <div className=" col-xs-12">
 
-            <div className="form-group col-xs-12"  >
+            <div className="form-group col-xs-12">
               <label htmlFor="server" className="hidden-sm">Server :&nbsp;&nbsp;</label>
 
               <div className="input-group col-xs-11">
                 <span className="input-group-addon">http://</span>
-                <input type="text" id="server" className="form-control" ref="host"
-                       defaultValue={this.state.server.host} aria-label="host:port"
-                       placeholder="host:port" onChange={this.onChange}
+                <input type="text" id="server" className="form-control"
+                       value={this.state.server.host} aria-label="host:port"
+                       placeholder="host:port" onChange={this.onChange('host')}
                 />
                 <span className="input-group-addon">/manager/text</span>
               </div>
@@ -130,8 +137,8 @@ class Edition extends React.Component {
           <div className="col-md-5 col-xs-12">
             <div className="form-group col-xs-12">
               <label htmlFor="user" className="hidden-sm">User :&nbsp;&nbsp;</label>
-              <input type="text" className="form-control" id="user" ref="username" style={{width:'70%'}}
-                     defaultValue={this.state.server.username} onChange={this.onChange}
+              <input type="text" className="form-control" id="user" style={{width: '70%'}}
+                     value={this.state.server.username} onChange={this.onChange('username')}
                      placeholder="User"
               />
             </div>
@@ -139,8 +146,8 @@ class Edition extends React.Component {
           <div className="col-md-6 col-xs-12">
             <div className="form-group col-xs-12">
               <label htmlFor="password" className="hidden-sm">Password :&nbsp;&nbsp;</label>
-              <input type="password" className="form-control" id="password" ref="password" style={{width:'60%'}}
-                     defaultValue={this.state.server.password} onChange={this.onChange} placeholder="Password"
+              <input type="password" className="form-control" id="password" style={{width: '60%'}}
+                     value={this.state.server.password} onChange={this.onChange('password')} placeholder="Password"
               />
             </div>
           </div>

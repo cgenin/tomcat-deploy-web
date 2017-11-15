@@ -10,11 +10,12 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 import CleanHistory from './artifacts/CleanHistory';
 import BlockUI from './Blockui';
 import AboutModal from './AboutModal';
+import {ADD_ARTIFACT, HOME} from '../../routesConstant'
 
 
 const mapStateToProps = function (state, props) {
-  const homeActive = props.location.pathname === '/';
-  const addActive = props.location.pathname === '/add';
+  const homeActive = props.location.pathname === HOME.path();
+  const addActive = props.location.pathname === ADD_ARTIFACT.path();
   return {
     homeActive, addActive
   };
@@ -38,13 +39,13 @@ class Header extends React.PureComponent {
     if (e)
       e.preventDefault();
 
-    this.props.history.push('/');
+    this.props.history.push(HOME.path());
   }
 
   onAddArtifact(e) {
     if (e)
       e.preventDefault();
-    this.props.history.push('/add');
+    this.props.history.push(ADD_ARTIFACT.path());
   }
 
   onHelpPage(e) {
@@ -101,7 +102,7 @@ class Header extends React.PureComponent {
               </NavDropdown>
             </Nav>
             <Nav pullRight>
-              <NavDropdown eventKey={4} title={<strong>&nbsp;?&nbsp;</strong>}>
+              <NavDropdown id="help-dropdown" eventKey={4} title={<strong>&nbsp;?&nbsp;</strong>}>
                 <MenuItem eventKey={4.1} onClick={this.onHelpPage}>Help</MenuItem>
                 <MenuItem eventKey={4.2} onClick={this.onLaunchAbout}>About</MenuItem>
               </NavDropdown>

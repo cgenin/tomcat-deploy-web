@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import TestArtifact from '../nexus/TestArtifact';
 import {save, load} from '../../../modules/artifacts/actions';
 import PropTypes from 'prop-types';
+import {HOME} from "../../../routesConstant";
 
 function isDisabled(artifact) {
   return !artifact.name || artifact.name.length === 0 || (artifact.url.length === 0 && (artifact.groupId.length === 0 && artifact.artifactId.length === 0));
@@ -28,7 +29,7 @@ const mapStateToProps = function (state, ownProps) {
 const mapDispatchToProps = function (dispatch) {
   return {
     onSave(artifact, history) {
-      dispatch(save(artifact)).then(() => history.push('/'));
+      dispatch(save(artifact)).then(() => history.push(HOME.path()));
     },
     onInit() {
       dispatch(load());
@@ -86,7 +87,7 @@ class AddForm extends React.Component {
     if (e) {
       e.preventDefault();
     }
-    this.props.history.push('/');
+    this.props.history.push(HOME.path());
   }
 
   onClick(e) {
