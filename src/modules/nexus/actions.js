@@ -22,6 +22,7 @@ export function reset() {
   };
 }
 
+
 export function testArtifact(groupId, artifactId) {
   return () => fetch(`/api/nexus/artifact?&g=${groupId}&a=${artifactId}`, {
     method: 'get',

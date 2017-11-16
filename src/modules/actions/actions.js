@@ -48,6 +48,13 @@ export function deploy(server, artifacts, versions) {
   };
 }
 
+export function deployByNexus(server, nexus) {
+  socket.emit('deploy-nexus', {server, nexus});
+  return {
+    type: FORCE_LOGGER, val: true
+  };
+}
+
 export function undeploy(server, artifacts) {
   socket.emit('undeploy', {server, artifacts});
   return {

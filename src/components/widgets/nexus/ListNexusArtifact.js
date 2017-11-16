@@ -137,7 +137,8 @@ class ListNexusArtifact extends React.PureComponent {
 
   render() {
     const arr = (this.state.filter !== '') ? this.props.nexus
-      .filter(a => JSON.stringify(a).toUpperCase().indexOf(this.state.filter.toUpperCase()) !== -1) : this.props.nexus;
+      .filter(a => JSON.stringify(a).toUpperCase().indexOf(this.state.filter.toUpperCase()) !== -1)
+      : this.props.nexus;
     const artifacts = arr.sort(sorting).map(
       (artifact, i) => (
         <tr key={i}>

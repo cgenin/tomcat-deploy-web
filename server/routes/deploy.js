@@ -29,6 +29,22 @@ module.exports = function (socket, io, ip) {
   };
   rc.log('connected to server.');
 
+  const startDeploy = (server, data) => {
+    inProgress.active();
+    emitInProgress();
+    io.sockets.emit('deploy-start', {type: 'Deploy', host: ip});
+    rc.start();
+    rc.log(`target server : ${server.host}`);
+    rc.log(`selected wars : ${data.length} by ${ip}`);
+  };
+
+
+  const endDeploy = () => {
+    rc.end();
+    inProgress.disable();
+    emitInProgress();
+  };
+
 
   socket.emit('versions', backup.data());
   socket.on('artifact-clean', (nb) => io.sockets.emit('versions', backup.clean(nb)));
@@ -65,15 +81,35 @@ module.exports = function (socket, io, ip) {
 
   });
 
+
+  socket.on('deploy-nexus', (data) => {
+
+    const {nexus, server} = data;
+    startDeploy(server, nexus);
+    war.makeDirectory()
+      .subscribe(
+        (o) => {
+          socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK', server.host));
+          backup.load(o.name).then((d) => io.sockets.emit('versions', d));
+          io.sockets.emit('deploy-end', {});
+        },
+        (err) => {
+          io.sockets.emit('deploy-end', {});
+          rc.error(err.message);
+          if (err.stack) {
+            console.error(err.stack);
+          }
+          console.error(err);
+          endDeploy();
+        },
+        () => {
+          endDeploy()
+        });
+  });
+
   socket.on('deploy', (data) => {
-      inProgress.active();
-      emitInProgress();
-      const versions = data.versions;
-      const configuration = data.server;
-      io.sockets.emit('deploy-start', {type: 'Deploy', host: ip});
-      rc.start();
-      rc.log(`target server : ${configuration.host}`);
-      rc.log(`selected wars : ${data.length} by ${ip}`);
+      const {versions, server} = data;
+      startDeploy(server, data.artifacts);
       war.makeDirectory()
         .flatMap(() => {
           rc.log('root directory : OK.');
@@ -86,7 +122,7 @@ module.exports = function (socket, io, ip) {
                 Rx.Observable.of(o)
                   .flatMap(obj => {
                     rc.log(`prepare to rollback : ${obj.name}`);
-                    return war.rollback(configuration, obj, v)
+                    return war.rollback(server, obj, v)
                   })
                   .map(() => {
                     rc.log(`rollbacked : ${o.name}`);
@@ -104,11 +140,11 @@ module.exports = function (socket, io, ip) {
                   })
                   .flatMap((name) => {
                     rc.log(`undeploy : ${name}`);
-                    return war.undeploy(configuration, o)
+                    return war.undeploy(server, o)
                   })
                   .flatMap(() => {
                     rc.log(`deploy : ${o.name}`);
-                    return war.deploy(configuration, o)
+                    return war.deploy(server, o)
                   })
                   .map((wname) => {
                     rc.log(`Updated : ${wname}`);
@@ -121,7 +157,7 @@ module.exports = function (socket, io, ip) {
         })
         .subscribe(
           (o) => {
-            socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK', configuration.host));
+            socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK', server.host));
             backup.load(o.name).then((d) => io.sockets.emit('versions', d));
             io.sockets.emit('deploy-end', {});
           },
@@ -132,14 +168,10 @@ module.exports = function (socket, io, ip) {
               console.error(err.stack);
             }
             console.error(err);
-            rc.end();
-            inProgress.disable();
-            emitInProgress();
+            endDeploy()
           },
           () => {
-            rc.end();
-            inProgress.disable();
-            emitInProgress();
+            endDeploy()
           });
     }
   );
