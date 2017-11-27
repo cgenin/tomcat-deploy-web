@@ -1,11 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { deploy, undeploy } from '../../../modules/actions/actions';
+import {deploy, undeploy} from '../../../modules/actions/actions';
 import PropTypes from 'prop-types';
 
 const mapStateToProps = function (state) {
   const actions = state.actions;
-  const disabled = actions.artifacts.length === 0 || actions.servers.length === 0;
+  const disabled = !actions.artifacts || !actions.servers || actions.artifacts.length === 0 || !actions.servers[0] || actions.servers[0].length === 0;
   return {disabled, actions};
 };
 
