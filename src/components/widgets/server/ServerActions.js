@@ -27,15 +27,11 @@ const mapDispatchToProps = function (dispatch) {
 
     onInit: function () {
       dispatch(load()).then((data) => {
-        if (!data || data.length === 0) {
           dispatch(updateServers([]));
-        } else {
-          dispatch(updateServers(Array.of(data[0])));
-        }
       });
     },
     onSelect: function (server) {
-      dispatch(updateServers(Array.of(server)));
+      dispatch(updateServers(Array.of(server || [])));
     }
   };
 };
@@ -108,6 +104,7 @@ class ServerActions extends React.PureComponent {
         <div className="col-sm-3 col-sm-offset-4 col-xs-12 text-right ">
           <div className="form-group">
             <select ref="current" className="form-control" onChange={this.onChange} style={{marginTop: '-28px'}}>
+              <option value="" selected></option>
               {options}
             </select>
           </div>

@@ -7,7 +7,14 @@ import PropTypes from 'prop-types';
 import {HOME} from "../../../routesConstant";
 
 function isDisabled(artifact) {
-  return !artifact.name || artifact.name.length === 0 || (artifact.url.length === 0 && (artifact.groupId.length === 0 && artifact.artifactId.length === 0));
+  return !artifact.name || artifact.name.length === 0 ||
+    (
+      (!artifact.url || artifact.url.length === 0)
+      && (
+        (!artifact.groupId || artifact.groupId.length === 0)
+        && (!artifact.artifactId || artifact.artifactId.length === 0)
+      )
+    );
 }
 
 const mapStateToProps = function (state, ownProps) {
@@ -99,7 +106,7 @@ class AddForm extends React.Component {
 
   onChange(attr) {
     return (evt) => {
-      const {name, url, groupId, artifactId} =  this.state.artifact;
+      const {name, url, groupId, artifactId} = this.state.artifact;
       const n = {name, url, groupId, artifactId};
       n[attr] = evt.target.value;
       const artifact = Object.assign({}, this.props.artifact, n);
