@@ -16,6 +16,7 @@ import {removeArtifacts} from '../../../modules/actions/actions';
 import ItemCheck from './../actions/ItemCheck';
 import AllItemsCheck from './../actions/AllItemsCheck';
 import PropTypes from 'prop-types';
+import {EDIT_ARTIFACT} from "../../../routesConstant";
 
 const mapStateToProps = function (state) {
   return {
@@ -174,8 +175,7 @@ class List extends React.PureComponent {
   onEdit(artifact) {
     this.props.history.push(
       {
-        pathname: '/edit',
-        query: {i: artifact.name}
+        pathname: EDIT_ARTIFACT.path(artifact.$loki)
       });
   }
 

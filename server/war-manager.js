@@ -28,11 +28,13 @@ const managedOld = function (item) {
   const name = item.name;
   const path = fullpath(name);
   const stat = Rx.Observable.bindNodeCallback(fs.stat);
-  return stat(path).flatMap(() => {
-    const time = new Date().getTime();
-    const renameSync = Rx.Observable.bindNodeCallback(fs.rename);
-    return renameSync(path, `${path}.${time}`);
-  }).catch(() => Rx.Observable.of(item))
+  return stat(path)
+    .map(stat => stat.ctimeMs)
+    .flatMap((time) => {
+      const renameSync = Rx.Observable.bindNodeCallback(fs.rename);
+      return renameSync(path, `${path}.${time}`);
+    })
+    .catch(() => Rx.Observable.of(item));
 };
 
 const download = function (item) {

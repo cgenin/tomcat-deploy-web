@@ -1,18 +1,61 @@
-
-
+export const HOME = {
+  /**
+   * @return {string}
+   */
+  CST() {
+    return '/';
+  },
+  path() {
+    return this.CST();
+  }
+};
 export const ADD_ARTIFACT = {
-  CST: '/add'
+  /**
+   * @return {string}
+   */
+  CST() {
+    return '/artifact/add';
+  },
+  path() {
+    return this.CST();
+  }
 };
 
 export const EDIT_ARTIFACT = {
-  CST: '/edit'
+  root: '/artifact/edit/',
+  /**
+   * @return {string}
+   */
+  CST() {
+    return `${this.root}:loki`;
+  },
+  path(id) {
+    return `${this.root}${id}`
+  }
 };
 
 export const ADD_SERVER = {
-  CST: '/server/add'
+  /**
+   * @return {string}
+   */
+  CST() {
+    return '/server/add';
+  },
+  path() {
+    return this.CST();
+  }
 };
 
 export const EDIT_SERVER = {
-  CST: '/server/edit'
+  root: '/server/edit/',
+  /**
+   * @return {string}
+   */
+  CST() {
+    return `${this.root}:loki`;
+  },
+  path(id) {
+    return `${this.root}${id}`
+  }
 };
 

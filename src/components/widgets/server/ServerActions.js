@@ -3,6 +3,7 @@ import {withRouter} from 'react-router'
 import {connect} from 'react-redux';
 import ReactDOM from 'react-dom';
 import Overlay from 'react-bootstrap/lib/Overlay';
+import {EDIT_SERVER} from '../../../routesConstant';
 import {OverlayStyle, StyleFabButt} from '../../Styles';
 import {load, del} from '../../../modules/server/actions';
 import {updateServers} from '../../../modules/actions/actions';
@@ -61,8 +62,7 @@ class ServerActions extends React.PureComponent {
     const server = this.props.servers[index];
     this.props.history.push(
       {
-        pathname: '/server/edit',
-        query: {i: server.host}
+        pathname: EDIT_SERVER.path(server.$loki)
       });
     return false;
   }

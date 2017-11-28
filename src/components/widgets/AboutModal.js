@@ -6,6 +6,7 @@ import ModalTitle from 'react-bootstrap/lib/ModalTitle';
 import ModalBody from 'react-bootstrap/lib/ModalBody';
 import Button from 'react-bootstrap/lib/Button';
 import PropTypes from 'prop-types';
+import packageJson from '../../../package.json';
 
 
 const AboutModal = (props) => {
@@ -15,7 +16,7 @@ const AboutModal = (props) => {
         <ModalTitle id="contained-modal-title-sm">About ?</ModalTitle>
       </ModalHeader>
       <ModalBody>
-        <h4>0.4.3</h4>
+        <h4>{packageJson.version}</h4>
         <p>Tu vois, là on voit qu'on a beaucoup à travailler sur nous-mêmes car on est tous capables de donner des
           informations à chacun et cela même si les gens ne le savent pas ! Pour te dire comme on a beaucoup à
           apprendre sur la vie !

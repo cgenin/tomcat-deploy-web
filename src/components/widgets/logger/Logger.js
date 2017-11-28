@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import {connect} from 'react-redux';
-import { clear } from '../../../modules/logger/actions';
+import {clear} from '../../../modules/logger/actions';
 import PropTypes from 'prop-types';
 
 const mapStateToProps = function (state) {
@@ -18,16 +18,13 @@ const mapDispatchToProps = function (dispatch) {
   };
 };
 
-class LogItem extends React.PureComponent {
-
-  render() {
-    const formattedDate = moment(this.props.log.dt).format('YYYY/MM/DD HH:mm:ss SSSSSSSSS');
-    if (this.props.log.error) {
-      return (<li><span className="text-danger">{formattedDate} - {this.props.log.msg}</span></li>);
-    }
-    return (<li><span className="text-success">{formattedDate} - {this.props.log.msg}</span></li>);
+const LogItem = (props) => {
+  const formattedDate = moment(props.log.dt).format('YYYY/MM/DD HH:mm:ss SSSSSSSSS');
+  if (props.log.error) {
+    return (<li><span className="text-danger">{formattedDate} - {props.log.msg}</span></li>);
   }
-}
+  return (<li><span className="text-success">{formattedDate} - {props.log.msg}</span></li>);
+};
 
 LogItem.propTypes = {log: PropTypes.object.isRequired};
 
@@ -56,7 +53,7 @@ class Logger extends React.PureComponent {
           <div className="panel panel-default ">
             <div className="panel-body deploy-logger-main-panel"
                  style={{fontWeight: 'bold', backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>
-              <ul >
+              <ul>
                 <li> > Ready !</li>
                 {logs}
               </ul>

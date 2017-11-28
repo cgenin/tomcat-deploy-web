@@ -1,11 +1,6 @@
-# Tomcat-web-deploy
+# What ? 
 
-This project's purpose is to deploy multiple wars on one time on an instance of tomcat webserver.
-
-
-![Main Screen](./public/images/help/Tomcat-Web-Deploy-Main.png)
-
-
+This is the guide for using _Tomcat-web-deploy_.
 
 # Why ?
 
@@ -24,9 +19,31 @@ The creation of this tool was the response of that problematic.
 
 # How ?
 
+    
+
+# The Getting Started guide.
+
+## Main screen.
+
+![Main Screen](/images/help/Tomcat-Web-Deploy-Main.png)
+
+The main screen is compose by :
+
+* An header menu
+* The Server's panel
+* The list of all artifact already declare on this instance.
+
+## Add an Artifact
+
+* Click on _Add_ in the header bar. The _Add Artifact_ is must be appear.
+* 
+
+## Add an Server
+
+### Server instance configuration
+
+### Declaration
+
+## Deploy an Artifact
 
 
-# Build and launch the product
-
-
-# The libraries 

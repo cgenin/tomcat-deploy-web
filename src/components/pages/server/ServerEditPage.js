@@ -6,11 +6,11 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 const mapStateToProps = function (state, props) {
-  const query = props.location.query || {};
-  if (!query.i) {
+  const query = props.match.params || {};
+  if (!query.loki) {
     return {add: true};
   }
-  const id = query.i;
+  const id = query.loki;
   return {add: false, id};
 };
 
