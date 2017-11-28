@@ -4,8 +4,8 @@ import { deploy, deployByNexus, undeploy } from '../../../modules/actions/action
 import PropTypes from 'prop-types';
 
 const mapStateToProps = function (state) {
-  const {actions, nexus} = state;
-  const disabled = actions.artifacts.length === 0 || actions.servers.length === 0;
+  const actions = state.actions;
+  const disabled = !actions.artifacts || !actions.servers || actions.artifacts.length === 0 || !actions.servers[0] || actions.servers[0].length === 0
   const showNexusButton = nexus.length > 0 && actions.servers.length > 0;
   console.log(showNexusButton);
   return {disabled, actions, showNexusButton, nexus};
