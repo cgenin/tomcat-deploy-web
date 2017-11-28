@@ -3,7 +3,9 @@ const fs = require('fs');
 const URL = require('url');
 const Rx = require('rxjs/Rx');
 const config = require('./config');
+const rimraf = require('rimraf');
 const downloadedDir = config.downloadedDir;
+
 
 const makeDirectory = function () {
   const stat = Rx.Observable.bindNodeCallback(fs.stat);
@@ -12,9 +14,27 @@ const makeDirectory = function () {
       if (exist) {
         return Rx.Observable.of(downloadedDir);
       }
-      return Rx.Observable.bindNodeCallback(fs.mkdir)
+      return Rx.Observable.bindNodeCallback(fs.mkdir)(downloadedDir)
         .map(() => downloadedDir);
     });
+};
+
+const makeNexusDirectory = function () {
+  const nexusDir = `${downloadedDir}/download`;
+  const mkdir = Rx.Observable.bindNodeCallback(fs.mkdir);
+  try {
+    const exist = fs.statSync(nexusDir);
+    if (exist) {
+      return Rx.Observable.bindNodeCallback(rimraf)(nexusDir)
+        .flatMap(() => mkdir(nexusDir))
+        .map(() => nexusDir);
+    }
+  }
+  catch (err) {
+    console.warn(err);
+  }
+  return mkdir(nexusDir)
+    .map(() => nexusDir);
 };
 
 const warname = function (name) {
@@ -104,11 +124,10 @@ const rollback = function (configuration, item, oldVersion) {
     );
 };
 
-
-const deploy = function (configuration, item) {
+const deploySync = function (configuration, nameArtifact, pathWar) {
   const root = host(configuration);
   const parsingUrl = URL.parse(root);
-  const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
+  const url = `${root}/manager/text/deploy?path=/${nameArtifact}&update=true`;
   const options = {
     host: parsingUrl.hostname,
     method: 'PUT',
@@ -117,7 +136,7 @@ const deploy = function (configuration, item) {
     auth: `${configuration.username}:${configuration.password}`
   };
   const readFile = Rx.Observable.bindNodeCallback(fs.readFile);
-  return readFile(fullpath(item.name)).flatMap(d => {
+  return readFile(pathWar).flatMap(d => {
     return Rx.Observable.create((subscriber) => {
       const req = http.request(options, (rs) => {
         let result = '';
@@ -139,6 +158,43 @@ const deploy = function (configuration, item) {
     });
   });
 };
+
+const deploy = function (configuration, item) {
+  // const root = host(configuration);
+  // const parsingUrl = URL.parse(root);
+  // const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
+  // const options = {
+  //   host: parsingUrl.hostname,
+  //   method: 'PUT',
+  //   port: parsingUrl.port,
+  //   path: url,
+  //   auth: `${configuration.username}:${configuration.password}`
+  // };
+  // const readFile = Rx.Observable.bindNodeCallback(fs.readFile);
+  // return readFile(fullpath(item.name)).flatMap(d => {
+  //   return Rx.Observable.create((subscriber) => {
+  //     const req = http.request(options, (rs) => {
+  //       let result = '';
+  //       rs.on('data', (data) => {
+  //         result += data;
+  //       });
+  //       rs.on('end', () => {
+  //         if (rs.statusCode === 200 && result.indexOf('ECHEC') === -1 && result.indexOf('FAIL') === -1) {
+  //           subscriber.next(result);
+  //           subscriber.complete();
+  //         } else {
+  //           subscriber.error(rs);
+  //         }
+  //       });
+  //     }).on('error', (e) => {
+  //       subscriber.error(e);
+  //     });
+  //     req.end(d);
+  //   });
+  // });
+  return deploySync(configuration, item.name, fullpath(item.name));
+};
+
 
 const test = function (h, username, password) {
   const root = `http://${h}`;
@@ -202,10 +258,12 @@ const undeploy = function (configuration, item) {
 
 module.exports = {
   makeDirectory,
+  makeNexusDirectory,
   managedOld,
   download,
   undeploy,
   deploy,
+  deploySync,
   test,
   rollback
 };

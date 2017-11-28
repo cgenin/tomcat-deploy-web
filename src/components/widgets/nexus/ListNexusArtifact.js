@@ -16,9 +16,9 @@ const mapStateToProps = function (state) {
         n.artifactId === a.artifactId) === -1
     )
     .map(a => {
-      const {groupId, artifactId, p} = a;
+      const {groupId, artifactId, p, name} = a;
       const packaging = (p) ? p : 'war';
-      return {groupId, artifactId, packaging};
+      return {groupId, artifactId, packaging, name};
     });
   const artifacts = Array.from(new Set(iterable));
 

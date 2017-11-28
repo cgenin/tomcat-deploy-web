@@ -36,7 +36,7 @@ The main screen is compose by :
 ## Add an Artifact
 
 * Click on _Add_ in the header bar. The _Add Artifact_ is must be appear.
-* 
+* in the select
 
 ## Add an Server
 

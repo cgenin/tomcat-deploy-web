@@ -1,6 +1,8 @@
 const deploydb = require('../deploydb');
 const inProgress = require('../in-progress');
 const backup = require('../backup');
+const {copy} = require('../nexus');
+
 const Rx = require('rxjs/Rx');
 
 const remoteConsole = function (io) {
@@ -83,10 +85,36 @@ module.exports = function (socket, io, ip) {
 
 
   socket.on('deploy-nexus', (data) => {
-
     const {nexus, server} = data;
     startDeploy(server, nexus);
-    war.makeDirectory()
+    war.makeNexusDirectory()
+      .flatMap((root) => {
+        rc.log('root directory : OK.');
+        const obs = nexus.map(artifact => {
+          const {artifactId, groupId, packaging, version, name} = artifact;
+          return Rx.Observable.of(artifact)
+            .flatMap(() => {
+              let str = JSON.stringify(artifact);
+              rc.log(`prepare to deploy from nexus : ${str}`);
+              return copy(groupId, artifactId, root, packaging, version);
+            })
+            .flatMap((warPath) => {
+              rc.log(`Download in : ${warPath}`);
+              rc.log(`undeploy : ${artifactId}`);
+              return war.undeploy(server, artifactId)
+                .flatMap(() => {
+                  rc.log(`deploy : ${name}`);
+                  return war.deploySync(server, name, warPath);
+                });
+            }).map(
+              ()=> {
+                rc.log(`End deploy`);
+                return artifact;
+              }
+            );
+        });
+        return Rx.Observable.concat(...obs);
+      })
       .subscribe(
         (o) => {
           socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK', server.host));
