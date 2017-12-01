@@ -2,7 +2,6 @@ import React from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
-import moment from 'moment';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
@@ -10,7 +9,7 @@ import DropdownButton from 'react-bootstrap/lib/DropdownButton';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import LaunchButton from '../artifacts/LaunchButton';
 import ArtifactVersions from '../versions/ArtifactVersions';
-import {NexusVersions, NexusArtifact} from '../Nexus';
+import {NexusArtifact} from '../Nexus';
 import {del, load} from '../../../modules/artifacts/actions';
 import {removeArtifacts} from '../../../modules/actions/actions';
 import ItemCheck from './../actions/ItemCheck';
@@ -37,26 +36,7 @@ const mapDispatchToProps = function (dispatch) {
   };
 };
 
-function transform(server, value) {
-  const formattedDate = moment(value.dt).format('YYYY/MM/DD HH:mm');
-  if (value.state === 'KO') {
-    return (
-      <div key={value.dt}>
-      <span className="text-danger">
-                <i className="fa fa-frown-o"/> {formattedDate} on {server}
-        </span>
-      </div>
-    );
-  }
 
-  return (
-    <div key={value.dt}>
-    <span className="text-success">
-      <i className="fa fa-check"/> {formattedDate} on {server}
-      </span>
-    </div>
-  );
-}
 
 function sortFactory(asc) {
   const df = (asc) ? 1 : -1;
@@ -72,15 +52,6 @@ function sortFactory(asc) {
 }
 
 
-const ItemStatus = (props) => {
-  const status = props.artifact.deployStates;
-  if (!status) {
-    return null;
-  }
-  return (<div>{Object.keys(status).map((k) => transform(k, status[k]))}</div>);
-};
-
-ItemStatus.propTypes = {artifact: PropTypes.object.isRequired};
 
 const ItemName = (props) => {
   const style = {
@@ -128,9 +99,6 @@ class ItemList extends React.Component {
         </td>
         <td className="text-left" style={{paddingTop: '14px'}}>
           <ItemName name={this.props.artifact.name} url={this.props.artifact.url}/>
-        </td>
-        <td className="text-left" style={{paddingTop: '18px'}}>
-          <ItemStatus artifact={this.props.artifact}/>
         </td>
         <td className="text-center"><NexusArtifact artifact={this.props.artifact}/></td>
         <td className="text-center">
@@ -215,7 +183,6 @@ class List extends React.PureComponent {
                 onClick={() => this.setState({asc: !this.state.asc})}>
               Name&nbsp;&nbsp;<i className={clsName}/>
             </th>
-            <th className="text-center">Deploy</th>
             <th className="text-center">Nexus</th>
             <th className="text-center">Versions</th>
             <th className="text-center">&nbsp;</th>

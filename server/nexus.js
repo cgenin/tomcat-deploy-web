@@ -22,7 +22,6 @@ const getMavenCommandLine = () => {
 const search = function (host, port, q) {
 // http://intserv:8081
   const deferred = Q.defer();
-
   const url = `http://${host}:${port}/nexus/service/local/lucene/search?q=${q}`;
   try {
     const options = {

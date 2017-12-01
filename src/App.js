@@ -7,6 +7,7 @@ import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
 import {reducers} from './modules/server/reducers';
 import {testReducers} from './modules/test/reducers';
 import {areducers} from './modules/artifacts/reducers';
+import {historyReducers} from './modules/history/reducers';
 import {actionReducers} from './modules/actions/reducers';
 import {loggerReducers} from './modules/logger/reducers';
 import {versionsReducers} from './modules/versions/reducers';
@@ -19,6 +20,7 @@ import Routes from './routes';
 const rootReducer = combineReducers(Object.assign({}, {
   servers: reducers,
   artifacts: areducers,
+  history: historyReducers,
   actions: actionReducers,
   logger: loggerReducers,
   testUrl: testReducers,
@@ -31,13 +33,13 @@ export const store = (!process.env.NODE_ENV || process.env.NODE_ENV === 'develop
   ? compose(applyMiddleware(thunkMiddleware, logMiddleware))(createStore)(rootReducer)
   : compose(applyMiddleware(thunkMiddleware))(createStore)(rootReducer);
 
-  initialize(store.dispatch);
+initialize(store.dispatch);
 
 
 const App = () => {
   return (
     <Provider store={store}>
-        <Routes/>
+      <Routes/>
     </Provider>
   );
 };

@@ -104,7 +104,7 @@ class ServerActions extends React.PureComponent {
         <div className="col-sm-3 col-sm-offset-4 col-xs-12 text-right ">
           <div className="form-group">
             <select ref="current" className="form-control" onChange={this.onChange} style={{marginTop: '-28px'}}>
-              <option value="" selected></option>
+              <option value="" selected/>
               {options}
             </select>
           </div>

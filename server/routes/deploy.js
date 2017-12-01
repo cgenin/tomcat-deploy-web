@@ -1,6 +1,7 @@
 const deploydb = require('../deploydb');
 const inProgress = require('../in-progress');
 const backup = require('../backup');
+const history = require('../history');
 const {copy} = require('../nexus');
 
 const Rx = require('rxjs/Rx');
@@ -107,18 +108,19 @@ module.exports = function (socket, io, ip) {
                   return war.deploySync(server, name, warPath);
                 });
             }).map(
-              ()=> {
+              () => {
                 rc.log(`End deploy`);
                 return artifact;
               }
-            );
+            ).do(null, () => {
+              history.update(server, new Date(), artifact.name, 'KO', {type: 'nexus', version: artifact.version});
+            });
         });
         return Rx.Observable.concat(...obs);
       })
       .subscribe(
         (o) => {
-          socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK', server.host));
-          backup.load(o.name).then((d) => io.sockets.emit('versions', d));
+          history.update(server, new Date(), o.name, 'OK', {type: 'nexus', version: o.version});
           io.sockets.emit('deploy-end', {});
         },
         (err) => {
@@ -185,8 +187,7 @@ module.exports = function (socket, io, ip) {
         })
         .subscribe(
           (o) => {
-            socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK', server.host));
-            backup.load(o.name).then((d) => io.sockets.emit('versions', d));
+            history.update(server, new Date(), o.name, 'OK', {type: 'jenkins'});
             io.sockets.emit('deploy-end', {});
           },
           (err) => {

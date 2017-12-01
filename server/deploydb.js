@@ -3,6 +3,7 @@ const DeployDB = function DeployDB() {
   const fileCollection = 'files';
   const configCollection = 'configuration';
   const nexusCollection = 'nexus';
+  const historyCollection = 'history';
   const loki = require('lokijs');
   const db = new loki('db/data.json', { autoload: false });
   const createIfNotExist = function (name) {
@@ -19,6 +20,7 @@ const DeployDB = function DeployDB() {
         createIfNotExist(fileCollection);
         createIfNotExist(configCollection);
         createIfNotExist(nexusCollection);
+        createIfNotExist(historyCollection);
         sub.next(db);
         sub.complete();
       });
@@ -35,6 +37,10 @@ const DeployDB = function DeployDB() {
 
   this.nexus = function () {
     return db.getCollection(nexusCollection);
+  };
+
+  this.history = function () {
+    return db.getCollection(historyCollection);
   };
 
   this.insert = function (collection, item) {
