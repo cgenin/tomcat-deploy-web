@@ -17,13 +17,12 @@ const AboutModal = (props) => {
       </ModalHeader>
       <ModalBody>
         <h4>{packageJson.version}</h4>
-        <p>Tu vois, là on voit qu'on a beaucoup à travailler sur nous-mêmes car on est tous capables de donner des
-          informations à chacun et cela même si les gens ne le savent pas ! Pour te dire comme on a beaucoup à
-          apprendre sur la vie !
+        <p>Ah non attention, je ne suis pas un simple danseur car il faut se recréer... pour recréer... a better you et
+          c'est très, très beau d'avoir son propre moi-même ! Ça respire le meuble de Provence, hein ?
         </p>
-        <p>Je ne voudrais pas rentrer dans des choses trop dimensionnelles, mais, premièrement, il faut toute la
-          splendeur du aware puisque the final conclusion of the spirit is perfection C'est pour ça que j'ai fait des
-          films avec des replicants.
+        <p>Tu vois, j'ai vraiment une grande mission car le cycle du cosmos dans la vie... c'est une grande roue et
+          c'est très, très beau d'avoir son propre moi-même ! Et tu as envie de le dire au monde entier, including
+          yourself.
         </p>
       </ModalBody>
       <ModalFooter>

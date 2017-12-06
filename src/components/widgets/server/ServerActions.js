@@ -27,7 +27,7 @@ const mapDispatchToProps = function (dispatch) {
 
     onInit: function () {
       dispatch(load()).then((data) => {
-          dispatch(updateServers([]));
+        dispatch(updateServers([]));
       });
     },
     onSelect: function (server) {
@@ -40,7 +40,7 @@ const mapDispatchToProps = function (dispatch) {
 class ServerActions extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {show: false};
+    this.state = {show: false, server: null};
     this.onEdit = this.onEdit.bind(this);
     this.onCreate = this.onCreate.bind(this);
     this.onDelete = this.onDelete.bind(this);
@@ -91,6 +91,7 @@ class ServerActions extends React.PureComponent {
     }
     const index = this.refs.current.value;
     const server = this.props.servers[index];
+    this.setState({server});
     this.props.onSelect(server);
     return false;
   }
@@ -99,6 +100,19 @@ class ServerActions extends React.PureComponent {
   render() {
     const options = this.props.servers.map((s, i) => (<option key={i} value={i}>{s.name} ({s.host})</option>));
     const disabled = this.props.servers.length === 0;
+    const buttonEdit = (this.state.server) ? (
+      <a onClick={this.onEdit} className="btn btn-xs btn-success btn-fab" title="Edit current server"
+         disabled={disabled} style={StyleFabButt}>
+        <i className="material-icons">create</i>
+      </a>
+    ) : (<span/>);
+    const buttonRemove = (this.state.server) ? (
+      <button ref="target" onClick={this.toggle} className="btn btn-xs btn-danger btn-fab"
+              title="Remove an server" disabled={disabled} style={StyleFabButt}>
+        <i className="material-icons">remove</i>
+      </button>
+    ) : (<span/>);
+
     return (
       <div className="row">
         <div className="col-sm-3 col-sm-offset-4 col-xs-12 text-right ">
@@ -111,19 +125,13 @@ class ServerActions extends React.PureComponent {
         </div>
         <div className="col-sm-offset-0 col-sm-5 col-xs-offset-3 col-xs-6  text-left">
           <div className="btn-group-sm">
-            <a onClick={this.onEdit} className="btn btn-xs btn-success btn-fab" title="Edit current server"
-               disabled={disabled} style={StyleFabButt}>
-              <i className="material-icons">create</i>
-            </a>
+            {buttonEdit}
             <a onClick={this.onCreate} className="btn btn-xs btn-primary btn-fab" title="Add an server"
                style={StyleFabButt}
             >
               <i className="material-icons">add</i>
             </a>
-            <button ref="target" onClick={this.toggle} className="btn btn-xs btn-danger btn-fab"
-                    title="Remove an server" disabled={disabled} style={StyleFabButt}>
-              <i className="material-icons">remove</i>
-            </button>
+            {buttonRemove}
           </div>
           <Overlay
             show={this.state.show} onHide={() => this.setState({show: false})} placement="bottom" container={this}

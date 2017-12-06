@@ -70,7 +70,7 @@ class DeployActions extends React.PureComponent {
     const buttonDeploy = (this.props.showNexusButton) ? (
       <button type="button" onClick={this.onDeployByNexus}  className="btn btn-info">
         <i className="fa fa-play"/>
-        &nbsp;Run via Nexus
+        &nbsp;Run
       </button>
     ) : (
       <button type="button" onClick={this.onDeploy} disabled={this.props.disabled} className="btn btn-info">

@@ -188,6 +188,8 @@ module.exports = function (socket, io, ip) {
         .subscribe(
           (o) => {
             history.update(server, new Date(), o.name, 'OK', {type: 'jenkins'});
+            socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK', server.host));
+            backup.load(o.name).subscribe((d) => io.sockets.emit('versions', d));
             io.sockets.emit('deploy-end', {});
           },
           (err) => {
