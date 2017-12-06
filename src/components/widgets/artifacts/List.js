@@ -10,6 +10,7 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 import LaunchButton from '../artifacts/LaunchButton';
 import ArtifactVersions from '../versions/ArtifactVersions';
 import {NexusArtifact} from '../Nexus';
+import {filtering} from '../../Filters';
 import {del, load} from '../../../modules/artifacts/actions';
 import {removeArtifacts} from '../../../modules/actions/actions';
 import ItemCheck from './../actions/ItemCheck';
@@ -37,7 +38,6 @@ const mapDispatchToProps = function (dispatch) {
 };
 
 
-
 function sortFactory(asc) {
   const df = (asc) ? 1 : -1;
   return (a, b) => {
@@ -50,7 +50,6 @@ function sortFactory(asc) {
     return df;
   };
 }
-
 
 
 const ItemName = (props) => {
@@ -152,9 +151,7 @@ class List extends React.PureComponent {
     const onEdit = this.onEdit;
     const sortingName = (this.state.asc) ? 'Asc' : 'Desc';
     const clsName = classNames({fa: true, 'fa-sort-desc': !this.state.asc, 'fa-sort-asc': this.state.asc});
-    const arr = (this.state.filter !== '') ? this.props.artifacts
-        .filter(a => JSON.stringify(a).indexOf(this.state.filter) !== -1) :
-      this.props.artifacts;
+    const arr = filtering(this.props.artifacts, this.state.filter);
     const artifacts = arr.sort(sortFactory(this.state.asc)).map(
       (artifact, i) => <ItemList key={i} onDelete={onDelete} onEdit={onEdit} artifact={artifact}/>
     );

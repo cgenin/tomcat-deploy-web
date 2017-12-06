@@ -7,10 +7,11 @@ import {load} from '../../../modules/history/actions'
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import moment from "moment/moment";
+import {filtering} from "../../Filters";
 
 
 const mapStateToProps = function (state) {
-  const {history} = state;
+  const {history, loading} = state.history;
 
   return {
     history,
@@ -97,14 +98,23 @@ class HistoryList extends PureComponent {
     this.props.onInit();
   }
 
-  onFilter() {
-
+  onFilter(e) {
+    this.setState({filter: e.target.value});
   }
 
 
   render() {
-    const arr = (this.state.filter !== '') ? this.props.history :
-      this.props.history;
+    if (this.props.loading) {
+      return (
+        <div className="col-xs-12 ">
+          <i className="fa fa-spinner fa-spin fa-3x fa-fw"/>
+        </div>
+      );
+    }
+
+    const arr = filtering(this.props.history, this.state.filter).sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
     const lines = arr.map((deploy, index) => <Line key={`${deploy.date}-${deploy.name}-${index}`} deploy={deploy}/>);
     return (
       <div className="col-xs-12 ">
@@ -140,6 +150,6 @@ class HistoryList extends PureComponent {
   }
 }
 
-HistoryList.propTypes = {history: PropTypes.array.isRequired};
+HistoryList.propTypes = {history: PropTypes.array.isRequired, loading: PropTypes.bool.isRequired};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HistoryList));

@@ -1,13 +1,17 @@
-import {UPDATE} from './actions';
+import {UPDATE, LOADING} from './actions';
 
-const defaultState = [];
-
+const defaultState = {
+  loading: false,
+  history: []
+};
 
 
 export function historyReducers(state = defaultState, action) {
   switch (action.type) {
+    case LOADING:
+      return {loading: true, history: []};
     case UPDATE:
-      return action.arr;
+      return {loading: false, history: action.arr};
     default :
       return state;
   }

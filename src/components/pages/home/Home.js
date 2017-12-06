@@ -79,7 +79,7 @@ class HomePage extends React.PureComponent {
                 <Tabs id="home-tabs" activeKey={this.state.key} onSelect={this.handleSelect}
                       style={{marginLeft: '2em', marginRight: '2em'}}>
                   <Tab eventKey={2} onExit={this.onEnter} title="Nexus"> <ListNexusArtifact/></Tab>
-                  <Tab eventKey={1} title="Jenkins"> <List/></Tab>
+                  <Tab eventKey={1} title="Artifacts / Jenkins"> <List/></Tab>
                   <Tab eventKey={4} title="History"> <HistoryList /></Tab>
                   <Tab eventKey={3} title="Logs"> <Logger/></Tab>
                 </Tabs>

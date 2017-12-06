@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {DropdownButton, MenuItem} from 'react-bootstrap'
 import {load} from '../../../modules/artifacts/actions';
 import {reset, add, remove} from '../../../modules/nexus/actions';
+import {filtering} from "../../Filters";
 
 const mapStateToProps = function (state) {
   let iterable = state.artifacts.filter(a => {
@@ -136,9 +137,8 @@ class ListNexusArtifact extends React.PureComponent {
 
 
   render() {
-    const arr = (this.state.filter !== '') ? this.props.nexus
-      .filter(a => JSON.stringify(a).toUpperCase().indexOf(this.state.filter.toUpperCase()) !== -1)
-      : this.props.nexus;
+
+    const arr = filtering(this.props.nexus, this.state.filter);
     const artifacts = arr.sort(sorting).map(
       (artifact, i) => (
         <tr key={i}>
