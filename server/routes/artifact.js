@@ -7,7 +7,12 @@ const bodyParser = require('body-parser');
 module.exports = (io) => {
   router.get('/', (req, res) => {
     const items = deploydb.files() || {data: []};
-    res.json(items.data);
+    res.json(items.data.map(d => {
+      if (!d.job) {
+        return Object.assign({}, d, { job: d.name });
+      }
+      return d;
+    }));
   });
 
 

@@ -97,7 +97,7 @@ class ItemList extends React.Component {
           <ItemCheck artifact={this.props.artifact} checked={this.props.checked}/>
         </td>
         <td className="text-left" style={{paddingTop: '14px'}}>
-          <ItemName name={this.props.artifact.name} url={this.props.artifact.url}/>
+          <ItemName name={this.props.artifact.job} url={this.props.artifact.url}/>
         </td>
         <td className="text-center"><NexusArtifact artifact={this.props.artifact}/></td>
         <td className="text-center">

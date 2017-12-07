@@ -123,7 +123,12 @@ class AddForm extends React.Component {
 
     return (
       <form>
-
+        <div className="form-group ">
+          <label className="control-label" htmlFor="job">Job</label>
+          <input type="text" className="form-control" id="job" placeholder="Job Name"
+                 value={this.state.artifact.job} onChange={this.onChange} ref="job"
+          />
+        </div>
         <div className="form-group ">
           <label className="control-label" htmlFor="name">Name</label>
           <input type="text" className="form-control" id="name" placeholder="Name"

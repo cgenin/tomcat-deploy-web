@@ -146,16 +146,17 @@ module.exports = function (socket, io, ip) {
           const obs = data.artifacts.map(
             o => {
               const v = versions.find(v => v.name === o.name);
+              const job= o.job || o.name;
               return Rx.Observable.if(
                 () => v,
                 // rollback old version
                 Rx.Observable.of(o)
                   .flatMap(obj => {
-                    rc.log(`prepare to rollback : ${obj.name}`);
+                    rc.log(`prepare to rollback : ${job}`);
                     return war.rollback(server, obj, v)
                   })
                   .map(() => {
-                    rc.log(`rollbacked : ${o.name}`);
+                    rc.log(`rollbacked : ${job}`);
                     return o;
                   }),
                 // deploy arifact
@@ -165,7 +166,7 @@ module.exports = function (socket, io, ip) {
                     return war.managedOld(o)
                   })
                   .flatMap(() => {
-                    rc.log(`prepare download : ${o.name}`);
+                    rc.log(`prepare download : ${job}`);
                     return war.download(o);
                   })
                   .flatMap((name) => {
@@ -173,7 +174,7 @@ module.exports = function (socket, io, ip) {
                     return war.undeploy(server, o)
                   })
                   .flatMap(() => {
-                    rc.log(`deploy : ${o.name}`);
+                    rc.log(`deploy : ${job}`);
                     return war.deploy(server, o)
                   })
                   .map((wname) => {

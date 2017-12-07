@@ -5,7 +5,12 @@ import PropTypes from 'prop-types';
 
 const mapStateToProps = function (state, ownProps) {
   const checkedArtifacts = state.actions.artifacts;
-  const checked = checkedArtifacts.findIndex(c => c.name === ownProps.artifact.name) !== -1;
+  const checked = checkedArtifacts.findIndex(c => {
+    if (ownProps.artifact.job) {
+      return c.job === ownProps.artifact.job;
+    }
+    return c.name === ownProps.artifact.name;
+  }) !== -1;
   return {
     checked
   };
