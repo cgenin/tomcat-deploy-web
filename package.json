@@ -15,7 +15,7 @@
   "dependencies": {
     "bluebird": "^3.2.1",
     "body-parser": "^1.14.2",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^4.0.0",
     "bootstrap-material-design": "^0.5.7",
     "classnames": "^2.2.3",
     "compression": "^1.6.1",
