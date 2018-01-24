@@ -1,6 +1,7 @@
 # npm ignore
 npm-debug.log
 node_modules
+public/apidoc
 mocha.json
 coverage
 build
