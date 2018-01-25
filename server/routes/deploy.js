@@ -6,36 +6,18 @@ const {copy} = require('../nexus');
 
 const Rx = require('rxjs/Rx');
 
-const remoteConsole = function (io) {
-  return {
-    error: function (msg) {
-      io.sockets.emit('rc-error', msg);
-    },
-    log: function (msg) {
-      io.sockets.emit('rc-log', msg);
-    },
-    end: function () {
-      io.sockets.emit('rc-end', {});
-    },
-    start: function () {
-      io.sockets.emit('rc-start', {});
-    }
-  };
-};
 
 
 module.exports = function (socket, io, ip) {
   const war = require('../war-manager');
-  const rc = remoteConsole(io);
-  const emitInProgress = function () {
-    io.sockets.emit('deploiement-in-progress', {active: inProgress.isActive(), ip});
-  };
+  const rc = require('../RemoteConsole');
+
   rc.log('connected to server.');
 
   const startDeploy = (server, data) => {
     inProgress.active();
-    emitInProgress();
-    io.sockets.emit('deploy-start', {type: 'Deploy', host: ip});
+    rc.emitInProgress(ip);
+    rc.deployStart(ip);
     rc.start();
     rc.log(`target server : ${server.host}`);
     rc.log(`selected wars : ${data.length} by ${ip}`);
@@ -45,7 +27,7 @@ module.exports = function (socket, io, ip) {
   const endDeploy = () => {
     rc.end();
     inProgress.disable();
-    emitInProgress();
+    rc.emitInProgress(ip);
   };
 
 
@@ -54,7 +36,7 @@ module.exports = function (socket, io, ip) {
 
   socket.on('undeploy', (data) => {
     inProgress.active();
-    emitInProgress();
+    rc.emitInProgress(ip);
     rc.log(`target server : ${data.server.host}`);
     Rx.Observable.from(data.artifacts)
       .flatMap((last) => {
@@ -74,12 +56,12 @@ module.exports = function (socket, io, ip) {
           rc.error(err.message);
           rc.end();
           inProgress.disable();
-          emitInProgress();
+          rc.emitInProgress(ip);
         },
         () => {
           rc.end();
           inProgress.disable();
-          emitInProgress();
+          rc.emitInProgress(ip);
         });
 
   });
@@ -121,10 +103,10 @@ module.exports = function (socket, io, ip) {
       .subscribe(
         (o) => {
           history.update(server, new Date(), o.name, 'OK', {type: 'nexus', version: o.version});
-          io.sockets.emit('deploy-end', {});
+          rc.deployEnd();
         },
         (err) => {
-          io.sockets.emit('deploy-end', {});
+          rc.deployEnd();
           rc.error(err.message);
           if (err.stack) {
             console.error(err.stack);
@@ -191,10 +173,10 @@ module.exports = function (socket, io, ip) {
             history.update(server, new Date(), o.name, 'OK', {type: 'jenkins'});
             socket.emit('replace-item', deploydb.updateStatus(deploydb.files(), o, 'OK', server.host));
             backup.load(o.name).subscribe((d) => io.sockets.emit('versions', d));
-            io.sockets.emit('deploy-end', {});
+            rc.deployEnd();
           },
           (err) => {
-            io.sockets.emit('deploy-end', {});
+            rc.deployEnd();
             rc.error(err.message);
             if (err.stack) {
               console.error(err.stack);

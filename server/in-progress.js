@@ -1,36 +1,29 @@
-'use strict';
+let instance = null;
 
-const InProgress = function InProgress() {
-  let __active = false;
-  this.isActive = function () {
-    return __active;
-  };
-  this.active = function () {
-    __active = true;
-    return true;
-  };
-  this.disable = function () {
-    __active = false;
-    return false;
-  };
-  this.event = 'deploiement-in-progress';
-};
-
-
-/* ************************************************************************
- SINGLETON CLASS DEFINITION
- ************************************************************************ */
-InProgress.instance = null;
-
-/**
- * Singleton getInstance definition
- * @return DeployDB class
- */
-InProgress.getInstance = function () {
-  if (this.instance === null) {
-    this.instance = new InProgress();
+class InProgress {
+  constructor() {
+    if (instance) {
+      return instance;
+    }
+    instance = this;
+    this.__active = false;
+    this.event = 'deploiement-in-progress';
   }
-  return this.instance;
-};
 
-module.exports = InProgress.getInstance();
+  isActive() {
+    return this.__active;
+  }
+
+  active() {
+    this.__active = true;
+    return true;
+  }
+
+  disable() {
+    this.__active = false;
+    return false;
+  }
+
+}
+
+module.exports = new InProgress();

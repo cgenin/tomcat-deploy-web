@@ -31,7 +31,7 @@ server.on('listening', onListening);
 
 server.listen(port);
 
-
+require('../RemoteConsole').setIo(io);
 io.on('connection', (socket) => {
   let ip = '';
   if (socket && socket.conn && socket.conn.remoteAddress) {
