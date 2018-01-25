@@ -32,6 +32,7 @@ class Header extends React.PureComponent {
     this.onHome = this.onHome.bind(this);
     this.onHelpPage = this.onHelpPage.bind(this);
     this.onAddArtifact = this.onAddArtifact.bind(this);
+    this.onLicensePage = this.onLicensePage.bind(this);
 
   }
 
@@ -47,6 +48,19 @@ class Header extends React.PureComponent {
       e.preventDefault();
     this.props.history.push(ADD_ARTIFACT.path());
   }
+
+  onApiRestPage(e) {
+    if (e)
+      e.preventDefault();
+    window.open('/apidoc', 'api-rest');
+  }
+
+  onLicensePage(e) {
+    if (e)
+      e.preventDefault();
+    this.props.history.push('/md/license');
+  }
+
 
   onHelpPage(e) {
     if (e)
@@ -69,7 +83,6 @@ class Header extends React.PureComponent {
     this.setState({show: !this.state.show, x, y});
     return false;
   }
-
 
 
   render() {
@@ -104,6 +117,8 @@ class Header extends React.PureComponent {
             <Nav pullRight>
               <NavDropdown id="help-dropdown" eventKey={4} title={<strong>&nbsp;?&nbsp;</strong>}>
                 <MenuItem eventKey={4.1} onClick={this.onHelpPage}>Help</MenuItem>
+                <MenuItem eventKey={4.1} onClick={this.onApiRestPage}>APi Rest Doc</MenuItem>
+                <MenuItem eventKey={4.1} onClick={this.onLicensePage}>License</MenuItem>
                 <MenuItem eventKey={4.2} onClick={this.onLaunchAbout}>About</MenuItem>
               </NavDropdown>
             </Nav>
