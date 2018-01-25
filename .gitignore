@@ -6,6 +6,7 @@ mocha.json
 coverage
 build
 yarn.lock
+*.log
 
 .tmp
 
