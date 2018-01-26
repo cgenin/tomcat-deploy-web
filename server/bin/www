@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
   if (inProgress.isActive()) {
     socket.emit(inProgress.event, { active: true });
   }
-  require('../routes/deploy')(socket, io, ip);
+  require('../ws/deploy')(socket, io, ip);
 });
 
 require('../routes')(app, io);

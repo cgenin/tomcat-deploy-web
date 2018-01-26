@@ -27,7 +27,7 @@ const remoteConsole = function (io) {
 module.exports = function (socket, io, ip) {
   const war = require('../war-manager');
   const rc = remoteConsole(io);
-  const emitInProgress = function () {
+  const emitInProgress =  () => {
     io.sockets.emit('deploiement-in-progress', {active: inProgress.isActive(), ip});
   };
   rc.log('connected to server.');
@@ -94,6 +94,7 @@ module.exports = function (socket, io, ip) {
         const obs = nexus.map(artifact => {
           const {artifactId, groupId, packaging, version, name} = artifact;
           return Rx.Observable.of(artifact)
+            .flatMap(() => war.makeNexusDirectory())
             .flatMap(() => {
               let str = JSON.stringify(artifact);
               rc.log(`prepare to deploy from nexus : ${str}`);
@@ -146,7 +147,7 @@ module.exports = function (socket, io, ip) {
           const obs = data.artifacts.map(
             o => {
               const v = versions.find(v => v.name === o.name);
-              const job= o.job || o.name;
+              const job = o.job || o.name;
               return Rx.Observable.if(
                 () => v,
                 // rollback old version

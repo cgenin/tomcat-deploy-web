@@ -124,6 +124,7 @@ const rollback = function (configuration, item, oldVersion) {
     );
 };
 
+
 const deploySync = function (configuration, nameArtifact, pathWar) {
   const root = host(configuration);
   const parsingUrl = URL.parse(root);
@@ -160,38 +161,6 @@ const deploySync = function (configuration, nameArtifact, pathWar) {
 };
 
 const deploy = function (configuration, item) {
-  // const root = host(configuration);
-  // const parsingUrl = URL.parse(root);
-  // const url = `${root}/manager/text/deploy?path=/${item.name}&update=true`;
-  // const options = {
-  //   host: parsingUrl.hostname,
-  //   method: 'PUT',
-  //   port: parsingUrl.port,
-  //   path: url,
-  //   auth: `${configuration.username}:${configuration.password}`
-  // };
-  // const readFile = Rx.Observable.bindNodeCallback(fs.readFile);
-  // return readFile(fullpath(item.name)).flatMap(d => {
-  //   return Rx.Observable.create((subscriber) => {
-  //     const req = http.request(options, (rs) => {
-  //       let result = '';
-  //       rs.on('data', (data) => {
-  //         result += data;
-  //       });
-  //       rs.on('end', () => {
-  //         if (rs.statusCode === 200 && result.indexOf('ECHEC') === -1 && result.indexOf('FAIL') === -1) {
-  //           subscriber.next(result);
-  //           subscriber.complete();
-  //         } else {
-  //           subscriber.error(rs);
-  //         }
-  //       });
-  //     }).on('error', (e) => {
-  //       subscriber.error(e);
-  //     });
-  //     req.end(d);
-  //   });
-  // });
   return deploySync(configuration, item.name, fullpath(item.name));
 };
 
