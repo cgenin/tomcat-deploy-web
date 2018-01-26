@@ -7,7 +7,7 @@
   },
   "private": true,
   "scripts": {
-    "clean-all" : "rimraf public/apidoc && rimraf build",
+    "clean-all": "rimraf public/apidoc && rimraf build",
     "run-server": "node index.js",
     "create-doc": "apidoc -i ./server -o ./public/apidoc",
     "snyk-protect": "snyk protect",
@@ -23,6 +23,7 @@
     "body-parser": "^1.14.2",
     "bootstrap": "^3.3.7",
     "bootstrap-material-design": "^0.5.7",
+    "bundle-loader": "^0.5.5",
     "classnames": "^2.2.3",
     "compression": "^1.6.1",
     "console-prefix": "^1.0.0",

@@ -3,15 +3,13 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import Tabs from 'react-bootstrap/lib/Tabs';
 import Tab from 'react-bootstrap/lib/Tab';
-import Logger from './../../widgets/logger/Logger';
 import ServerActions from './../../widgets/server/ServerActions';
-import List from './../../widgets/artifacts/List';
-import HistoryList from './../../widgets/history/HistoryList';
-import ListNexusArtifact from './../../widgets/nexus/ListNexusArtifact';
+import {artifactsList, nexusArtifactsList, historyList, logger} from '../../Lazy';
 import Title from '../../widgets/Title';
 import DeployActions from './../../widgets/actions/DeployActions';
 import {hideConsole} from './../../../modules/actions/actions';
 import {reset} from './../../../modules/nexus/actions';
+import IOComponent from "../../../IOComponent";
 
 const mapStateToProps = function (state) {
   const showLogger = state.actions.forceLogger;
@@ -78,10 +76,18 @@ class HomePage extends React.PureComponent {
               <div>
                 <Tabs id="home-tabs" activeKey={this.state.key} onSelect={this.handleSelect}
                       style={{marginLeft: '2em', marginRight: '2em'}}>
-                  <Tab eventKey={2} onExit={this.onEnter} title="Nexus"> <ListNexusArtifact/></Tab>
-                  <Tab eventKey={1} title="Artifacts / Jenkins"> <List/></Tab>
-                  <Tab eventKey={4} title="History"> <HistoryList /></Tab>
-                  <Tab eventKey={3} title="Logs"> <Logger/></Tab>
+                  <Tab eventKey={2} onExit={this.onEnter} title="Nexus">
+                    <IOComponent lazy={nexusArtifactsList}/>
+                  </Tab>
+                  <Tab eventKey={1} title="Artifacts / Jenkins">
+                    <IOComponent lazy={artifactsList}/>
+                  </Tab>
+                  <Tab eventKey={4} title="History">
+                    <IOComponent lazy={historyList}/>
+                  </Tab>
+                  <Tab eventKey={3} title="Logs">
+                    <IOComponent lazy={logger}/>
+                  </Tab>
                 </Tabs>
               </div>
             </div>
