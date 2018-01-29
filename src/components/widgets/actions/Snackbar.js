@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {Button} from 'antd';
 import { hideSnackbar } from '../../../modules/actions/actions';
 import PropTypes from 'prop-types';
 
@@ -53,8 +54,8 @@ class Snackbar extends React.PureComponent {
     return (
       <div id="snackbar-container">
         <div className="snackbar snackbar-opened">
-          <button className="close" aria-label="close" style={{marginLeft: '15px', float: 'right'}}><span
-            aria-hidden="true" onClick={this.hide}>&times;</span></button>
+          <Button size="small" shape="circle" style={{marginLeft: '15px', float: 'right'}} onClick={this.hide} icon="close">
+          </Button>
           <span>
             Deployement finish ! - <a href="/" onClick={this.refresh}>please refresh for new status</a>
           </span>

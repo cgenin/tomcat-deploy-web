@@ -17,9 +17,10 @@ export function remove(nexus) {
 }
 
 export function reset() {
-  return {
-    type: RESET
-  };
+  return dispatch => new Promise((resolve) => {
+    dispatch({type: RESET});
+    resolve(true);
+  });
 }
 
 

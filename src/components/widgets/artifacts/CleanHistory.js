@@ -1,9 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import ReactDOM from 'react-dom';
-import Overlay from 'react-bootstrap/lib/Overlay';
-import { clean } from '../../../modules/artifacts/actions';
-import {OverlayStyle, StyleFabButt} from '../../Styles';
+import {Modal, Button, Form, Input} from 'antd';
+import {clean} from '../../../modules/artifacts/actions';
 
 const mapStateToProps = function (state) {
   return {
@@ -28,58 +26,38 @@ class CleanHistory extends React.Component {
     this.state = {nb: 5};
   }
 
-  componentDidUpdate() {
-    if (this.props.x && this.props.y && this.refs.myRefString) {
-      ReactDOM.findDOMNode(this.refs.myRefString).style.left = this.props.x + 'px';
-      ReactDOM.findDOMNode(this.refs.myRefString).style.top = this.props.y + 'px';
-    }
-  }
 
-  onChange() {
-    const nb = this.refs.nb.value;
+  onChange(e) {
+    e.preventDefault();
+    const nb = e.target.value;
     this.setState({nb});
   }
 
-  onClick(e) {
-    if (e) {
-      e.preventDefault();
+  onClick() {
+    if (this.state.nb > 0) {
+      this.props.onAction(this.state.nb).then(this.props.onHide());
     }
-
-    this.props.onAction(this.state.nb).then(this.props.onHide());
   }
 
   render() {
-    const style = Object.assign({}, OverlayStyle, {width: '25em'});
     return (
-      <Overlay show={this.props.show}
-               onHide={() => this.props.onHide()}
-               placement="bottom">
-        <div ref="myRefString" style={style}>
-          <div className="text-center" style={{fontSize: '24px'}}>
-            <strong>Clean History</strong>
-          </div>
-          <form className="form-horizontal">
-            <fieldset>
-              <div className="form-group" style={{marginTop: '7px'}}>
-                <label htmlFor="inputEmail" className="col-md-3 control-label">Keep Last</label>
-                <div className="col-md-5">
-                  <input type="number" ref="nb" defaultValue={this.state.nb} onChange={this.onChange} className="form-control"
-                         id="inputEmail" placeholder="Number"/>
-                </div>
-                <label className="col-md-3 control-label">artifacts !</label>
-              </div>
-            </fieldset>
-          </form>
-          <div className="text-right">
-            <button className="btn btn-danger btn-fab btn-fab-mini" onClick={() => this.props.onHide()} title="close"
-                    style={StyleFabButt}><i className="material-icons">clear</i></button>
-            <button className="btn btn-primary btn-fab btn-fab-mini" title="Go clean !"
-                    disabled={this.state.nb < 1} onClick={this.onClick} style={StyleFabButt}>
-              <i className="material-icons">directions_walk</i>
-            </button>
-          </div>
-        </div>
-      </Overlay>
+      <Modal visible={this.props.visible} title="Clean History" onCancel={this.props.onHide}
+             footer={
+               [
+                 <Button key={1} onClick={() => this.props.onHide()} title="close" shape="circle" icon="close">
+                 </Button>,
+                 <Button key={2} type="primary" title="Go clean !" shape="circle" icon="minus-square"
+                         disabled={this.state.nb < 1} onClick={this.onClick}>
+                 </Button>
+               ]
+             }>
+        <Form>
+          <Form.Item labelCol={{xs: {span: 5},}} wrapperCol={{xs: {span: 12}}} label="Keep Last">
+            <Input addonAfter="artifacts !" type="number" placeholder="Number" value={this.state.nb}
+                   onChange={this.onChange}/>
+          </Form.Item>
+        </Form>
+      </Modal>
     );
   }
 }

@@ -1,0 +1,19 @@
+#test-nexus-artifact .main {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#test-nexus-artifact .main .card {
+  margin: 1em;
+  padding-top: 30px;
+  padding-left: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#test-nexus-artifact .main .card h3 {
+  color:white;
+
+}

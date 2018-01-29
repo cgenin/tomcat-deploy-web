@@ -1,7 +1,8 @@
 import React from 'react';
 import {withRouter} from 'react-router'
 import {connect} from 'react-redux';
-import AddForm from '../../widgets/artifacts/AddForm';
+import {Row, Col, Card, Breadcrumb} from 'antd';
+import AddForm from '../../widgets/artifacts/ArtifactForm';
 import Title from '../../widgets/Title';
 
 const mapStateToProps = function (state, props) {
@@ -16,14 +17,22 @@ const mapStateToProps = function (state, props) {
 const EditPage = (props) => {
   return (
     <div>
+      <Row>
+        <Col offset={2} span={20}>
+          <Breadcrumb style={{margin: '16px 0'}}>
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>Edit an artifact</Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+      </Row>
       <Title text="Edit an artifact"/>
-      <div className="row">
-        <div className="panel panel-default col-xs-offset-1 col-xs-10">
-          <div className="panel-body">
-            <AddForm id={props.id}/>
-          </div>
-        </div>
-      </div>
+      <Row>
+        <Col span={20} offset={2}>
+          <Card style={{width: '100%'}}>
+          <AddForm id={props.id}/>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

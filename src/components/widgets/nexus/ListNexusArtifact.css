@@ -1,0 +1,14 @@
+#list-nexus-artifact .filter-panel{
+  margin-bottom: 1em;
+}
+
+#list-nexus-artifact .selection-version {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 10em;
+}
+
+#list-nexus-artifact .selection-version .select {
+  width: 100%;
+}

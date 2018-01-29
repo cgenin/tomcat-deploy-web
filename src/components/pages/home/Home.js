@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import Tabs from 'react-bootstrap/lib/Tabs';
-import Tab from 'react-bootstrap/lib/Tab';
+import {Row, Col, Tabs, Card, Breadcrumb} from 'antd';
 import ServerActions from './../../widgets/server/ServerActions';
 import {artifactsList, nexusArtifactsList, historyList, logger} from '../../Lazy';
 import Title from '../../widgets/Title';
 import DeployActions from './../../widgets/actions/DeployActions';
-import {hideConsole} from './../../../modules/actions/actions';
+import {hideConsole, updateArtifacts} from './../../../modules/actions/actions';
 import {reset} from './../../../modules/nexus/actions';
 import IOComponent from "../../../IOComponent";
 
@@ -22,7 +21,12 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(hideConsole());
     },
     onResetNexusArtifact() {
-      dispatch(reset());
+      return dispatch(reset())
+        .then(() => this.onSelect());
+    },
+    onResetArtifact() {
+      return dispatch(updateArtifacts([]))
+        .then(() => this.onSelect());
     }
   };
 };
@@ -32,7 +36,7 @@ class HomePage extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      key: 2
+      key: '2'
     };
     this.handleSelect = this.handleSelect.bind(this);
     this.onEnter = this.onEnter.bind(this);
@@ -41,7 +45,7 @@ class HomePage extends React.PureComponent {
   componentWillMount() {
     const showLogger = this.props.showLogger;
     if (showLogger) {
-      this.setState({key: 3});
+      this.setState({key: '3'});
     }
   }
 
@@ -49,13 +53,24 @@ class HomePage extends React.PureComponent {
   componentWillReceiveProps(newProps) {
     const showLogger = newProps.showLogger;
     if (showLogger) {
-      this.setState({key: 3});
+      this.setState({key: '3'});
     }
   }
 
   handleSelect(key) {
     this.setState({key});
-    this.props.onSelect();
+
+
+    switch (key) {
+      case '2' :
+        this.props.onResetArtifact();
+        break;
+      case '1' :
+        this.props.onResetNexusArtifact();
+        break;
+      default:
+        this.props.onSelect();
+    }
   }
 
   onEnter() {
@@ -65,10 +80,17 @@ class HomePage extends React.PureComponent {
   render() {
     return (
       <div>
+        <Row>
+          <Col offset={2} span={20}>
+            <Breadcrumb style={{margin: '16px 0'}}>
+              <Breadcrumb.Item>Home</Breadcrumb.Item>
+            </Breadcrumb>
+          </Col>
+        </Row>
         <Title text="List and deploy"/>
-        <div className="row">
-          <div className="panel panel-default col-xs-offset-1 col-xs-10">
-            <div className="panel-body">
+        <Row>
+          <Col offset={2} span={20}>
+            <Card style={{width: '100%'}}>
               <ServerActions/>
             </div>
             <DeployActions/>

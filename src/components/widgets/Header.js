@@ -2,13 +2,8 @@ import React from 'react';
 import {withRouter} from 'react-router';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import Navbar from 'react-bootstrap/lib/Navbar';
-import Nav from 'react-bootstrap/lib/Nav';
-import NavItem from 'react-bootstrap/lib/NavItem';
-import NavDropdown from 'react-bootstrap/lib/NavDropdown';
-import MenuItem from 'react-bootstrap/lib/MenuItem';
+import {Menu, Row, Col} from 'antd';
 import CleanHistory from './artifacts/CleanHistory';
-import BlockUI from './Blockui';
 import AboutModal from './AboutModal';
 import {ADD_ARTIFACT, HOME} from '../../routesConstant'
 
@@ -26,108 +21,125 @@ class Header extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {smShow: false, show: false, nexusConfiguration: false, refreshNexusVersion: false};
+    this.state = {smShow: false, show: false, nexusConfiguration: false, };
     this.onLaunchAbout = this.onLaunchAbout.bind(this);
     this.onLaunchCleanHistory = this.onLaunchCleanHistory.bind(this);
     this.onHome = this.onHome.bind(this);
     this.onHelpPage = this.onHelpPage.bind(this);
     this.onAddArtifact = this.onAddArtifact.bind(this);
     this.onLicensePage = this.onLicensePage.bind(this);
+    this.handleChangeMenu = this.handleChangeMenu.bind(this);
 
   }
 
-  onHome(e) {
-    if (e)
-      e.preventDefault();
-
+  onHome() {
     this.props.history.push(HOME.path());
   }
 
-  onAddArtifact(e) {
-    if (e)
-      e.preventDefault();
+  onAddArtifact() {
     this.props.history.push(ADD_ARTIFACT.path());
   }
 
-  onApiRestPage(e) {
-    if (e)
-      e.preventDefault();
+  onApiRestPage() {
     window.open('/apidoc', 'api-rest');
   }
 
-  onLicensePage(e) {
-    if (e)
-      e.preventDefault();
+  onLicensePage() {
     this.props.history.push('/md/license');
   }
 
 
-  onHelpPage(e) {
-    if (e)
-      e.preventDefault();
+  onHelpPage() {
     this.props.history.push('/md/help');
   }
 
-  onLaunchAbout(e) {
-    if (e)
-      e.preventDefault();
+  onLaunchAbout() {
     this.setState({smShow: true});
   }
 
-  onLaunchCleanHistory(e) {
-    if (e) {
-      e.preventDefault();
-    }
-    const x = e.clientX;
-    const y = e.clientY;
-    this.setState({show: !this.state.show, x, y});
+  onLaunchCleanHistory() {
+
+    this.setState({show: !this.state.show});
     return false;
+  }
+
+  handleChangeMenu(item, key) {
+    switch (item.key) {
+      case '2' :
+        this.onAddArtifact();
+        break;
+      case '3.2':
+        this.onLaunchCleanHistory();
+        break;
+      case '4.1' :
+        this.onHelpPage();
+        break;
+      case '4.2':
+        this.onApiRestPage();
+        break;
+      case '4.3' :
+        this.onLicensePage();
+        break;
+      case '4.4' :
+        this.onLaunchAbout();
+        break;
+      default:
+        this.onHome();
+    }
   }
 
 
   render() {
     const smClose = () => this.setState({smShow: false});
     const onHideCleanHistory = () => this.setState({show: false});
+    const defaultSelectedKeys = (this.props.homeActive) ? ['1']
+      : (this.props.addActive) ? ['2'] : [];
     return (
       <div>
-        <Navbar inverse={true} fluid={true}>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <a href="/">Deploy tool</a>
+        <Row>
+          <Col span={3}>
+            <a href="/" style={{color: 'white', fontWeight: 'bold'}}>Deploy tool</a>
+          </Col>
+          <Col span={20}>
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              defaultSelectedKeys={defaultSelectedKeys}
+              onClick={this.handleChangeMenu}
+              style={{lineHeight: '64px'}}
+            >
+              <Menu.Item key="1">
+                <i className="fa fa-cog fa-home "/> &nbsp; Home
+              </Menu.Item>
 
-            </Navbar.Brand>
-            <Navbar.Toggle/>
-          </Navbar.Header>
-
-          <Navbar.Collapse>
-            <Nav>
-              <NavItem eventKey={1} onClick={this.onHome} active={this.props.homeActive}>
-                <i className="fa fa-cog fa-home"/> &nbsp; Home
-              </NavItem>
-              <NavItem eventKey={2} onClick={this.onAddArtifact} active={this.props.addActive}>
+              <Menu.Item key="2">
                 <i className="fa fa-cog fa-plus"/>&nbsp; Add
-              </NavItem>
-              <NavDropdown eventKey={3} title={<span><i className="fa fa-cog"/>&nbsp; Configuration</span>}
-                           id="config-dropdown">
-
-                <MenuItem eventKey={3.2} header>Artifacts</MenuItem>
-                <MenuItem eventKey={3.3} onClick={this.onLaunchCleanHistory}>Clean history</MenuItem>
-              </NavDropdown>
-            </Nav>
-            <Nav pullRight>
-              <NavDropdown id="help-dropdown" eventKey={4} title={<strong>&nbsp;?&nbsp;</strong>}>
-                <MenuItem eventKey={4.1} onClick={this.onHelpPage}>Help</MenuItem>
-                <MenuItem eventKey={4.1} onClick={this.onApiRestPage}>APi Rest Doc</MenuItem>
-                <MenuItem eventKey={4.1} onClick={this.onLicensePage}>License</MenuItem>
-                <MenuItem eventKey={4.2} onClick={this.onLaunchAbout}>About</MenuItem>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-        <AboutModal show={this.state.smShow} onHide={smClose}/>
-        <CleanHistory show={this.state.show} x={this.state.x} y={this.state.y} onHide={onHideCleanHistory}/>
-
-        <BlockUI show={this.state.refreshNexusVersion}/>
+              </Menu.Item>
+              <Menu.SubMenu title={<span><i className="fa fa-cog "/>&nbsp; Configuration</span>}>
+                <Menu.ItemGroup title="Artifacts">
+                  <Menu.Item key="3.2">Clean history</Menu.Item>
+                </Menu.ItemGroup>
+              </Menu.SubMenu>
+            </Menu>
+          </Col>
+          <Col span={1}>
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              onClick={this.handleChangeMenu}
+              style={{lineHeight: '64px'}}
+            >
+              <Menu.SubMenu id="help-dropdown" key={4} title={<strong>&nbsp;?&nbsp;</strong>}>
+                <Menu.Item key="4.1">Help</Menu.Item>
+                <Menu.Item key="4.2">APi Rest Doc</Menu.Item>
+                <Menu.Item key="4.3">License</Menu.Item>
+                <Menu.Item key="4.4" onClick={this.onLaunchAbout}>About</Menu.Item>
+              </Menu.SubMenu>
+            </Menu>
+          </Col>
+        </Row>
+        <AboutModal visible={this.state.smShow} onHide={smClose}/>
+        <CleanHistory visible={this.state.show} onHide={onHideCleanHistory}/>
       </div>
     );
   }

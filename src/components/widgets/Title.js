@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {Row, Col} from 'antd'
 
 const Title = (props) => {
   return (
-    <div className="row">
-      <div className="col-xs-offset-1 col-xs-10 text-center">
+    <Row>
+      <Col span={20} offset={2} style={{display: 'flex', justifyContent: 'center'}}>
         <div className="title-container">
           <div className="ribbon-left"/>
           <div className="backflag-left"/>
@@ -12,8 +13,8 @@ const Title = (props) => {
           <div className="backflag-right"/>
           <div className="ribbon-right"/>
         </div>
-      </div>
-    </div>
+      </Col>
+    </Row>
   );
 };
 
