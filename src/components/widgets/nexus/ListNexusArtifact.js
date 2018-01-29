@@ -2,10 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
-import {DropdownButton, MenuItem} from 'react-bootstrap'
+import {Table, Select, Row, Col, Input} from 'antd'
 import {load} from '../../../modules/artifacts/actions';
 import {reset, add, remove} from '../../../modules/nexus/actions';
 import {filtering} from "../../Filters";
+import './ListNexusArtifact.css';
 
 const mapStateToProps = function (state) {
   let iterable = state.artifacts.filter(a => {
@@ -59,7 +60,7 @@ const sorting = (a, b) => {
 
 const toLabel = (version) => {
   if (!version) {
-    return 'No Deploy';
+    return 'no';
   }
   switch (version) {
     case 'LATEST' :
@@ -67,7 +68,7 @@ const toLabel = (version) => {
     case 'RELEASE' :
       return 'RELEASE';
     default :
-      return "Specific";
+      return "1.0.0";
   }
 
 };
@@ -89,18 +90,17 @@ class SelectionVersion extends React.PureComponent {
   render() {
 
     const title = toLabel(this.props.version);
-    const inputVersion = (title === 'Specific') ?
-      <input type="text" className="form-control" defaultValue={this.props.version}
-             onChange={this.onChangeInput}/> : null;
+    const inputVersion = (title === '1.0.0') ?
+      <Input value={this.props.version} onChange={this.onChangeInput}/> : null;
 
     return (
-      <div>
-        <DropdownButton title={title} id="bg-nested-dropdown" onSelect={this.props.onChange}>
-          <MenuItem eventKey={null}>{toLabel(null)}</MenuItem>
-          <MenuItem eventKey="LATEST">{toLabel('LATEST')}</MenuItem>
-          <MenuItem eventKey="RELEASE">{toLabel('RELEASE')}</MenuItem>
-          <MenuItem eventKey="1.0.0">{toLabel('fdsfsd')}</MenuItem>
-        </DropdownButton>
+      <div className="selection-version">
+        <Select className="select" value={title} onChange={this.props.onChange}>
+          <Select.Option key="no">No Deploy</Select.Option>
+          <Select.Option key="LATEST">LATEST</Select.Option>
+          <Select.Option key="RELEASE">RELEASE</Select.Option>
+          <Select.Option key="1.0.0">Specific</Select.Option>
+        </Select>
         {inputVersion}
       </div>
     );
@@ -124,7 +124,7 @@ class ListNexusArtifact extends React.PureComponent {
 
   onChange(artifact) {
     return (version) => {
-      if (!version && version !== '') {
+      if (!version || version === '' || version === 'no') {
         // SUppress nexus data
         this.props.onRemove(artifact);
       } else if (version !== '') {
@@ -135,62 +135,44 @@ class ListNexusArtifact extends React.PureComponent {
     }
   }
 
+  componentDidMount() {
+    this.props.onInit();
+  }
 
   render() {
 
     const arr = filtering(this.props.nexus, this.state.filter);
     const artifacts = arr.sort(sorting).map(
-      (artifact, i) => (
-        <tr key={i}>
-          <td style={{verticalAlign: 'middle'}}>
-            {artifact.groupId}
-          </td>
-          <td style={{verticalAlign: 'middle'}}>
-            {artifact.artifactId}
-          </td>
-          <td style={{verticalAlign: 'middle'}}>
-            {artifact.packaging}
-          </td>
-          <td>
-            <SelectionVersion onChange={this.onChange(artifact)} version={artifact.version}/>
-          </td>
-        </tr>
-      )
-    );
+      (artifact, i) => {
+        return Object.assign({}, artifact, {
+          key: i,
+        });
+      });
+    const columns = [
+      {key: 'groupId', dataIndex: 'groupId', title: 'GroupId'},
+      {key: 'artifactId', dataIndex: 'artifactId', title: 'ArtifactId'},
+      {
+        key: 'version',
+        title: 'Nexus Version',
+        render: (text, artifact) => <SelectionVersion onChange={this.onChange(artifact)} version={artifact.version}/>
+      },
+    ];
 
     return (
-      <div className="col-xs-12 ">
-        <table className="table table-hover table-responsive">
-          <caption>
-            <div className="row">
-              <div className="col-xs-6">
-                Results {arr.length}.
-              </div>
-              <div className="col-xs-4">
-                <div className="form-group" style={{marginTop: 0}}>
-                  <input type="text" className="form-control" defaultValue={this.state.filter} onChange={this.onFilter}
-                         placeholder="Filter..."/>
-                </div>
-              </div>
-            </div>
-          </caption>
-          <thead>
-          <tr>
-            <th>
-              GroupId
-            </th>
-            <th>
-              ArtifactId
-            </th>
-            <th>Packaging</th>
-            <th className="text-center">Nexus Version</th>
-
-          </tr>
-          </thead>
-          <tbody>
-          {artifacts}
-          </tbody>
-        </table>
+      <div id="list-nexus-artifact">
+        <Row className="filter-panel">
+          <Col xs={24} sm={12}>
+            Results {arr.length}.
+          </Col>
+          <Col xs={24} sm={12}>
+            <Input value={this.state.filter} onChange={this.onFilter} placeholder="Filter..."/>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <Table dataSource={artifacts} columns={columns}/>
+          </Col>
+        </Row>
       </div>
     );
   }

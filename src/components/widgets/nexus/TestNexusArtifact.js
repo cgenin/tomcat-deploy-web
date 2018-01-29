@@ -1,15 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {TimeSpinner} from '../../widgets/Spinner';
-import Modal from 'react-bootstrap/lib/Modal';
-import ModalFooter from 'react-bootstrap/lib/ModalFooter';
-import ModalHeader from 'react-bootstrap/lib/ModalHeader';
-import ModalTitle from 'react-bootstrap/lib/ModalTitle';
-import ModalBody from 'react-bootstrap/lib/ModalBody';
-import Button from 'react-bootstrap/lib/Button';
-
+import {Modal, Button} from 'antd'
 import {testArtifact} from '../../../modules/nexus/actions';
 import StringToText from "../StringToText";
+import './TestNexusArtifact.css';
 
 const mapStateToProps = function (state) {
   const nexus = state.nexus;
@@ -27,8 +22,8 @@ const mapDispatchToProps = function (dispatch) {
 const SuccessResult = (props) => {
   const data = props.result.body.stdout;
   return (
-    <div className="text-center">
-      <div className="message success" style={{margin: '2em', paddingTop: '30px', paddingLeft: '5px'}}>
+    <div className="main">
+      <div className="message success card">
         <div className="text-center">
           <h3>artifact found</h3>
           <h4>status : {props.result.statusCode}</h4>
@@ -43,8 +38,8 @@ const SuccessResult = (props) => {
 
 const ErrorResult = (props) => {
   return (
-    <div className="text-center">
-      <div className="message error" style={{margin: '2em', paddingTop: '30px', paddingLeft: '5px'}}>
+    <div className="main">
+      <div className="message error card" >
         <div className="fa-stack fa-lg" style={{margin: 'auto'}}>
           <i className="fa fa-square-o fa-stack-2x"/>
           <i className="fa fa-warning fa-stack-1x"/>
@@ -70,7 +65,7 @@ const Result = (props) => {
 };
 
 
-class TestArtifact extends React.PureComponent {
+class TestNexusArtifact extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -87,22 +82,16 @@ class TestArtifact extends React.PureComponent {
     const waiting = (this.state.waiting) ? <TimeSpinner/> : <Result result={this.state.result}/>;
 
     return (
-      <Modal show={true} onHide={this.props.onHide} bsSize="lg" aria-labelledby="contained-modal-title-sm">
-        <ModalHeader>
-          <ModalTitle>Get Version of Nexus</ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          <div className="text-center">
-            <h3>{this.props.artifact.name}</h3>
-          </div>
+      <Modal visible={true} title="Get Version of Nexus"
+             footer={[<Button onClick={this.props.onHide}>Close</Button>]}
+             onCancel={this.props.onHide}>
+        <div id="test-nexus-artifact" className="text-center">
+          <h3>{this.props.artifact.name}</h3>
           {waiting}
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={this.props.onHide}>Close</Button>
-        </ModalFooter>
+        </div>
       </Modal>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TestArtifact);
+export default connect(mapStateToProps, mapDispatchToProps)(TestNexusArtifact);

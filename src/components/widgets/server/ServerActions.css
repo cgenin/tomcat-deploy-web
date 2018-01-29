@@ -1,0 +1,10 @@
+#server-actions .container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#server-actions .button-container {
+  margin-left: .5em;
+}

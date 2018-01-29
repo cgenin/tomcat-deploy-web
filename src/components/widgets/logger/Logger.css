@@ -1,0 +1,15 @@
+#logger .text-danger {
+  color: #a94442;
+}
+
+#logger .text-success {
+  color: #3c763d;
+}
+
+#logger .deploy-logger-main-panel {
+  margin-top: 1em;
+  min-height: 15em;
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.05);
+  font-size: 1.3em;
+}

@@ -9,13 +9,14 @@
   "scripts": {
     "run-server": "node index.js",
     "snyk-protect": "snyk protect",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "author": "Christophe Genin <genin.christophe@gmail.com>",
   "dependencies": {
+    "antd": "^3.1.4",
     "bluebird": "^3.2.1",
     "body-parser": "^1.14.2",
     "bootstrap": "^3.3.7",
@@ -47,7 +48,7 @@
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.15",
+    "react-scripts": "1.1.0",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
@@ -77,7 +78,10 @@
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.6.1"
+    "watchify": "^3.6.1",
+    "babel-plugin-import": "^1.6.3",
+    "react-app-rewire-less": "^2.1.0",
+    "react-app-rewired": "^1.4.0"
   },
   "snyk": true,
   "proxy": {

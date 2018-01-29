@@ -1,11 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Modal from 'react-bootstrap/lib/Modal';
-import ModalFooter from 'react-bootstrap/lib/ModalFooter';
-import ModalHeader from 'react-bootstrap/lib/ModalHeader';
-import ModalTitle from 'react-bootstrap/lib/ModalTitle';
-import ModalBody from 'react-bootstrap/lib/ModalBody';
-import Button from 'react-bootstrap/lib/Button';
+import {Modal, Button} from 'antd';
+import './TestModal.css';
 
 const mapStateToProps = function (state) {
   const test = state.testUrl;
@@ -16,10 +12,10 @@ const mapStateToProps = function (state) {
 
 const Success = (props) => {
   return (
-    <div className="text-center" style={{marginRight: 'auto', marginLeft: 'auto'}}>
-        <span className="fa-stack fa-lg" style={{width: '4em', height: '4em', lineHeight: '4em'}}>
-          <i className="fa fa-circle fa-stack-2x " style={{fontSize: '4em', color: '#71c341'}}/>
-          <i className="fa fa-check fa-stack-1x  fa-inverse" style={{fontSize: '2em'}}/>
+    <div className="test-modal-body">
+        <span className="fa-stack fa-lg icon">
+          <i className="fa fa-circle fa-stack-2x first" style={{color: '#71c341'}}/>
+          <i className="fa fa-check fa-stack-1x  fa-inverse second"/>
         </span>
       <div>
         <pre style={{textAlign: 'justify'}}>{props.response}</pre>
@@ -30,10 +26,10 @@ const Success = (props) => {
 
 const Error = (props) => {
   return (
-    <div className="text-center" style={{marginRight: 'auto', marginLeft: 'auto'}}>
-        <span className="fa-stack fa-lg" style={{width: '4em', height: '4em', lineHeight: '4em'}}>
-          <i className="fa fa-circle fa-stack-2x " style={{fontSize: '4em', color: 'darkred'}}/>
-          <i className="fa fa-exclamation fa-stack-1x  fa-inverse" style={{fontSize: '2em'}}/>
+    <div className="test-modal-body">
+        <span className="fa-stack fa-lg icon">
+          <i className="fa fa-circle fa-stack-2x first" style={{color: 'darkred'}}/>
+          <i className="fa fa-exclamation fa-stack-1x fa-inverse second"/>
         </span>
       <div>
         <h2>Code : {props.code}</h2>
@@ -53,19 +49,14 @@ const TestModal = (props) => {
   const error = (!props.test.inProgress && !props.test.success) ? (
     <Error response={props.test.response} code={props.test.code}/>) : null;
   return (
-    <Modal {...props} bsSize="lg" aria-labelledby="contained-modal-title-sm">
-      <ModalHeader closeButton>
-        <ModalTitle>Connection to ...</ModalTitle>
-      </ModalHeader>
-      <ModalBody>
-        <p>{props.test.url} :</p>
-        {inProgress}
-        {success}
-        {error}
-      </ModalBody>
-      <ModalFooter>
-        <Button onClick={props.onHide}>Close</Button>
-      </ModalFooter>
+    <Modal  visible={props.visible}
+            onCancel={props.onHide}
+           footer={[<Button onClick={props.onHide}>Close</Button>]}
+           title="Connection to ...">
+      <p>{props.test.url} :</p>
+      {inProgress}
+      {success}
+      {error}
     </Modal>
   );
 };

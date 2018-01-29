@@ -1,7 +1,8 @@
 import React from 'react';
 import {withRouter} from 'react-router';
+import {Row, Col, Card, Breadcrumb} from 'antd';
 import Title from '../../widgets/Title';
-import ServerEdit from '../../widgets/server/Edition';
+import ServerEdit from '../../widgets/server/ServerForm';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -19,14 +20,22 @@ const ServerEditPage = (props) => {
 
   return (
     <div>
+      <Row>
+        <Col offset={2} span={20}>
+          <Breadcrumb style={{margin: '16px 0'}}>
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>Edit an server</Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+      </Row>
       <Title text="Edit and Save server"/>
-      <div className="row">
-        <div className="panel panel-default col-xs-offset-1 col-xs-10">
-          <div className="panel-body">
+      <Row>
+        <Col span={20} offset={2}>
+          <Card style={{width: '100%'}}>
             <ServerEdit add={props.add} id={props.id}/>
-          </div>
-        </div>
-      </div>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

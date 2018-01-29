@@ -1,7 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { deploy, deployByNexus, undeploy } from '../../../modules/actions/actions';
+import {Button, Row, Col, Alert} from 'antd';
+import {deploy, deployByNexus, undeploy} from '../../../modules/actions/actions';
 import PropTypes from 'prop-types';
+import SelectedUrls from './SelectedUrls';
+import SelectedNexus from './SelectedNexus';
+import './DeployActions.css';
 
 const mapStateToProps = function (state) {
   const {actions, nexus} = state;
@@ -59,38 +63,45 @@ class DeployActions extends React.PureComponent {
   render() {
     if (this.props.actions.inProgress.active) {
       return (
-        <div className="row">
-          <div className="alert alert-dismissible alert-warning col-xs-6 col-xs-offset-3 text-center">
-            <h3>Deployement in progress <i className="fa fa-refresh fa-spin fa-2x"/></h3>
-          </div>
-        </div>
+        <Row className="current-deployement">
+          <Col span={12} offset={6} className="text-center">
+            <Alert showIcon type="warning"
+                   message={<h3>Deployement in progress <i className="fa fa-refresh fa-spin fa-2x"/></h3>}/>
+          </Col>
+        </Row>
       );
     }
 
     const buttonDeploy = (this.props.showNexusButton) ? (
-      <button type="button" onClick={this.onDeployByNexus}  className="btn btn-info">
+      <Button onClick={this.onDeployByNexus}>
         <i className="fa fa-play"/>
         &nbsp;Run
-      </button>
+      </Button>
     ) : (
-      <button type="button" onClick={this.onDeploy} disabled={this.props.disabled} className="btn btn-info">
+      <Button onClick={this.onDeploy} disabled={this.props.disabled}>
         <i className="fa fa-play"/>
         &nbsp;Run
-      </button>
+      </Button>
     );
 
     return (
-      <div className="row">
-        <div className="col-xs-3 col-xs-offset-3 text-right">
-          <button type="button" onClick={this.onUnDeploy} disabled={this.props.disabled} className="btn btn-default">
+      <Row id="deploy-actions">
+        <Col span={3} offset={9}>
+          <Button onClick={this.onUnDeploy} disabled={this.props.disabled}>
             <i className="fa fa-trash-o"/>
             &nbsp;Undeploy
-          </button>
-        </div>
-        <div className="col-xs-6 text-left">
+          </Button>
+        </Col>
+        <Col span={8}>
           {buttonDeploy}
-        </div>
-      </div>
+        </Col>
+        <Col span={2}>
+          <SelectedUrls/>
+        </Col>
+        <Col span={2}>
+          <SelectedNexus/>
+        </Col>
+      </Row>
     );
   }
 }
@@ -98,7 +109,7 @@ class DeployActions extends React.PureComponent {
 DeployActions.propTypes = {
   disabled: PropTypes.bool.isRequired,
   showNexusButton: PropTypes.bool.isRequired,
-  actions:PropTypes.object,
+  actions: PropTypes.object,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeployActions);

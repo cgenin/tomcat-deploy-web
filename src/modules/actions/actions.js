@@ -63,10 +63,13 @@ export function undeploy(server, artifacts) {
 }
 
 export function updateArtifacts(artifacts) {
-  return {
-    type: ARTIFACTS,
-    artifacts
-  };
+  return (dispatch) => new Promise((resolve) => {
+    dispatch({
+      type: ARTIFACTS,
+      artifacts
+    });
+    resolve(true);
+  });
 }
 
 export function updateServers(servers) {
