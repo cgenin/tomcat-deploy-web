@@ -5,6 +5,12 @@
   align-items: center;
 }
 
+
+#server-actions .button-edit {
+  background-color: #4caf50;
+  color: hsla(0, 0%, 100%, .84);
+}
+
 #server-actions .button-container {
   margin-left: .5em;
 }

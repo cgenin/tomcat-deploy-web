@@ -73,12 +73,12 @@ class DeployActions extends React.PureComponent {
     }
 
     const buttonDeploy = (this.props.showNexusButton) ? (
-      <Button onClick={this.onDeployByNexus}>
+      <Button onClick={this.onDeployByNexus} size="large">
         <i className="fa fa-play"/>
         &nbsp;Run
       </Button>
     ) : (
-      <Button onClick={this.onDeploy} disabled={this.props.disabled}>
+      <Button onClick={this.onDeploy} disabled={this.props.disabled} size="large">
         <i className="fa fa-play"/>
         &nbsp;Run
       </Button>
@@ -87,7 +87,7 @@ class DeployActions extends React.PureComponent {
     return (
       <Row id="deploy-actions">
         <Col span={3} offset={9}>
-          <Button onClick={this.onUnDeploy} disabled={this.props.disabled}>
+          <Button onClick={this.onUnDeploy} disabled={this.props.disabled} size="large">
             <i className="fa fa-trash-o"/>
             &nbsp;Undeploy
           </Button>

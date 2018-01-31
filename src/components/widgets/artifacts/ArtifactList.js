@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {Table, Row, Col, Input, Tooltip, Menu, Dropdown, Icon, Popconfirm} from 'antd';
 import LaunchButton from '../artifacts/LaunchButton';
 import ArtifactVersions from '../versions/ArtifactVersions';
-import {filtering} from '../../Filters';
+import {filtering} from '../../FiltersAndSorter';
 import {del, load} from '../../../modules/artifacts/actions';
 import {updateArtifacts} from '../../../modules/actions/actions';
 import {removeArtifacts} from '../../../modules/actions/actions';

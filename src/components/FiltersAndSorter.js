@@ -12,3 +12,15 @@ export function filtering(list, filter = '') {
     return res.indexOf(term) !== -1;
   })
 }
+
+export function sortStrBy(attr) {
+  return (a, b) => {
+    const groupId1 = a[attr];
+    const groupId2 = b[attr];
+    if (groupId1 < groupId2)
+      return -1;
+    if (groupId1 > groupId2)
+      return 1;
+    return 0;
+  }
+}

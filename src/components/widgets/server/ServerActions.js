@@ -102,7 +102,7 @@ class ServerActions extends React.PureComponent {
     const disabled = this.props.servers.length === 0;
     const buttonEdit = (this.state.server) ? (
       <div className="button-container">
-        <Button onClick={this.onEdit} type="success" title="Edit current server" shape="circle"
+        <Button onClick={this.onEdit} type="success" title="Edit current server" shape="circle" className="button-edit"
                 size="large" disabled={disabled}>
           <i className="fa fa-edit"/>
         </Button>
@@ -116,7 +116,7 @@ class ServerActions extends React.PureComponent {
             <a href="/" onClick={this.toggle}>No</a>
           </div>
         } trigger="click" visible={this.state.show} onVisibleChange={(show) => this.setState({show})}>
-          <Button type="danger" shape="circle" size="large"
+          <Button type="danger" shape="circle" size="large" className="button-ultradanger"
                   icon="minus" title="Remove an server" disabled={disabled}>
           </Button>
         </Popover>

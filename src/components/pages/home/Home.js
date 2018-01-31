@@ -11,6 +11,7 @@ import Title from '../../widgets/Title';
 import DeployActions from './../../widgets/actions/DeployActions';
 import {hideConsole, updateArtifacts} from './../../../modules/actions/actions';
 import {reset} from './../../../modules/nexus/actions';
+import './Home.css';
 
 const mapStateToProps = function (state) {
   const showLogger = state.actions.forceLogger;
@@ -81,7 +82,7 @@ class HomePage extends React.PureComponent {
 
   render() {
     return (
-      <div>
+      <div id="home">
         <Row>
           <Col offset={2} span={20}>
             <Breadcrumb style={{margin: '16px 0'}}>

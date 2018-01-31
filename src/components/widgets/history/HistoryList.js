@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {Table, Input, Row, Col, Tooltip} from 'antd';
 import {load} from '../../../modules/history/actions'
 import moment from "moment/moment";
-import {filtering} from "../../Filters";
+import {filtering} from "../../FiltersAndSorter";
 import jenkinsImg from '../../../assets/jenkins.png';
 import nexusImg from '../../../assets/nexus.png';
 import './HistoryList.css';

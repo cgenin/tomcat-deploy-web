@@ -2,7 +2,7 @@ import React from 'react';
 import {withRouter} from 'react-router';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Menu, Row, Col} from 'antd';
+import {Menu, Row, Col, Icon} from 'antd';
 import CleanHistory from './artifacts/CleanHistory';
 import AboutModal from './AboutModal';
 import {ADD_ARTIFACT, HOME} from '../../routesConstant'
@@ -21,7 +21,7 @@ class Header extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {smShow: false, show: false, nexusConfiguration: false, };
+    this.state = {smShow: false, show: false, nexusConfiguration: false,};
     this.onLaunchAbout = this.onLaunchAbout.bind(this);
     this.onLaunchCleanHistory = this.onLaunchCleanHistory.bind(this);
     this.onHome = this.onHome.bind(this);
@@ -129,7 +129,8 @@ class Header extends React.PureComponent {
               onClick={this.handleChangeMenu}
               style={{lineHeight: '64px'}}
             >
-              <Menu.SubMenu id="help-dropdown" key={4} title={<strong>&nbsp;?&nbsp;</strong>}>
+              <Menu.SubMenu id="help-dropdown" key={4}
+                            title={<strong>&nbsp;?&nbsp;<Icon type="caret-down" /></strong>}>
                 <Menu.Item key="4.1">Help</Menu.Item>
                 <Menu.Item key="4.2">APi Rest Doc</Menu.Item>
                 <Menu.Item key="4.3">License</Menu.Item>
