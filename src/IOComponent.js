@@ -40,7 +40,9 @@ export default class IOComponent extends Component {
 
 
   componentWillUnmount() {
-    intersectionObserver.unobserve(this.elm);
+    if (this.elm) {
+      intersectionObserver.unobserve(this.elm);
+    }
   }
 
   componentDidMount() {
@@ -48,6 +50,7 @@ export default class IOComponent extends Component {
     functions[this.id] = () => {
       this.handleImport();
       intersectionObserver.unobserve(this.elm);
+      this.elm = null;
     };
     intersectionObserver.observe(this.elm);
   }

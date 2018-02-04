@@ -1,6 +1,6 @@
 const express = require('express');
 const deploydb = require('../deploydb');
-const nexus = require('../nexus');
+const nexus = require('../actions/nexus');
 const router = express.Router();
 const bodyParser = require('body-parser');
 

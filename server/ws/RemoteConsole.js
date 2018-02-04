@@ -1,4 +1,4 @@
-const inProgress = require('./in-progress');
+const inProgress = require('../in-progress');
 
 let instance = null;
 
@@ -17,6 +17,27 @@ class RemoteConsole {
       }
     };
   }
+
+  startUndeploy(server, ip){
+    inProgress.active();
+    this.emitInProgress(ip);
+    this.log(`target server : ${server.host}`);
+  }
+
+  startDeploy(server, data, ip) {
+    inProgress.active();
+    this.emitInProgress(ip);
+    this.deployStart(ip);
+    this.start();
+    this.log(`target server : ${server.host}`);
+    this.log(`selected wars : ${data.length} by ${ip}`);
+  }
+
+  endDeploy(ip) {
+    this.end();
+    inProgress.disable();
+    this.emitInProgress(ip);
+  };
 
   setIo(io) {
     this.io = io;
