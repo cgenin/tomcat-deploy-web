@@ -6,7 +6,7 @@
  */
 const config = require('../config');
 const registry = require('simple-registry');
-const inProgress = require('../in-progress');
+const inProgress = require('../actions/in-progress');
 const http = require('http');
 registry.set('config', config);
 const app = require('../app');

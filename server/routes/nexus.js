@@ -55,35 +55,4 @@ router.put('/', bodyParser.json(), (req, res) => {
   res.json(body);
 });
 
-
-// router.get('/test2', (req, res) => {
-//   const groupId = 'fr.mdpa.ms.metier.mdpa.societaire';
-//   const artifactId = 'societaire-service-impl';
-//   const version = '1.1.3';
-//   const packaging = 'war';
-//   const ef = Rx.Observable.bindNodeCallback(execFile);
-//   ef('mvn.bat', [
-//     'dependency:get',
-//     `-DgroupId=${groupId}`,
-//     `-DartifactId=${artifactId}`,
-//     `-Dversion=${version}`,
-//     `-Dpackaging=${packaging}`,
-//     '-Dtransitive=false'
-//   ])
-//     .flatMap(() => ef('mvn.bat', [
-//         'dependency:copy',
-//         `-Dartifact=${groupId}:${artifactId}:${version}:${packaging}`,
-//         '-DoutputDirectory=download/versions'
-//       ])
-//     ).subscribe(
-//     (arr) => {
-//       console.log(arr);
-//       res.json(arr);
-//     },
-//     err => {
-//       console.error(err);
-//       res.json({error: true});
-//     })
-// });
-
 module.exports = router;

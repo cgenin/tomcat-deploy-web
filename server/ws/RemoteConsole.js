@@ -1,4 +1,4 @@
-const inProgress = require('../in-progress');
+const inProgress = require('../actions/in-progress');
 
 let instance = null;
 
