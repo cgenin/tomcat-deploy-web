@@ -14,7 +14,7 @@ import './HistoryList.css';
 
 
 const mapStateToProps = function (state) {
-  const {history, loading} = state.history;
+  const {history} = state.history;
 
   return {
     history, loading

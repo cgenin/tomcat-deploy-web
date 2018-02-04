@@ -9,14 +9,12 @@ const old = /^(.*?)\.war\.([0-9]+?)$/;
 let instance = null;
 
 class Backup {
-  static getInstance() {
-    if (instance === null) {
-      instance = new Backup();
-    }
-    return instance;
-  }
 
   constructor() {
+    if (instance) {
+      return this;
+    }
+    instance = this;
     this.inner = {};
   }
 
@@ -82,7 +80,7 @@ class Backup {
           return unlink(`${downloadedDir}/${v2Delete.f}`);
         })
         .takeLast(1),
-        Rx.Observable.of(this.inner)
+      Rx.Observable.of(this.inner)
     )
       .flatMap(() => this.load());
 
@@ -94,4 +92,4 @@ class Backup {
 }
 
 
-module.exports = Backup.getInstance();
+module.exports = new Backup();

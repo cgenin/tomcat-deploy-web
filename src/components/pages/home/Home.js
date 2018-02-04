@@ -2,15 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Row, Col, Tabs, Card, Breadcrumb} from 'antd';
-import Logger from './../../widgets/logger/Logger';
 import ServerActions from './../../widgets/server/ServerActions';
-import List from '../../widgets/artifacts/ArtifactList';
-import HistoryList from './../../widgets/history/HistoryList';
-import ListNexusArtifact from './../../widgets/nexus/ListNexusArtifact';
+import {artifactsList, nexusArtifactsList, historyList, logger} from '../../Lazy';
 import Title from '../../widgets/Title';
 import DeployActions from './../../widgets/actions/DeployActions';
 import {hideConsole, updateArtifacts} from './../../../modules/actions/actions';
 import {reset} from './../../../modules/nexus/actions';
+import IOComponent from "../../../IOComponent";
 
 const mapStateToProps = function (state) {
   const showLogger = state.actions.forceLogger;
@@ -97,16 +95,16 @@ class HomePage extends React.PureComponent {
               <DeployActions/>
               <Tabs id="home-tabs" defaultActiveKey="2" activeKey={this.state.key} onChange={this.handleSelect}>
                 <Tabs.TabPane key="2" tab="Nexus">
-                  <ListNexusArtifact/>
+                  <IOComponent lazy={nexusArtifactsList}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane key="1" tab="Artifacts / Jenkins">
-                  <List/>
+                  <IOComponent lazy={artifactsList}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane key="4" tab="History">
-                  <HistoryList/>
+                  <IOComponent lazy={historyList}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane key="3" tab="Logs">
-                  <Logger/>
+                  <IOComponent lazy={logger}/>
                 </Tabs.TabPane>
 
               </Tabs>

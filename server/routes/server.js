@@ -1,6 +1,6 @@
 const express = require('express');
 const deploydb = require('../deploydb');
-const war = require('../war-manager');
+const war = require('../actions/war-manager');
 const router = express.Router();
 const bodyParser = require('body-parser');
 
