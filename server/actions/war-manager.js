@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const URL = require('url');
 const Rx = require('rxjs/Rx');
-const config = require('./config');
+const config = require('../config');
 const rimraf = require('rimraf');
 const downloadedDir = config.downloadedDir;
 

@@ -3,6 +3,18 @@ const deploydb = require('../deploydb');
 const backup = require('../backup');
 const router = express.Router();
 const bodyParser = require('body-parser');
+const DeployManager = require('../actions/deploy-manager');
+
+const getArtifacts = function () {
+  const items = deploydb.files() || {data: []};
+  const artifacts = items.data.map(d => {
+    if (!d.job) {
+      return Object.assign({}, d, {job: d.name});
+    }
+    return d;
+  });
+  return artifacts;
+};
 
 module.exports = (io) => {
 
@@ -35,13 +47,8 @@ module.exports = (io) => {
    *  ]
    */
   router.get('/', (req, res) => {
-    const items = deploydb.files() || {data: []};
-    res.json(items.data.map(d => {
-      if (!d.job) {
-        return Object.assign({}, d, {job: d.name});
-      }
-      return d;
-    }));
+    const artifacts = getArtifacts();
+    res.json(artifacts);
   });
 
   /**
@@ -172,6 +179,93 @@ module.exports = (io) => {
     const files = deploydb.files();
     deploydb.remove(files, body);
     res.json(deploydb.files().data);
+  });
+
+  const retreiveServer = (serverName) => {
+    const config = deploydb.config() || {data: [{}]};
+    const servers = Array.from(config.data);
+    return servers.find((s) => {
+      return JSON.stringify(s).indexOf(serverName) !== -1;
+    });
+  };
+
+  const retreiveArtifactByJob = (job) => {
+    const artifacts = getArtifacts();
+    return artifacts.find((a) => {
+      const s = a.job || a.name;
+      return s === job;
+    });
+  };
+
+  /**
+   * @api {put} /artifact/on/server/:serverName deploy one artifact on an specific server.
+   * The artifact can be take from maven or by an specific job.
+   * @apiName DeployArtifact
+   * @apiGroup Artifact
+   *
+   * @apiParam {String} serverName Name of the .
+   * @apiParam {String} groupId The group Id in the maven repository. required for maven deploy.
+   * @apiParam {String} artifactId The artifact Id in the maven repository. required for maven deploy.
+   * @apiParam {String} version The artifact version in the maven repository. if omitted, the latest version will be used.
+   * @apiParam {String} job The artifact job configured in tomcat web deploy.
+   *
+   * @apiParamExample {json} Request-Example  for maven deploy:
+   * {
+   *  "groupId":"net.christophe.genin.test.war",
+   *  "artifactId":"mywar"
+   *  }
+   * @apiParamExample {json} Request-Example  for url deploy:
+   * {
+   *  "job":"my name"
+   *  }
+   * @apiSuccessExample Success-Response:
+   *     HTTP/1.1 204 OK
+   *
+   */
+  router.put('/on/server/:serverName', bodyParser.json(), (req, res) => {
+    const body = req.body;
+    const ip = req._remoteAddress || 'unknown';
+    const serverName = req.params.serverName;
+
+    // Search for server
+    const server = retreiveServer(serverName);
+    if (!server) {
+      res.status(404);
+      res.json({message: 'Server not found'});
+      return;
+    }
+    const {artifactId, groupId, job} = body;
+    // Cas d'un demande déploiement par nexus;
+    if (artifactId && groupId) {
+      new DeployManager(ip)
+        .deployByNexus(server, body)
+        .then(() => {
+          res.status(204);
+          res.json();
+        })
+        .catch(() => {
+          res.status(500);
+          res.json({});
+        });
+      return;
+    }
+    // Cas d'une demande par url
+    const artifact = retreiveArtifactByJob(job);
+    if (!artifact) {
+      res.status(404);
+      res.json({message: 'Artifact not found'});
+      return;
+    }
+    new DeployManager(ip)
+      .deployByUrl(server, [artifact])
+      .subscribe(() => {
+          res.status(204);
+          res.json();
+        },
+        () => {
+          res.status(500);
+          res.json({});
+        });
   });
 
   return router;
