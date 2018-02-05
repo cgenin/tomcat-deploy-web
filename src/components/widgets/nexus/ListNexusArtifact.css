@@ -12,3 +12,7 @@
 #list-nexus-artifact .selection-version .select {
   width: 100%;
 }
+
+#list-nexus-artifact .ant-table-thead > tr > th  {
+  border: solid 1px rgb(232, 232, 232);
+}
