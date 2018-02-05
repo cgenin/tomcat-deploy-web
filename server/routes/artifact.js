@@ -7,13 +7,12 @@ const DeployManager = require('../actions/deploy-manager');
 
 const getArtifacts = function () {
   const items = deploydb.files() || {data: []};
-  const artifacts = items.data.map(d => {
+  return items.data.map(d => {
     if (!d.job) {
       return Object.assign({}, d, {job: d.name});
     }
     return d;
   });
-  return artifacts;
 };
 
 module.exports = (io) => {
@@ -94,8 +93,7 @@ module.exports = (io) => {
   router.post('/', bodyParser.json(), (req, res) => {
     const artifact = req.body;
     const files = deploydb.files();
-    const tmpHttp = (artifact.url.indexOf('http://') === -1) ? `http://${artifact.url}` : artifact.url;
-    artifact.url = tmpHttp;
+    artifact.url = (artifact.url.indexOf('http://') === -1) ? `http://${artifact.url}` : artifact.url;
     deploydb.save(files, artifact);
     res.json(deploydb.files().data);
   });

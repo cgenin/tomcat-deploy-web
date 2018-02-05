@@ -1,5 +1,5 @@
 export function artifactsList() {
-  return import(/* webpackChunkName: "list-artifact" */ './widgets/artifacts/List');
+  return import(/* webpackChunkName: "list-artifact" */ './widgets/artifacts/ArtifactList');
 }
 
 export function nexusArtifactsList() {
