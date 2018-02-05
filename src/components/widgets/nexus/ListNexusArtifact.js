@@ -191,7 +191,7 @@ class ListNexusArtifact extends React.PureComponent {
         </Row>
         <Row>
           <Col xs={24}>
-            <Table dataSource={artifacts} columns={columns} onChange={this.handleChangeTable}/>
+            <Table dataSource={artifacts} columns={columns} onChange={this.handleChangeTable} pagination={{ pageSize:50 }}/>
           </Col>
         </Row>
       </div>

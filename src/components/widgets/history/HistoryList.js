@@ -126,7 +126,7 @@ class HistoryList extends PureComponent {
             <Input value={this.state.filter} onChange={this.onFilter} placeholder="Filter..."/>
           </Col>
         </Row>
-        <Table dataSource={lines} columns={columns}/>
+        <Table dataSource={lines} columns={columns}  pagination={{ pageSize:25 }}/>
       </div>
     );
   }

@@ -188,7 +188,7 @@ class ArtifactList extends React.PureComponent {
             <Input value={this.state.filter} onChange={this.onFilter} placeholder="Filter..."/>
           </Col>
         </Row>
-        <Table rowSelection={rowSelection} dataSource={artifacts} columns={columns}/>
+        <Table rowSelection={rowSelection} dataSource={artifacts} columns={columns}  pagination={{ pageSize:50 }}/>
       </div>
     );
   }
