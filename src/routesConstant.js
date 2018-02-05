@@ -59,3 +59,16 @@ export const EDIT_SERVER = {
   }
 };
 
+export const ADD_SCHEDULER = {
+  root: '/scheduler/',
+  /**
+   * @return {string}
+   */
+  CST() {
+    return `${this.root}:type`;
+  },
+  path(type) {
+    return `${this.root}${type}`;
+  }
+};
+

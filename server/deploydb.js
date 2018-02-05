@@ -2,6 +2,7 @@ const Rx = require('rxjs/Rx');
 const fileCollection = 'files';
 const configCollection = 'configuration';
 const nexusCollection = 'nexus';
+const schedulersCollection = 'schedulers';
 const historyCollection = 'history';
 const loki = require('lokijs');
 
@@ -31,6 +32,7 @@ class DeployDB {
         this.createIfNotExist(configCollection);
         this.createIfNotExist(nexusCollection);
         this.createIfNotExist(historyCollection);
+        this.createIfNotExist(schedulersCollection);
         sub.next(this.db);
         sub.complete();
       });
@@ -51,6 +53,10 @@ class DeployDB {
 
   history() {
     return this.db.getCollection(historyCollection);
+  }
+
+  schedulers() {
+    return this.db.getCollection(schedulersCollection);
   }
 
   insert(collection, item) {
@@ -88,6 +94,8 @@ class DeployDB {
     collection.remove(item);
     this.db.saveDatabase();
   }
+
+  
   close() {
     this.db.close();
   }
