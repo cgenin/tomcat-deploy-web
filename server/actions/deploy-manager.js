@@ -53,6 +53,7 @@ class DeployManager {
             const obs = nexus.map(artifact => {
               const {artifactId, groupId, packaging, version, name} = artifact;
               return Rx.Observable.of(artifact)
+                .flatMap(() => war.makeNexusDirectory())
                 .flatMap(() => {
                   let str = JSON.stringify(artifact);
                   rc.log(`prepare to deploy from nexus : ${str}`);
