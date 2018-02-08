@@ -3,17 +3,18 @@ const fileCollection = 'files';
 const configCollection = 'configuration';
 const nexusCollection = 'nexus';
 const historyCollection = 'history';
+const schedulerCollection = 'scheduler';
 const loki = require('lokijs');
 
 let instance = null;
 
 class DeployDB {
-  constructor(){
-    if(instance) {
+  constructor() {
+    if (instance) {
       return instance;
     }
     instance = this;
-    this.db = new loki('db/data.json', { autoload: false });
+    this.db = new loki('db/data.json', {autoload: false});
   }
 
   createIfNotExist(name) {
@@ -25,12 +26,13 @@ class DeployDB {
   }
 
   init() {
-    return Rx.Observable.create((sub)=>{
+    return Rx.Observable.create((sub) => {
       this.db.loadDatabase({}, () => {
         this.createIfNotExist(fileCollection);
         this.createIfNotExist(configCollection);
         this.createIfNotExist(nexusCollection);
         this.createIfNotExist(historyCollection);
+        this.createIfNotExist(schedulerCollection);
         sub.next(this.db);
         sub.complete();
       });
@@ -39,6 +41,10 @@ class DeployDB {
 
   files() {
     return this.db.getCollection(fileCollection);
+  }
+
+  schedulers() {
+    return this.db.getCollection(schedulerCollection) || {data: []};
   }
 
   config() {
@@ -88,6 +94,7 @@ class DeployDB {
     collection.remove(item);
     this.db.saveDatabase();
   }
+
   close() {
     this.db.close();
   }

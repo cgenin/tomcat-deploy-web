@@ -20,7 +20,7 @@ class SelectedUrls extends React.PureComponent {
     return (
       <div>
         <Popover title="Artifacts" content={<ul>{lis}</ul>}>
-          <img src={jenkinsImg} width="28" height="28"/> : {this.props.artifacts.length}
+          <img src={jenkinsImg} width="28" height="28" alt="Url 's Deployement"/> : {this.props.artifacts.length}
         </Popover>
       </div>
     );

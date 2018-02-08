@@ -19,7 +19,7 @@ class SelectedNexus extends React.PureComponent {
     return (
       <div>
         <Popover title="Nexus Artifacts" content={<ul>{lis}</ul>}>
-          <img src={nexusImg} width="28" height="28"/> : {this.props.nexus.length}
+          <img src={nexusImg} width="28" height="28" alt="Nexus 's Deployement"/> : {this.props.nexus.length}
         </Popover>
       </div>
     );

@@ -124,19 +124,19 @@ class ServerActions extends React.PureComponent {
     ) : (<span/>);
     return (
       <div id="server-actions">
-        <Row type="flex" justify="center">
-          <Col sm={20} xs={24}>
-            <div className="container">
-              <Select style={{minWidth: '15em'}} value={this.state.server} onChange={this.onChange}>
+        <Row >
+          <Col sm={12} xs={24} >
+              <Select style={{minWidth: '15rem', width:'20rem', float:'right'}} value={this.state.server} onChange={this.onChange} >
                 {options}
               </Select>
-              {buttonEdit}
+          </Col>
+          <Col sm={12} xs={24}>
               <div className="button-container">
+                {buttonEdit}
                 <Button onClick={this.onCreate} title="Add an server" shape="circle" type="primary" size="large">
                   <i className="fa fa-plus"/>
                 </Button>
-              </div>
-              {buttonRemove}
+                {buttonRemove}
             </div>
           </Col>
         </Row>

@@ -9,8 +9,8 @@ import moment from "moment/moment";
 import {filtering} from "../../FiltersAndSorter";
 import jenkinsImg from '../../../assets/jenkins.png';
 import nexusImg from '../../../assets/nexus.png';
+import {TabSpinner} from '../Spinner';
 import './HistoryList.css';
-
 
 
 const mapStateToProps = function (state) {
@@ -93,9 +93,7 @@ class HistoryList extends PureComponent {
   render() {
     if (this.props.loading) {
       return (
-        <div className="col-xs-12 ">
-          <i className="fa fa-spinner fa-spin fa-3x fa-fw"/>
-        </div>
+        <TabSpinner/>
       );
     }
 
@@ -126,7 +124,7 @@ class HistoryList extends PureComponent {
             <Input value={this.state.filter} onChange={this.onFilter} placeholder="Filter..."/>
           </Col>
         </Row>
-        <Table dataSource={lines} columns={columns}  pagination={{ pageSize:25 }}/>
+        <Table dataSource={lines} columns={columns} pagination={{pageSize: 25}}/>
       </div>
     );
   }
