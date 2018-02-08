@@ -9,12 +9,12 @@ const loki = require('lokijs');
 let instance = null;
 
 class DeployDB {
-  constructor(){
-    if(instance) {
+  constructor() {
+    if (instance) {
       return instance;
     }
     instance = this;
-    this.db = new loki('db/data.json', { autoload: false });
+    this.db = new loki('db/data.json', {autoload: false});
   }
 
   createIfNotExist(name) {
@@ -26,7 +26,7 @@ class DeployDB {
   }
 
   init() {
-    return Rx.Observable.create((sub)=>{
+    return Rx.Observable.create((sub) => {
       this.db.loadDatabase({}, () => {
         this.createIfNotExist(fileCollection);
         this.createIfNotExist(configCollection);
@@ -56,7 +56,7 @@ class DeployDB {
   }
 
   schedulers() {
-    return this.db.getCollection(schedulersCollection);
+    return this.db.getCollection(schedulersCollection) || {data: []};
   }
 
   insert(collection, item) {
@@ -95,7 +95,7 @@ class DeployDB {
     this.db.saveDatabase();
   }
 
-  
+
   close() {
     this.db.close();
   }
