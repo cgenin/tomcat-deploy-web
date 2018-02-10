@@ -1,7 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Modal, Button} from 'antd';
-import './TestModal.css';
+import {okColor, koColor} from '../../Styles';
+import '../TestModal.css';
 
 const mapStateToProps = function (state) {
   const test = state.testUrl;
@@ -11,10 +12,11 @@ const mapStateToProps = function (state) {
 };
 
 const Success = (props) => {
+
   return (
     <div className="test-modal-body">
         <span className="fa-stack fa-lg icon">
-          <i className="fa fa-circle fa-stack-2x first" style={{color: '#71c341'}}/>
+          <i className="fa fa-circle fa-stack-2x first" style={okColor}/>
           <i className="fa fa-check fa-stack-1x  fa-inverse second"/>
         </span>
       <div>
@@ -28,7 +30,7 @@ const Error = (props) => {
   return (
     <div className="test-modal-body">
         <span className="fa-stack fa-lg icon">
-          <i className="fa fa-circle fa-stack-2x first" style={{color: 'darkred'}}/>
+          <i className="fa fa-circle fa-stack-2x first" style={koColor}/>
           <i className="fa fa-exclamation fa-stack-1x fa-inverse second"/>
         </span>
       <div>

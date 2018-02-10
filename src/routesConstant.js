@@ -21,7 +21,14 @@ export const HOME_TABS = {
   path(tab) {
     return `${this.root}${tab}`
   }
+
 };
+
+export const TAB_LIST_NEXUS= '2';
+export const TAB_LIST_ARTIFACTS= '1';
+export const TAB_HISTORY= '4';
+export const TAB_LOGGER= '3';
+export const TAB_LIST_SCHEDULERS= '5';
 
 export const ADD_ARTIFACT = {
   /**
@@ -85,3 +92,5 @@ export const ADD_SCHEDULER = {
     return `${this.root}${type}`;
   }
 };
+
+

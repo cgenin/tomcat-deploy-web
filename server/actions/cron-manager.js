@@ -5,6 +5,21 @@ const CronJob = cron.CronJob;
 
 let instance = null;
 
+const schedulingDataJob = (job) => {
+  if (job.date) {
+    return new Date(job.date);
+  }
+  return job.cron;
+};
+
+const nextDates = (job) => {
+  try {
+    return job.nextDates().toDate();
+  } catch (err) {
+    return null;
+  }
+};
+
 class CronManager {
   constructor() {
     if (instance) {
@@ -16,7 +31,7 @@ class CronManager {
 
 
   startAll() {
-    const arr = deploydb.schedulers()
+    const arr = deploydb.schedulers().data
       .map(j => {
         return this.start(j);
       });
@@ -28,11 +43,44 @@ class CronManager {
     console.log(job);
   }
 
-  getRunnning() {
-    return Object.keys(this.running);
+
+  getRunning() {
+    const keys = Object.keys(this.running);
+    return keys
+      .map(name => {
+        const job = this.running[name];
+        if (!job) {
+          return null;
+        }
+        const {lastDate, running, runOnce} = job;
+        const nextDate = nextDates(job);
+        return {lastDate, nextDate, running, runOnce, name};
+      })
+      .filter(job => {
+        return (job);
+      });
+  }
+
+  test(cron) {
+
+
+    return Rx.Observable.of(cron)
+      .map(() => {
+        const cronJob = new CronJob(cron,
+          () => {
+            console.log(`Test cron`);
+          }, () => {
+            console.log(`job '${name}' is stopped.`);
+          }, false);
+        const nextDates = cronJob.nextDate().toDate();
+        return {nextDates};
+      });
   }
 
   stop(job) {
+    if (!job) {
+      return Rx.Observable.empty();
+    }
     return Rx.Observable.of(job)
       .map(() => {
         const {name} = job;
@@ -46,6 +94,10 @@ class CronManager {
   }
 
   start(job) {
+    if (!job) {
+      return Rx.Observable.empty();
+    }
+
     return Rx.Observable.of(job)
       .map(() => {
         const {name} = job;
@@ -53,7 +105,7 @@ class CronManager {
           if (this.running[name]) {
             return {name, running: true};
           }
-          const launchTime = job.date || job.cron;
+          const launchTime = schedulingDataJob(job);
           this.running[name] = new CronJob(launchTime,
             () => {
               this.__deploy(job);

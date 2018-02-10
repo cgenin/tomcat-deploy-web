@@ -30,3 +30,7 @@ export const formMidItemLayout = {
     sm: {span: 14},
   },
 };
+
+export const okColor = {color: '#71c341'};
+
+export const koColor = {color: 'darkred'};

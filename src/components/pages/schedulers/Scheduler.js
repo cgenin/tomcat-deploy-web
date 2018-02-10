@@ -6,6 +6,7 @@ import moment from 'moment';
 import {HOME} from "../../../routesConstant";
 import {add} from "../../../modules/schedulers/actions";
 import Title from "../../widgets/Title";
+import TestCronModal from "../../widgets/schedulers/TestCronModal";
 import {withRouter} from "react-router";
 import './Scheduler.css';
 
@@ -28,7 +29,7 @@ const mapDispatchToProps = function (dispatch) {
   };
 };
 
-const Error = ({}) => {
+const Error = () => {
   return (
     <Alert
       message="No artifacts found. Surely, you have reloaded this page. select another time the components for adding a new scheduler's job"
@@ -86,7 +87,7 @@ function hasErrors(fieldsError) {
 
 const hasNoDeployements = (props) => {
   return (props.type === 'job') ? props.artifacts === 0 : props.nexus === 0;
-}
+};
 
 const defOffset = 8;
 
@@ -105,7 +106,7 @@ class Scheduler extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {selectedDate: true, name: ''};
+    this.state = {selectedDate: true, name: '', testCron: false};
     this.onBack = this.onBack.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onChangeDate = this.onChangeDate.bind(this);
@@ -115,20 +116,27 @@ class Scheduler extends PureComponent {
 
   handleSubmit(e) {
     e.preventDefault();
-    console.log(this.state);
+    const {type, servers, artifacts, nexus, history} = this.props;
     const {te, dt, name, selectedDate, cron} = this.state;
-    const obj = {name};
+    const scheduler = {name, type};
     if (selectedDate) {
-      obj.date = moment(dt)
+      scheduler.date = moment(dt)
         .set('hour', te.get('hour'))
         .set('minute', te.get('minute'))
         .set('second', 0)
         .toDate();
 
     } else {
-      obj.cron = cron;
+      scheduler.cron = cron;
     }
-    console.log(obj);
+    scheduler.server = servers[0];
+
+    if (type === 'job') {
+      scheduler.artifacts = artifacts;
+    } else {
+      scheduler.nexus = nexus;
+    }
+    this.props.onSave(scheduler, history);
   }
 
   onChange(attr) {
@@ -171,7 +179,6 @@ class Scheduler extends PureComponent {
 
     const formDateOrCron = (this.state.selectedDate) ?
       (
-
         <div>
           <Row>
             <Col span={4} offset={defOffset}>
@@ -208,7 +215,7 @@ class Scheduler extends PureComponent {
             getFieldDecorator('cron', {
               rules: [{required: true, message: 'Please check the cron format'}],
             })(
-              <Input.Search onChange={this.onChange('cron')}
+              <Input.Search onChange={this.onChange('cron')} onSearch={() => this.setState({testCron: true})}
                             placeholder="Cron value" enterButton="Test"/>
             )}
         </FormItem>
@@ -218,6 +225,9 @@ class Scheduler extends PureComponent {
       ? <JobsDatas artifacts={this.props.artifacts} servers={this.props.servers}/>
       : <NexusDatas nexus={this.props.nexus} servers={this.props.servers}/>;
     const cannotSubmit = hasNoDeployements(this.props);
+
+    const testCronModal = (this.state.testCron) ?
+      <TestCronModal onHide={() => this.setState({testCron: false})} cron={this.state.cron}/> : null;
     return (
       <div id="add-scheduler">
         <Row>
@@ -276,6 +286,7 @@ class Scheduler extends PureComponent {
             </Card>
           </Col>
         </Row>
+        {testCronModal}
       </div>
     );
   }

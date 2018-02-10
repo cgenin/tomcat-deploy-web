@@ -1,14 +1,31 @@
 const express = require('express');
 const deploydb = require('../deploydb');
+const cronManager = require('../actions/cron-manager');
 const router = express.Router();
 const bodyParser = require('body-parser');
 
 
+const searchByReqId = (req) => {
+  const {id} = req.params;
+  const schedulers = deploydb.schedulers().data;
+  return schedulers.find(s => s.$loki === parseInt(id));
+};
+const getJobs = () => {
+  const items = deploydb.schedulers().data;
+  const runnings = cronManager.getRunning();
+  return items.map(item => {
+    const running = runnings.find(r => r.name === item.name);
+    if (running) {
+      return Object.assign({run: true}, item, running)
+    }
+    return Object.assign({run: false}, item)
+  });
+};
 module.exports = () => {
 
   router.get('/', (req, res) => {
-    const items = deploydb.schedulers() || {data: []};
-    res.json(items);
+    const results = getJobs();
+    res.json(results);
   });
 
   router.post('/', bodyParser.json(), (req, res) => {
@@ -18,20 +35,70 @@ module.exports = () => {
     res.json(deploydb.files().data);
   });
 
-  router.get('/:id/run', bodyParser.json(), (req, res) => {
-    // TODO implements
-    res.json({});
+  router.get('/:cron/validate', (req, res) => {
+    const {cron} = req.params;
+    cronManager.test(cron).subscribe(
+      d => {
+        const json = Object.assign({}, d, {valid: true});
+        res.json(json);
+      },
+      err => {
+        const {message, stack} = err;
+        res.json({message, stack, valid: false});
+      }
+    );
   });
 
-  router.put('/:id/run', bodyParser.json(), (req, res) => {
-    // TODO implements
-    res.json({});
+  router.delete('/:id', (req, res) => {
+    const itemToRemove = searchByReqId(req);
+    if (itemToRemove) {
+      cronManager.stop(itemToRemove)
+        .subscribe(
+          () => {
+            deploydb.remove(deploydb.schedulers(), itemToRemove)
+          },
+          err => {
+            console.error(err);
+            res.status(500);
+            res.json([]);
+          },
+          () => res.json(deploydb.schedulers().data)
+        );
+    } else {
+      res.json(deploydb.schedulers().data);
+    }
+  });
+
+  router.get('/:id/run', (req, res) => {
+    const current = getJobs().find(j => j.$loki === parseInt(req.params.id));
+    res.json(current);
+  });
+
+  router.put('/:id/run', (req, res) => {
+    const itemToStart = searchByReqId(req);
+    cronManager.start(itemToStart)
+      .subscribe((result) => {
+          console.log(result);
+        }, err => {
+          console.error(err);
+          res.status(500);
+          res.json([]);
+        },
+        () => res.json(getJobs()));
   });
 
 
-  router.delete('/:id/run', bodyParser.json(), (req, res) => {
-    // TODO implements
-    res.json({});
+  router.delete('/:id/run', (req, res) => {
+    const itemToStop = searchByReqId(req);
+    cronManager.stop(itemToStop)
+      .subscribe((result) => {
+          console.log(result);
+        }, err => {
+          console.error(err);
+          res.status(500);
+          res.json([]);
+        },
+        () => res.json(getJobs()));
   });
 
   return router;
