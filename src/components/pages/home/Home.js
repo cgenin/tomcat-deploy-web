@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import {Row, Col, Tabs, Card, Breadcrumb} from 'antd';
 import ServerActions from './../../widgets/server/ServerActions';
 import {artifactsList, nexusArtifactsList, historyList, logger} from '../../Lazy';
@@ -9,6 +10,7 @@ import DeployActions from './../../widgets/actions/DeployActions';
 import {hideConsole, updateArtifacts} from './../../../modules/actions/actions';
 import {reset} from './../../../modules/nexus/actions';
 import IOComponent from "../../../IOComponent";
+import {HOME_TABS} from "../../../routesConstant";
 
 const mapStateToProps = function (state) {
   const showLogger = state.actions.forceLogger;
@@ -55,12 +57,13 @@ class HomePage extends React.PureComponent {
     if (showLogger) {
       this.setState({key: '3'});
     }
+
+
   }
 
   handleSelect(key) {
+
     this.setState({key});
-
-
     switch (key) {
       case '2' :
         this.props.onResetArtifact();
@@ -70,6 +73,14 @@ class HomePage extends React.PureComponent {
         break;
       default:
         this.props.onSelect();
+    }
+    this.props.history.push(HOME_TABS.path(key));
+  }
+
+  componentDidMount() {
+    const {tab} = this.props.match.params;
+    if (tab) {
+      this.setState({key: tab});
     }
   }
 
@@ -86,39 +97,32 @@ class HomePage extends React.PureComponent {
               <Breadcrumb.Item>Home</Breadcrumb.Item>
             </Breadcrumb>
           </Col>
-        </Row>
-        <Title text="List and deploy"/>
-        <Row>
+          <Title text="List and deploy"/>
           <Col offset={2} span={20}>
             <Card style={{width: '100%'}}>
               <ServerActions/>
-            </div>
-            <DeployActions/>
-            <div className="row">
-              <div>
-                <Tabs id="home-tabs" activeKey={this.state.key} onSelect={this.handleSelect}
-                      style={{marginLeft: '2em', marginRight: '2em'}}>
-                  <Tab eventKey={2} onExit={this.onEnter} title="Nexus">
-                    <IOComponent lazy={nexusArtifactsList}/>
-                  </Tab>
-                  <Tab eventKey={1} title="Artifacts / Jenkins">
-                    <IOComponent lazy={artifactsList}/>
-                  </Tab>
-                  <Tab eventKey={4} title="History">
-                    <IOComponent lazy={historyList}/>
-                  </Tab>
-                  <Tab eventKey={3} title="Logs">
-                    <IOComponent lazy={logger}/>
-                  </Tab>
-                </Tabs>
-              </div>
-            </div>
-          </div>
-        </div>
+              <DeployActions/>
+              <Tabs id="home-tabs" defaultActiveKey="2" activeKey={this.state.key} onChange={this.handleSelect}>
+                <Tabs.TabPane key="2" tab="Nexus">
+                  <IOComponent lazy={nexusArtifactsList}/>
+                </Tabs.TabPane>
+                <Tabs.TabPane key="1" tab="Artifacts / Jenkins">
+                  <IOComponent lazy={artifactsList}/>
+                </Tabs.TabPane>
+                <Tabs.TabPane key="4" tab="History">
+                  <IOComponent lazy={historyList}/>
+                </Tabs.TabPane>
+                <Tabs.TabPane key="3" tab="Logs">
+                  <IOComponent lazy={logger}/>
+                </Tabs.TabPane>
+              </Tabs>
+            </Card>
+          </Col>
+        </Row>
       </div>);
   }
 }
 
 HomePage.propTypes = {showLogger: PropTypes.bool};
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HomePage));

@@ -9,6 +9,20 @@ export const HOME = {
     return this.CST();
   }
 };
+
+export const HOME_TABS = {
+  root: '/home/',
+  /**
+   * @return {string}
+   */
+  CST() {
+    return `${this.root}:tab`;
+  },
+  path(tab) {
+    return `${this.root}${tab}`
+  }
+};
+
 export const ADD_ARTIFACT = {
   /**
    * @return {string}
@@ -71,4 +85,3 @@ export const ADD_SCHEDULER = {
     return `${this.root}${type}`;
   }
 };
-

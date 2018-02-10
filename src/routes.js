@@ -3,7 +3,7 @@ import {Route} from 'react-router';
 import {BrowserRouter} from 'react-router-dom';
 import MainLayout from './components/layouts/MainLayout';
 import routesMd from './components/pages/Markdowns'
-import {ADD_ARTIFACT, EDIT_ARTIFACT, ADD_SERVER, EDIT_SERVER, HOME, ADD_SCHEDULER} from './routesConstant';
+import {ADD_ARTIFACT, EDIT_ARTIFACT, ADD_SERVER, EDIT_SERVER, HOME, ADD_SCHEDULER, HOME_TABS} from './routesConstant';
 import AsyncComponent from "./AsyncComponent";
 
 const LazyAddPage = AsyncComponent(() => import(/* webpackChunkName: "add-artifact" */ './components/pages/artifacts/Add'));
@@ -17,6 +17,7 @@ const routes = () => (
   <BrowserRouter>
     <MainLayout>
       <Route exact path={HOME.CST()} component={LazyHome}/>
+      <Route exact path={HOME_TABS.CST()} component={LazyHome}/>
       <Route path={ADD_ARTIFACT.CST()} component={LazyAddPage}/>
       <Route path={EDIT_ARTIFACT.CST()} component={LazyEdit}/>
       <Route path={ADD_SERVER.CST()} component={LazyServerAddPage}/>
