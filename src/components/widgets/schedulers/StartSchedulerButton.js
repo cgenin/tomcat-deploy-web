@@ -31,7 +31,7 @@ class StartSchedulerButton extends PureComponent {
 
   render() {
     return (
-      <Button onClick={this.handleStart} type="small" type="success" shape="circle" title="Launch the job">
+      <Button onClick={this.handleStart} type="success" shape="circle" title="Launch the job">
         <i className="fa fa-play"/>
       </Button>
     )

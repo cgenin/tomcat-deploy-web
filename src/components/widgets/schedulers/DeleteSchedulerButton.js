@@ -36,7 +36,7 @@ class DeleteSchedulerButton extends PureComponent {
     const onHide = () => this.setState({showModal: false});
     return (
       <div>
-        <Button type="small" type="danger" onClick={() => this.setState({showModal: true})} shape="circle" title="Delete the job">
+        <Button type="danger" onClick={() => this.setState({showModal: true})} shape="circle" title="Delete the job">
           <i className="fa fa-trash"/>
         </Button>
         <Modal visible={this.state.showModal} title="Confirm" onCancel={onHide}
