@@ -1,6 +1,6 @@
 {
   "name": "tomcat-web-deploy",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0-rc2",
   "description": "Webapp for deploy multiple wars at once on a tomcat webserver.",
   "template": {
     "forceLanguage": "en"
