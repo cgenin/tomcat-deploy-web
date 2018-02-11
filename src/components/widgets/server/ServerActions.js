@@ -127,7 +127,7 @@ class ServerActions extends React.PureComponent {
         <Row type="flex" justify="center">
           <Col sm={20} xs={24}>
             <div className="container">
-              <Select style={{minWidth: '15em'}} value={this.state.server} onChange={this.onChange}>
+              <Select className="select-server" value={this.state.server} onChange={this.onChange}>
                 {options}
               </Select>
               {buttonEdit}

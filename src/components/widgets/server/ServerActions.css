@@ -5,6 +5,46 @@
   align-items: center;
 }
 
+#server-actions .container .select-server {
+  min-width: 15em;
+}
+
 #server-actions .button-container {
   margin-left: .5em;
+}
+
+@media all and (max-width: 768px) {
+  #server-actions .container {
+    width: 100%;
+    display: grid;
+    grid-template-areas: "selection selection selection"
+    "bn1 bn2 bn3";
+    grid-template-columns: 1fr 1fr 1fr ;
+    grid-template-rows: 1fr 1fr
+  }
+
+  #server-actions .container .select-server {
+    grid-area: selection;
+  }
+
+
+  #server-actions .button-container{
+    display: flex;
+    justify-content: center;
+  }
+
+  #server-actions .button-container:first-child {
+    grid-area: bn1;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  #server-actions .button-container:nth-child(2) {
+    grid-area: bn2;
+  }
+
+  #server-actions .button-container:nth-child(3) {
+    grid-area: bn3;
+
+  }
 }

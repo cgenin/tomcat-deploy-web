@@ -1,3 +1,8 @@
+export const pageLayout = {
+  md: {span: 20, offset: 2},
+  xs: {span: 24},
+};
+
 export const formItemLayout = {
   labelCol: {
     xs: {span: 24},

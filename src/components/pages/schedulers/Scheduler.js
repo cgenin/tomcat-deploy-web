@@ -9,6 +9,7 @@ import Title from "../../widgets/Title";
 import TestCronModal from "../../widgets/schedulers/TestCronModal";
 import {withRouter} from "react-router";
 import './Scheduler.css';
+import {pageLayout} from "../../Styles";
 
 const FormItem = Form.Item;
 
@@ -231,8 +232,8 @@ class Scheduler extends PureComponent {
     return (
       <div id="add-scheduler">
         <Row>
-          <Col offset={2} span={20}>
-            <Breadcrumb style={{margin: '16px 0'}}>
+          <Col {...pageLayout}>
+            <Breadcrumb className="main-bread-crumb">
               <Breadcrumb.Item>Home</Breadcrumb.Item>
               <Breadcrumb.Item>Add an Job</Breadcrumb.Item>
             </Breadcrumb>
@@ -240,7 +241,7 @@ class Scheduler extends PureComponent {
         </Row>
         <Title text={`Add an Job (${this.props.type})`}/>
         <Row>
-          <Col span={20} offset={2}>
+          <Col {...pageLayout}>
             <Card style={{width: '100%'}}>
               <Form
                 className="ant-advanced-search-form" onSubmit={this.handleSubmit}>

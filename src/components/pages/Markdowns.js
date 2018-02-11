@@ -4,6 +4,7 @@ import {Row, Col, Card} from 'antd'
 import 'github-markdown-css'
 
 import Title from '../widgets/Title'
+import {pageLayout} from "../Styles";
 
 const webpackCtx = require.context('!markdown-with-front-matter-loader!./_mds', false, /.md$/);
 const markdowns = webpackCtx.keys().reduce(
@@ -15,7 +16,7 @@ const MdWrapper = (props) => {
     <div>
       <Title text={title}/>
       <Row>
-        <Col offset={2} span={20}>
+        <Col {...pageLayout}>
           <Card style={{width: '100%'}}>
           <Link to="/"><i className="fa fa-chevron-left"/>&nbsp;Back to the main screen</Link>
           <hr/>

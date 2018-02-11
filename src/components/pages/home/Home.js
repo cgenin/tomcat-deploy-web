@@ -14,6 +14,7 @@ import {
   HOME_TABS, TAB_HISTORY, TAB_LIST_ARTIFACTS, TAB_LIST_NEXUS, TAB_LIST_SCHEDULERS,
   TAB_LOGGER
 } from "../../../routesConstant";
+import {pageLayout} from "../../Styles";
 
 const mapStateToProps = function (state) {
   const showLogger = state.actions.forceLogger;
@@ -95,13 +96,13 @@ class HomePage extends React.PureComponent {
     return (
       <div>
         <Row>
-          <Col offset={2} span={20}>
-            <Breadcrumb style={{margin: '16px 0'}}>
+          <Col {...pageLayout}>
+            <Breadcrumb className="main-bread-crumb">
               <Breadcrumb.Item>Home</Breadcrumb.Item>
             </Breadcrumb>
           </Col>
           <Title text="List and deploy"/>
-          <Col offset={2} span={20}>
+          <Col {...pageLayout}>
             <Card style={{width: '100%'}}>
               <ServerActions/>
               <DeployActions/>

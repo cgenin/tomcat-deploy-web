@@ -122,25 +122,24 @@ class DeployActions extends React.PureComponent {
 
     return (
       <Row id="deploy-actions">
-        <Col span={3} offset={6}>
+        <Col md={{span: 3, offset: 6}} xs={{span: 8}}>
           <ButtonSchedule showArtifacts={!this.props.disabled} history={this.props.history}
                           showNexus={this.props.showNexusButton}/>
         </Col>
-        <Col span={3}>
+        <Col md={{span: 3}} xs={{span: 8}}>
           <Button onClick={this.onUnDeploy} disabled={this.props.disabled}>
             <i className="fa fa-trash-o"/>
             &nbsp;Undeploy
           </Button>
         </Col>
-        <Col span={8}>
-
+        <Col md={{span: 8}} xs={{span: 8}}>
           {buttonDeploy}
         </Col>
-        <Col span={2}>
-          <SelectedUrls/>
+        <Col className="main-number-of-items" md={{span: 2, offset:0}} xs={{span: 8, offset: 8}}>
+          <SelectedUrls />
         </Col>
-        <Col span={2}>
-          <SelectedNexus/>
+        <Col className="main-number-of-items" md={{span: 2, offset:0}} xs={{span: 8, offset: 8}}>
+          <SelectedNexus />
         </Col>
       </Row>
     );

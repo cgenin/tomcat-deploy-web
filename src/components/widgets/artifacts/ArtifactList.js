@@ -53,6 +53,9 @@ function sortFactory(asc) {
   };
 }
 
+const filterSize = {xs: {span: 24}, sm: {span: 12}};
+
+
 class NexusArtifact extends React.PureComponent {
 
   static propTypes = {artifact: PropTypes.object.isRequired};
@@ -177,14 +180,13 @@ class ArtifactList extends React.PureComponent {
         }
       }
     ];
-
     return (
       <div id="artifact-list">
         <Row className="filters">
-          <Col span={12}>
+          <Col {...filterSize}>
             Results {arr.length}.
           </Col>
-          <Col span={8}>
+          <Col {...filterSize}>
             <Input value={this.state.filter} onChange={this.onFilter} placeholder="Filter..."/>
           </Col>
         </Row>

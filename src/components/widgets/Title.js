@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Row, Col} from 'antd'
+import {pageLayout} from "../Styles";
 
 const Title = (props) => {
   return (
     <Row>
-      <Col span={20} offset={2} style={{display: 'flex', justifyContent: 'center'}}>
+      <Col {...pageLayout} style={{display: 'flex', justifyContent: 'center'}}>
         <div className="title-container">
           <div className="ribbon-left"/>
           <div className="backflag-left"/>

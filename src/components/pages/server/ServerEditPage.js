@@ -5,6 +5,7 @@ import Title from '../../widgets/Title';
 import ServerEdit from '../../widgets/server/ServerForm';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import {pageLayout} from "../../Styles";
 
 const mapStateToProps = function (state, props) {
   const query = props.match.params || {};
@@ -21,8 +22,8 @@ const ServerEditPage = (props) => {
   return (
     <div>
       <Row>
-        <Col offset={2} span={20}>
-          <Breadcrumb style={{margin: '16px 0'}}>
+        <Col {...pageLayout}>
+          <Breadcrumb className="main-bread-crumb">
             <Breadcrumb.Item>Home</Breadcrumb.Item>
             <Breadcrumb.Item>Edit an server</Breadcrumb.Item>
           </Breadcrumb>
@@ -30,7 +31,7 @@ const ServerEditPage = (props) => {
       </Row>
       <Title text="Edit and Save server"/>
       <Row>
-        <Col span={20} offset={2}>
+        <Col {...pageLayout}>
           <Card style={{width: '100%'}}>
             <ServerEdit add={props.add} id={props.id}/>
           </Card>
