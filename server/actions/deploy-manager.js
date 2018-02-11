@@ -161,6 +161,7 @@ class DeployManager {
             (err) => {
               rc.deployEnd();
               rc.error(err.message);
+              logger.error(err.message);
               if (err.stack) {
                 logger.error(err.stack);
               }

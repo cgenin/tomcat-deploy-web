@@ -1,6 +1,6 @@
 {
   "name": "Tomcat Deploy Web",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0-rc2",
   "description": "Webapp for deploy multiple wars at once on a tomcat webserver.",
   "url" : "https://myhost:myPort/api",
   "template": {

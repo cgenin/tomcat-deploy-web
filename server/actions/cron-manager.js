@@ -2,6 +2,9 @@ const cron = require('cron');
 const Rx = require('rxjs/Rx');
 const deploydb = require('../deploydb');
 const logger = require('../logger');
+const rc = require('../ws/RemoteConsole');
+const DeployManager = require('./deploy-manager');
+
 const CronJob = cron.CronJob;
 
 let instance = null;
@@ -40,8 +43,43 @@ class CronManager {
   }
 
   __deploy(job) {
-    // TODO
-    logger.info(job);
+    const {type, name, server, artifacts, nexus} = job;
+    const nextFunc = o => {
+      const msg = `artifact '${o.name}' deploy by scheduling job '${name}'`;
+      logger.info(msg);
+      rc.log(msg);
+    };
+
+    const errorFunc = () => {
+      const msg = `Error in deploying the scheduling job '${name}'. See the logs for further informations.`;
+      logger.error(msg);
+      rc.error(msg);
+    };
+    const completeFunc = () => {
+      const msg = `End of the scheduling job '${name}'.`;
+      logger.info(msg);
+      rc.log(msg);
+    };
+    const waitingMsg = () => {
+      rc.log(`wait for deploying the scheduling job '${name}'`);
+    };
+
+    switch (type) {
+      case 'job' :
+        waitingMsg();
+        new DeployManager('localhost')
+          .deployByUrl(server, artifacts)
+          .subscribe(nextFunc, errorFunc, completeFunc);
+        break;
+      case 'nexus':
+        waitingMsg();
+        new DeployManager('localhost')
+          .deployByNexus(server, nexus)
+          .subscribe(nextFunc, errorFunc, completeFunc);
+        break;
+      default:
+        logger.warn(`no deploy options found for '${type}' of '${name}'.`)
+    }
   }
 
 
