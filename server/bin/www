@@ -5,6 +5,7 @@
  * Module dependencies.
  */
 const config = require('../config');
+const logger = require('../logger');
 const registry = require('simple-registry');
 const inProgress = require('../actions/in-progress');
 const http = require('http');
@@ -37,7 +38,7 @@ io.on('connection', (socket) => {
   if (socket && socket.conn && socket.conn.remoteAddress) {
     ip = socket.conn.remoteAddress;
   }
-  console.log(`connection of ${ip}`);
+  logger.info(`connection of ${ip}`);
   if (inProgress.isActive()) {
     socket.emit(inProgress.event, { active: true });
   }
@@ -82,11 +83,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
+      logger.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
+      logger.error(`${bind} is already in use`);
       process.exit(1);
       break;
     default:

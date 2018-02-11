@@ -1,5 +1,6 @@
 const express = require('express');
 const deploydb = require('../deploydb');
+const logger = require('../logger');
 const nexus = require('../actions/nexus');
 const router = express.Router();
 const bodyParser = require('body-parser');
@@ -40,7 +41,7 @@ router.get('/artifact', (req, res) => {
   nexus.valid(groupId, artifactId).subscribe(
     d => res.json(d),
     err => {
-      console.error(err);
+      logger.error(err);
       res.status(404);
       res.json(err);
     });

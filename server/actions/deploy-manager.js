@@ -1,4 +1,5 @@
 const history = require('../history');
+const logger = require('../logger');
 const war = require('./war-manager');
 const inProgresss = require('./in-progress');
 const rc = require('../ws/RemoteConsole');
@@ -25,10 +26,10 @@ class DeployManager {
               rc.log(`undeployed : ${name}`);
             },
             (err) => {
-              console.error(err);
+              logger.error(err);
               rc.error('error in undeploying');
               if (err.stack) {
-                console.error(err.stack);
+                logger.error(err.stack);
               }
               rc.error(err.message);
               rc.endDeploy(this.ip);
@@ -86,9 +87,9 @@ class DeployManager {
               rc.deployEnd();
               rc.error(err.message);
               if (err.stack) {
-                console.error(err.stack);
+                logger.error(err.stack);
               }
-              console.error(err);
+              logger.error(err);
               rc.endDeploy(this.ip);
               reject(false)
             },
@@ -161,9 +162,9 @@ class DeployManager {
               rc.deployEnd();
               rc.error(err.message);
               if (err.stack) {
-                console.error(err.stack);
+                logger.error(err.stack);
               }
-              console.error(err);
+              logger.error(err);
               rc.endDeploy(this.ip);
               observer.error(err);
             },

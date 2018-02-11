@@ -22,8 +22,6 @@
     "antd": "^3.1.4",
     "bluebird": "^3.2.1",
     "body-parser": "^1.14.2",
-    "bootstrap": "^3.3.7",
-    "bootstrap-material-design": "^0.5.7",
     "bundle-loader": "^0.5.5",
     "classnames": "^2.2.3",
     "compression": "^1.6.1",
@@ -47,7 +45,6 @@
     "q": "^1.4.1",
     "qwest": "^3.0.0",
     "react": "^16.2.0",
-    "react-bootstrap": "^0.31.3",
     "react-cookie": "^2.1.1",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
@@ -62,14 +59,15 @@
     "simple-registry": "^0.2.2",
     "snyk": "^1.49.2",
     "socket.io": "^2.0.0",
-    "socket.io-client": "^2.0.3"
+    "socket.io-client": "^2.0.3",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
-    "rimraf": "^2.6.2",
     "babel-plugin-import": "^1.6.3",
     "react-app-rewire-less": "^2.1.0",
-    "react-app-rewired": "^1.4.0"
+    "react-app-rewired": "^1.4.0",
+    "rimraf": "^2.6.2"
   },
   "snyk": true,
   "proxy": {

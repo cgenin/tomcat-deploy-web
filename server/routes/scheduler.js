@@ -1,5 +1,6 @@
 const express = require('express');
 const deploydb = require('../deploydb');
+const logger = require('../logger');
 const cronManager = require('../actions/cron-manager');
 const router = express.Router();
 const bodyParser = require('body-parser');
@@ -58,7 +59,7 @@ module.exports = () => {
             deploydb.remove(deploydb.schedulers(), itemToRemove)
           },
           err => {
-            console.error(err);
+            logger.error(err);
             res.status(500);
             res.json([]);
           },
@@ -78,9 +79,9 @@ module.exports = () => {
     const itemToStart = searchByReqId(req);
     cronManager.start(itemToStart)
       .subscribe((result) => {
-          console.log(result);
+          logger.info(result);
         }, err => {
-          console.error(err);
+          logger.error(err);
           res.status(500);
           res.json([]);
         },
@@ -92,9 +93,9 @@ module.exports = () => {
     const itemToStop = searchByReqId(req);
     cronManager.stop(itemToStop)
       .subscribe((result) => {
-          console.log(result);
+          logger.info(result);
         }, err => {
-          console.error(err);
+          logger.error(err);
           res.status(500);
           res.json([]);
         },

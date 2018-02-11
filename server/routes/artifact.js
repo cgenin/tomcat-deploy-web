@@ -1,5 +1,6 @@
 const express = require('express');
 const deploydb = require('../deploydb');
+const logger = require('../logger');
 const backup = require('../backup');
 const router = express.Router();
 const bodyParser = require('body-parser');
@@ -135,7 +136,7 @@ module.exports = (io) => {
         res.json(i);
         io.sockets.emit('snackbar', {});
       }, err => {
-        console.error(err);
+        logger.error(err);
         res.json(backup.data())
       });
 

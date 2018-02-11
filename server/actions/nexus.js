@@ -6,6 +6,8 @@ const os = require('os');
 const Q = require('q');
 const Rx = require('rxjs/Rx');
 const {execFile} = require('child_process');
+const logger = require('../logger')
+
 /**
  * Get the maven
  *
@@ -42,18 +44,18 @@ const search = function (host, port, q) {
         deferred.resolve({statusCode, url, body});
       });
       rs.on('error', (e) => {
-        console.error(e);
+        logger.error(e);
         deferred.resolve({statusCode: 500, url});
       });
     });
     req.on('error', (e) => {
-      console.error(e);
+      logger.error(e);
       deferred.resolve({statusCode: 500, url});
     });
 
     req.end();
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     deferred.reject({statusCode: 500, url});
   }
   return deferred.promise;
@@ -73,7 +75,7 @@ const valid = function (groupId, artifactId, packaging = 'war', version = 'LATES
         const brut = arr[0];
         const stderr = arr[1];
         if (stderr !== '') {
-          console.error(stderr);
+          logger.error(stderr);
           throw new Error(`${groupId}.${artifactId} - version : ${version} - not found`)
         }
         const found = /SUCCESS/g.test(brut);
@@ -126,7 +128,7 @@ const reload = function (host, port, artifacts) {
       });
     deferred.resolve(res);
   }).catch(e => {
-    console.error(e);
+    logger.error(e);
     deferred.reject(e);
   });
   return deferred.promise;

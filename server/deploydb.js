@@ -1,10 +1,11 @@
 const Rx = require('rxjs/Rx');
+const loki = require('lokijs');
+const logger = require('./logger');
 const fileCollection = 'files';
 const configCollection = 'configuration';
 const nexusCollection = 'nexus';
 const schedulersCollection = 'schedulers';
 const historyCollection = 'history';
-const loki = require('lokijs');
 
 let instance = null;
 
@@ -18,7 +19,7 @@ class DeployDB {
   }
 
   createIfNotExist(name) {
-    console.log(`createIfNotExist : ${name}`);
+    logger.info(`createIfNotExist : ${name}`);
     if (!this.db.getCollection(name)) {
       this.db.addCollection(name);
       this.db.saveDatabase();

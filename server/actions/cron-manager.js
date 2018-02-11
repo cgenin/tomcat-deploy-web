@@ -1,6 +1,7 @@
 const cron = require('cron');
 const Rx = require('rxjs/Rx');
 const deploydb = require('../deploydb');
+const logger = require('../logger');
 const CronJob = cron.CronJob;
 
 let instance = null;
@@ -40,7 +41,7 @@ class CronManager {
 
   __deploy(job) {
     // TODO
-    console.log(job);
+    logger.info(job);
   }
 
 
@@ -68,9 +69,9 @@ class CronManager {
       .map(() => {
         const cronJob = new CronJob(cron,
           () => {
-            console.log(`Test cron`);
+            logger.info(`Test cron`);
           }, () => {
-            console.log(`job '${name}' is stopped.`);
+            logger.info(`job '${name}' is stopped.`);
           }, false);
         const nextDates = cronJob.nextDate().toDate();
         return {nextDates};
@@ -110,12 +111,12 @@ class CronManager {
             () => {
               this.__deploy(job);
             }, () => {
-              console.log(`job '${name}' is stopped.`);
+              logger.info(`job '${name}' is stopped.`);
 
             }, true);
           return {name, running: true};
         } catch (err) {
-          console.log('error in creating job', err);
+          logger.error('error in creating job', err);
         }
         return {name, running: false, failure: true};
       });
