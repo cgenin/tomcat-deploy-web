@@ -9,6 +9,7 @@ import Title from '../../widgets/Title';
 import DeployActions from './../../widgets/actions/DeployActions';
 import {hideConsole, updateArtifacts} from './../../../modules/actions/actions';
 import {reset} from './../../../modules/nexus/actions';
+import {load as loadSchedulers} from './../../../modules/schedulers/actions';
 import IOComponent from "../../../IOComponent";
 import {
   HOME_TABS, TAB_HISTORY, TAB_LIST_ARTIFACTS, TAB_LIST_NEXUS, TAB_LIST_SCHEDULERS,
@@ -33,6 +34,9 @@ const mapDispatchToProps = (dispatch) => {
     onResetArtifact() {
       return dispatch(updateArtifacts([]))
         .then(() => this.onSelect());
+    },
+    onReloadSchedulers() {
+      return dispatch(loadSchedulers())
     }
   };
 };
@@ -66,7 +70,6 @@ class HomePage extends React.PureComponent {
   }
 
   handleSelect(key) {
-
     this.setState({key});
     switch (key) {
       case TAB_LIST_NEXUS :
@@ -74,6 +77,9 @@ class HomePage extends React.PureComponent {
         break;
       case TAB_LIST_ARTIFACTS :
         this.props.onResetNexusArtifact();
+        break;
+      case TAB_LIST_SCHEDULERS :
+        this.props.onReloadSchedulers();
         break;
       default:
         this.props.onSelect();

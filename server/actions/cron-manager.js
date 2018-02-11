@@ -1,3 +1,4 @@
+const moment = require('moment');
 const cron = require('cron');
 const Rx = require('rxjs/Rx');
 const deploydb = require('../deploydb');
@@ -43,7 +44,14 @@ class CronManager {
   }
 
   __deploy(job) {
-    const {type, name, server, artifacts, nexus} = job;
+    const {type, name, server, artifacts, nexus, runOnce} = job;
+
+    const stopJob = () => {
+      if (runOnce) {
+        this.stop(job);
+      }
+    };
+
     const nextFunc = o => {
       const msg = `artifact '${o.name}' deploy by scheduling job '${name}'`;
       logger.info(msg);
@@ -54,11 +62,13 @@ class CronManager {
       const msg = `Error in deploying the scheduling job '${name}'. See the logs for further informations.`;
       logger.error(msg);
       rc.error(msg);
+      stopJob();
     };
     const completeFunc = () => {
       const msg = `End of the scheduling job '${name}'.`;
       logger.info(msg);
       rc.log(msg);
+      stopJob();
     };
     const waitingMsg = () => {
       rc.log(`wait for deploying the scheduling job '${name}'`);
@@ -144,6 +154,14 @@ class CronManager {
           if (this.running[name]) {
             return {name, running: true};
           }
+
+          if (job.date && moment().isAfter(moment(new Date(job.date)))) {
+            const msg = `The date '${job.date}' is before today. The job ${name} is not launched.`;
+            logger.warn(msg);
+            rc.log(msg);
+            return {name, running: false};
+          }
+
           const launchTime = schedulingDataJob(job);
           this.running[name] = new CronJob(launchTime,
             () => {

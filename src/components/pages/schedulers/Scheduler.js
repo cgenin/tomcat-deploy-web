@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Row, Col, Card, Breadcrumb, Form, Input, Switch, DatePicker, TimePicker, Button, Alert} from 'antd';
 import moment from 'moment';
-import {HOME} from "../../../routesConstant";
+import {HOME, HOME_TABS, TAB_LIST_SCHEDULERS} from "../../../routesConstant";
 import {add} from "../../../modules/schedulers/actions";
 import Title from "../../widgets/Title";
 import TestCronModal from "../../widgets/schedulers/TestCronModal";
@@ -25,7 +25,7 @@ const mapDispatchToProps = function (dispatch) {
   return {
     onSave: function (scheduler, history) {
       dispatch(add(scheduler))
-        .then(() => history.push(HOME.path()));
+        .then(() => history.push(HOME_TABS.path(TAB_LIST_SCHEDULERS)));
     },
   };
 };
