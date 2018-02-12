@@ -102,7 +102,7 @@ class ServerActions extends React.PureComponent {
     const disabled = this.props.servers.length === 0;
     const buttonEdit = (this.state.server) ? (
       <div className="button-container">
-        <Button onClick={this.onEdit} type="success" title="Edit current server" shape="circle" className="button-edit"
+        <Button onClick={this.onEdit} type="success" title="Edit current server" shape="circle"
                 size="large" disabled={disabled}>
           <i className="fa fa-edit"/>
         </Button>
@@ -116,7 +116,7 @@ class ServerActions extends React.PureComponent {
             <a href="/" onClick={this.toggle}>No</a>
           </div>
         } trigger="click" visible={this.state.show} onVisibleChange={(show) => this.setState({show})}>
-          <Button type="danger" shape="circle" size="large" className="button-ultradanger"
+          <Button type="danger" shape="circle" size="large"
                   icon="minus" title="Remove an server" disabled={disabled}>
           </Button>
         </Popover>
@@ -124,19 +124,19 @@ class ServerActions extends React.PureComponent {
     ) : (<span/>);
     return (
       <div id="server-actions">
-        <Row >
-          <Col sm={12} xs={24} >
-              <Select style={{minWidth: '15rem', width:'20rem', float:'right'}} value={this.state.server} onChange={this.onChange} >
+        <Row type="flex" justify="center">
+          <Col sm={20} xs={24}>
+            <div className="container">
+              <Select className="select-server" value={this.state.server} onChange={this.onChange}>
                 {options}
               </Select>
-          </Col>
-          <Col sm={12} xs={24}>
+              {buttonEdit}
               <div className="button-container">
-                {buttonEdit}
                 <Button onClick={this.onCreate} title="Add an server" shape="circle" type="primary" size="large">
                   <i className="fa fa-plus"/>
                 </Button>
-                {buttonRemove}
+              </div>
+              {buttonRemove}
             </div>
           </Col>
         </Row>

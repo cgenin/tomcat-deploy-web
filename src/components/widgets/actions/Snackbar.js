@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {Button} from 'antd';
 import { hideSnackbar } from '../../../modules/actions/actions';
 import PropTypes from 'prop-types';
+import './Snackbar.css';
 
 const mapStateToProps = function (state) {
   const snackbar = state.actions.snackbar;

@@ -1,3 +1,8 @@
+export const pageLayout = {
+  md: {span: 20, offset: 2},
+  xs: {span: 24},
+};
+
 export const formItemLayout = {
   labelCol: {
     xs: {span: 24},
@@ -30,3 +35,7 @@ export const formMidItemLayout = {
     sm: {span: 14},
   },
 };
+
+export const okColor = {color: '#71c341'};
+
+export const koColor = {color: 'darkred'};

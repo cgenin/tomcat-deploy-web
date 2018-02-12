@@ -1,0 +1,22 @@
+.test-modal-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.test-modal-body .icon {
+  margin: auto;
+  width: 4em;
+  height: 4em;
+  line-height: 4em;
+}
+
+.test-modal-body .icon .first {
+  font-size: 4em;
+}
+
+
+.test-modal-body .icon .second {
+  font-size: 2em;
+}
+
+

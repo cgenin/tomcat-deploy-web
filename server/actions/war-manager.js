@@ -3,6 +3,7 @@ const fs = require('fs');
 const URL = require('url');
 const Rx = require('rxjs/Rx');
 const config = require('../config');
+const logger = require('../logger');
 const rimraf = require('rimraf');
 const downloadedDir = config.downloadedDir;
 
@@ -31,7 +32,7 @@ const makeNexusDirectory = function () {
     }
   }
   catch (err) {
-    console.warn(err);
+    logger.warn(err);
   }
   return mkdir(nexusDir)
     .map(() => nexusDir);
@@ -67,7 +68,7 @@ const download = function (item) {
   return g(url)
     .flatMap((response) => {
       if (response.statusCode !== 200) {
-        console.error(`download item failure ${response.statusCode}`);
+        logger.error(`download item failure ${response.statusCode}`);
         return Rx.Observable.throw(response);
       }
       response.pipe(file);
@@ -187,7 +188,7 @@ const test = function (h, username, password) {
         subscriber.complete();
       });
     }).on('error', (e) => {
-      console.error('Error inc calling', e);
+      logger.error('Error inc calling', e);
       const body = e.message || 'Error';
       subscriber.error({status: 404, body});
     });

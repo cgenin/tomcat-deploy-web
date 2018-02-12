@@ -1,0 +1,9 @@
+#add-scheduler .margin-between-forms {
+  margin-bottom: 1.5em;
+}
+
+#add-scheduler .deploy-types {
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 1em;
+}

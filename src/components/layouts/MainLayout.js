@@ -15,7 +15,7 @@ class MainLayout extends React.Component {
         <Header>
           <HeaderCustom/>
         </Header>
-        <Content style={{padding: '0 50px'}}>
+        <Content className="main-layout-content">
           {this.props.children}
           <Snackbar/>
         </Content>

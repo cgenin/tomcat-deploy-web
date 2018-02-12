@@ -3,6 +3,7 @@ const routes = require('./routes/index');
 module.exports = (app, io) => {
   app.use('/api/server', require('./routes/server'));
   app.use('/api/nexus', require('./routes/nexus'));
+  app.use('/api/scheduler', require('./routes/scheduler')(io));
   app.use('/api/history', require('./routes/history')(io));
   app.use('/api/artifact', require('./routes/artifact')(io));
 

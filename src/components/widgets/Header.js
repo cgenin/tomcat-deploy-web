@@ -95,10 +95,10 @@ class Header extends React.PureComponent {
     const defaultSelectedKeys = (this.props.homeActive) ? ['1']
       : (this.props.addActive) ? ['2'] : [];
     return (
-      <div>
+      <div className="main-layout-header">
         <Row>
-          <Col span={3}>
-            <a href="/" style={{color: 'white', fontWeight: 'bold'}}>Deploy tool</a>
+          <Col xs={{span: 0}} md={{span: 3}}>
+            <a href="/" className="label-item-menu" style={{color: 'white', fontWeight: 'bold'}}>Deploy tool</a>
           </Col>
           <Col span={20}>
             <Menu
@@ -109,20 +109,21 @@ class Header extends React.PureComponent {
               style={{lineHeight: '64px'}}
             >
               <Menu.Item key="1">
-                <i className="fa fa-cog fa-home "/> &nbsp; Home
+                <i className="fa fa-cog fa-home "/><span className="label-item-menu">&nbsp; Home</span>
               </Menu.Item>
 
               <Menu.Item key="2">
-                <i className="fa fa-cog fa-plus"/>&nbsp; Add
+                <i className="fa fa-cog fa-plus"/><span className="label-item-menu">&nbsp; Add</span>
               </Menu.Item>
-              <Menu.SubMenu title={<span><i className="fa fa-cog "/>&nbsp; Configuration</span>}>
+              <Menu.SubMenu title={<span><i className="fa fa-cog "/><span
+                className="label-item-menu">&nbsp; Configuration</span></span>}>
                 <Menu.ItemGroup title="Artifacts">
                   <Menu.Item key="3.2">Clean history</Menu.Item>
                 </Menu.ItemGroup>
               </Menu.SubMenu>
             </Menu>
           </Col>
-          <Col span={1}>
+          <Col md={{span: 1}} xs={{span:3}}>
             <Menu
               theme="dark"
               mode="horizontal"

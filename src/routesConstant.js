@@ -9,6 +9,27 @@ export const HOME = {
     return this.CST();
   }
 };
+
+export const HOME_TABS = {
+  root: '/home/',
+  /**
+   * @return {string}
+   */
+  CST() {
+    return `${this.root}:tab`;
+  },
+  path(tab) {
+    return `${this.root}${tab}`
+  }
+
+};
+
+export const TAB_LIST_NEXUS= '2';
+export const TAB_LIST_ARTIFACTS= '1';
+export const TAB_HISTORY= '4';
+export const TAB_LOGGER= '3';
+export const TAB_LIST_SCHEDULERS= '5';
+
 export const ADD_ARTIFACT = {
   /**
    * @return {string}
@@ -58,4 +79,18 @@ export const EDIT_SERVER = {
     return `${this.root}${id}`
   }
 };
+
+export const ADD_SCHEDULER = {
+  root: '/scheduler/',
+  /**
+   * @return {string}
+   */
+  CST() {
+    return `${this.root}:type`;
+  },
+  path(type) {
+    return `${this.root}${type}`;
+  }
+};
+
 

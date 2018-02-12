@@ -1,4 +1,5 @@
 const inProgress = require('../actions/in-progress');
+const logger = require('../logger');
 
 let instance = null;
 
@@ -12,13 +13,13 @@ class RemoteConsole {
     this.io = {
       sockets: {
         emit(type, msg) {
-          console.log(`Null Io : ${type}:'${msg}'`);
+          logger.info(`Null Io : ${type}:'${msg}'`);
         }
       }
     };
   }
 
-  startUndeploy(server, ip){
+  startUndeploy(server, ip) {
     inProgress.active();
     this.emitInProgress(ip);
     this.log(`target server : ${server.host}`);

@@ -2,6 +2,7 @@ import React from 'react';
 import {Row, Col, Card, Breadcrumb} from 'antd';
 import Title from '../../widgets/Title';
 import ServerEdit from '../../widgets/server/ServerForm';
+import {pageLayout} from "../../Styles";
 
 
 export default class ServerAddPage extends React.PureComponent {
@@ -10,8 +11,8 @@ export default class ServerAddPage extends React.PureComponent {
     return (
       <div>
         <Row>
-          <Col offset={2} span={20}>
-            <Breadcrumb style={{margin: '16px 0'}}>
+          <Col {...pageLayout}>
+            <Breadcrumb className="main-bread-crumb">
               <Breadcrumb.Item>Home</Breadcrumb.Item>
               <Breadcrumb.Item>Add an server</Breadcrumb.Item>
             </Breadcrumb>
@@ -19,7 +20,7 @@ export default class ServerAddPage extends React.PureComponent {
         </Row>
         <Title text="Add and Save server"/>
         <Row>
-          <Col span={20} offset={2}>
+          <Col {...pageLayout}>
             <Card style={{width: '100%'}}>
               <ServerEdit add={true}/>
             </Card>

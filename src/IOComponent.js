@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {Row, Col, Spin} from 'antd';
 
 const ATTR = 'data-io-view';
 let number = 0;
@@ -57,7 +58,14 @@ export default class IOComponent extends Component {
 
   render() {
     if (!this.state.component) {
-      return (<div ref={elm => this.elm = elm}>&nbsp;</div>);
+      return (
+        <div ref={elm => this.elm = elm}>
+          <Row justify="center" type="flex">
+            <Col span={2}>
+              <Spin size="large"/>
+            </Col>
+          </Row>
+        </div>);
 
     }
     const Tag = this.state.component;
