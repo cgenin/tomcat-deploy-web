@@ -4,7 +4,7 @@ import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import {Table, Input, Row, Col} from 'antd';
 import {load} from '../../../modules/schedulers/actions'
-import {filtering} from "../../Filters";
+import {filtering} from "../../FiltersAndSorter";
 import {koColor, okColor} from "../../Styles";
 import ShowUrls from "../ShowUrls";
 import ShowNexus from "../ShowNexus";
