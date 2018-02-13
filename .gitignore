@@ -7,9 +7,9 @@ coverage
 build
 yarn.lock
 *.log
-
+*.ipr
 .tmp
-
+*.iws
 # Sublime Text
 *.sublime-workspace
 

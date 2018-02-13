@@ -65,6 +65,7 @@
   "devDependencies": {
     "apidoc": "^0.17.6",
     "babel-plugin-import": "^1.6.3",
+    "eslint-config-airbnb": "^16.1.0",
     "react-app-rewire-less": "^2.1.0",
     "react-app-rewired": "^1.4.0",
     "rimraf": "^2.6.2"

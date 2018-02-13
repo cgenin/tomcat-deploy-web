@@ -9,7 +9,7 @@ import {filtering, sortStrBy} from "../../FiltersAndSorter";
 import './ListNexusArtifact.css';
 
 const mapStateToProps = function (state) {
-  let iterable = state.artifacts.filter(a => {
+  const artifacts = state.artifacts.filter(a => {
     const {groupId, artifactId} = a;
     return groupId && artifactId;
   })
@@ -21,8 +21,13 @@ const mapStateToProps = function (state) {
       const {groupId, artifactId, p, name} = a;
       const packaging = (p) ? p : 'war';
       return {groupId, artifactId, packaging, name};
-    });
-  const artifacts = Array.from(new Set(iterable));
+    })
+    .reduce((arr, artifact) => {
+      if (arr.find(a => (a.groupId === artifact.groupId && a.artifactId === artifact.artifactId))) {
+        return arr;
+      }
+      return [artifact, ...arr];
+    }, []);
 
   const nexus = [...state.nexus, ...artifacts];
   return {
@@ -167,11 +172,13 @@ class ListNexusArtifact extends React.PureComponent {
         sorter: sortStrBy('groupId'),
         sortOrder: sortedInfo.columnKey === 'groupId' && sortedInfo.order,
       },
-      {key: 'artifactId', dataIndex: 'artifactId', title: 'ArtifactId',
+      {
+        key: 'artifactId', dataIndex: 'artifactId', title: 'ArtifactId',
         filteredValue: filteredInfo.artifactId || null,
         onFilter: (value, record) => record.artifactId.includes(value),
         sorter: sortStrBy('artifactId'),
-        sortOrder: sortedInfo.columnKey === 'artifactId' && sortedInfo.order,},
+        sortOrder: sortedInfo.columnKey === 'artifactId' && sortedInfo.order,
+      },
       {
         key: 'version',
         title: 'Nexus Version',
@@ -191,7 +198,8 @@ class ListNexusArtifact extends React.PureComponent {
         </Row>
         <Row>
           <Col xs={24}>
-            <Table dataSource={artifacts} columns={columns} onChange={this.handleChangeTable} pagination={{ pageSize:50 }}/>
+            <Table dataSource={artifacts} columns={columns} onChange={this.handleChangeTable}
+                   pagination={{pageSize: 50}}/>
           </Col>
         </Row>
       </div>
