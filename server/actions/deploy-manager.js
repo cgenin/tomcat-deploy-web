@@ -55,6 +55,10 @@ class DeployManager {
               const {artifactId, groupId, packaging, version, name} = artifact;
               return Rx.Observable.of(artifact)
                 .flatMap(() => {
+                  rc.log('suppress nexus directory');
+                  return war.makeNexusDirectory();
+                })
+                .flatMap(() => {
                   let str = JSON.stringify(artifact);
                   rc.log(`prepare to deploy from nexus : ${str}`);
                   return copy(groupId, artifactId, root, packaging, version);

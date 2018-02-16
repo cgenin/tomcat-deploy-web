@@ -106,7 +106,8 @@ class Header extends React.PureComponent {
               mode="horizontal"
               defaultSelectedKeys={defaultSelectedKeys}
               onClick={this.handleChangeMenu}
-              style={{lineHeight: '64px'}}
+              style={{lineHeight: '56px'}}
+              forceSubMenuRender={true}
             >
               <Menu.Item key="1">
                 <i className="fa fa-cog fa-home "/><span className="label-item-menu">&nbsp; Home</span>
@@ -128,7 +129,8 @@ class Header extends React.PureComponent {
               theme="dark"
               mode="horizontal"
               onClick={this.handleChangeMenu}
-              style={{lineHeight: '64px'}}
+              style={{lineHeight: '56px'}}
+              forceSubMenuRender={true}
             >
               <Menu.SubMenu id="help-dropdown" key={4} title={<strong>&nbsp;?&nbsp;</strong>}>
                 <Menu.Item key="4.1">Help</Menu.Item>
