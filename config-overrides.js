@@ -17,7 +17,9 @@ module.exports = function override(config, env) {
   config = rewireLess.withLoaderOptions({
     modifyVars: {
       "@primary-color": "#248888",
-      '@layout-header-background': '#061a5f'
+      '@layout-header-background': '#3f51b5',
+      '@btn-danger-color': '@background-color-base',
+      '@btn-danger-bg': '@error-color',
       /*  "@normal-color": "#E6E6E6" ,
         "@error-color": "#E7475E" ,
         "@highlight-color": "#E7475E" ,

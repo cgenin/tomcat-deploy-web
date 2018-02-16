@@ -5,11 +5,11 @@ import {connect} from 'react-redux';
 import {Table, Select, Row, Col, Input} from 'antd'
 import {load} from '../../../modules/artifacts/actions';
 import {reset, add, remove} from '../../../modules/nexus/actions';
-import {filtering} from "../../Filters";
+import {filtering, sortStrBy} from "../../FiltersAndSorter";
 import './ListNexusArtifact.css';
 
 const mapStateToProps = function (state) {
-  let iterable = state.artifacts.filter(a => {
+  const artifacts = state.artifacts.filter(a => {
     const {groupId, artifactId} = a;
     return groupId && artifactId;
   })
@@ -21,8 +21,13 @@ const mapStateToProps = function (state) {
       const {groupId, artifactId, p, name} = a;
       const packaging = (p) ? p : 'war';
       return {groupId, artifactId, packaging, name};
-    });
-  const artifacts = Array.from(new Set(iterable));
+    })
+    .reduce((arr, artifact) => {
+      if (arr.find(a => (a.groupId === artifact.groupId && a.artifactId === artifact.artifactId))) {
+        return arr;
+      }
+      return [artifact, ...arr];
+    }, []);
 
   const nexus = [...state.nexus, ...artifacts];
   return {
@@ -116,6 +121,7 @@ class ListNexusArtifact extends React.PureComponent {
     };
     this.onFilter = this.onFilter.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.handleChangeTable = this.handleChangeTable.bind(this);
   }
 
   onFilter(e) {
@@ -135,12 +141,22 @@ class ListNexusArtifact extends React.PureComponent {
     }
   }
 
+  handleChangeTable(pagination, filters, sorter) {
+    console.log('Various parameters', pagination, filters, sorter);
+    this.setState({
+      filteredInfo: filters,
+      sortedInfo: sorter,
+    });
+  }
+
   componentDidMount() {
     this.props.onInit();
   }
 
   render() {
-
+    let {sortedInfo, filteredInfo} = this.state;
+    filteredInfo = filteredInfo || {};
+    sortedInfo = sortedInfo || {};
     const arr = filtering(this.props.nexus, this.state.filter);
     const artifacts = arr.sort(sorting).map(
       (artifact, i) => {
@@ -149,8 +165,20 @@ class ListNexusArtifact extends React.PureComponent {
         });
       });
     const columns = [
-      {key: 'groupId', dataIndex: 'groupId', title: 'GroupId'},
-      {key: 'artifactId', dataIndex: 'artifactId', title: 'ArtifactId'},
+      {
+        key: 'groupId', dataIndex: 'groupId', title: 'GroupId',
+        filteredValue: filteredInfo.groupId || null,
+        onFilter: (value, record) => record.groupId.includes(value),
+        sorter: sortStrBy('groupId'),
+        sortOrder: sortedInfo.columnKey === 'groupId' && sortedInfo.order,
+      },
+      {
+        key: 'artifactId', dataIndex: 'artifactId', title: 'ArtifactId',
+        filteredValue: filteredInfo.artifactId || null,
+        onFilter: (value, record) => record.artifactId.includes(value),
+        sorter: sortStrBy('artifactId'),
+        sortOrder: sortedInfo.columnKey === 'artifactId' && sortedInfo.order,
+      },
       {
         key: 'version',
         title: 'Nexus Version',
@@ -170,7 +198,8 @@ class ListNexusArtifact extends React.PureComponent {
         </Row>
         <Row>
           <Col xs={24}>
-            <Table dataSource={artifacts} columns={columns}/>
+            <Table dataSource={artifacts} columns={columns} onChange={this.handleChangeTable}
+                   pagination={{pageSize: 50}}/>
           </Col>
         </Row>
       </div>

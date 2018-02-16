@@ -2,7 +2,7 @@ import React from 'react';
 import {withRouter} from 'react-router';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Menu, Row, Col} from 'antd';
+import {Menu, Row, Col, Icon} from 'antd';
 import CleanHistory from './artifacts/CleanHistory';
 import AboutModal from './AboutModal';
 import {ADD_ARTIFACT, HOME} from '../../routesConstant'
@@ -132,7 +132,8 @@ class Header extends React.PureComponent {
               style={{lineHeight: '56px'}}
               forceSubMenuRender={true}
             >
-              <Menu.SubMenu id="help-dropdown" key={4} title={<strong>&nbsp;?&nbsp;</strong>}>
+              <Menu.SubMenu id="help-dropdown" key={4}
+                            title={<strong>&nbsp;?&nbsp;<Icon type="caret-down" /></strong>}>
                 <Menu.Item key="4.1">Help</Menu.Item>
                 <Menu.Item key="4.2">APi Rest Doc</Menu.Item>
                 <Menu.Item key="4.3">License</Menu.Item>

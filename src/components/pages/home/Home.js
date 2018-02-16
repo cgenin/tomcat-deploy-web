@@ -16,6 +16,7 @@ import {
   TAB_LOGGER
 } from "../../../routesConstant";
 import {pageLayout} from "../../Styles";
+import './Home.css'
 
 const mapStateToProps = function (state) {
   const showLogger = state.actions.forceLogger;
@@ -100,7 +101,7 @@ class HomePage extends React.PureComponent {
 
   render() {
     return (
-      <div>
+      <div id="home">
         <Row>
           <Col {...pageLayout}>
             <Breadcrumb className="main-bread-crumb">

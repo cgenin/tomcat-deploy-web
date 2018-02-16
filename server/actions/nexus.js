@@ -137,5 +137,4 @@ const reload = function (host, port, artifacts) {
 
 module.exports = {
   copy, valid, search, reload
-
 };

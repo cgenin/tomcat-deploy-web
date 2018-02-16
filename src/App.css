@@ -1,5 +1,18 @@
 @import "../node_modules/font-awesome/css/font-awesome.css";
 
+body{
+  min-height: 100vh;
+  position: relative;
+  margin: 0;
+  background-color: #f0f2f5!important;
+}
+
+.layout {
+  min-height: 100vh;
+  max-height: 100vh;
+  height: 100vh;
+}
+
 .layout .main-layout-content {
   padding: 0 50px;
 }
@@ -159,206 +172,26 @@
   width: 91px;
   height: 56px;
   position: relative;
-  margin-top: 18px;
-  z-index: -100;
-  -webkit-animation: flag-back 1s ease;
-  -moz-animation: flag-back 1s ease;
-  -o-animation: flag-back 1s ease;
-  animation: flag-back 1s ease;
+  margin: 0;
+  background-color: #f0f2f5!important;
 }
 
-.backflag-left {
-  -webkit-transform: rotate(20deg) skew(20deg);
-  -ms-transform: rotate(20deg) skew(20deg);
-  transform: rotate(20deg) skew(20deg);
-  float: left;
+.layout {
+  min-height: 100vh;
+  max-height: 100vh;
+  height: 100vh;
 }
 
-.backflag-right {
-  -webkit-transform: rotate(-20deg) skew(-20deg);
-  -ms-transform: rotate(-20deg) skew(-20deg);
-  transform: rotate(-20deg) skew(-20deg);
-  float: right;
+.ant-layout-footer {
+  margin-top: 10px;
+  border-top: 1px solid #BBB;
 }
 
-@-webkit-keyframes flag-back {
-  0% {
-    -webkit-transform: rotate(0deg) skew(0deg);
-    -ms-transform: rotate(0deg) skew(0deg);
-    transform: rotate(0deg) skew(0deg);
-    margin-top: 0px;
-  }
-}
 
-@-moz-keyframes flag-back {
-  0% {
-    -webkit-transform: rotate(0deg) skew(0deg);
-    -ms-transform: rotate(0deg) skew(0deg);
-    transform: rotate(0deg) skew(0deg);
-    margin-top: 0px;
-  }
-}
-
-@-o-keyframes flag-back {
-  0% {
-    -webkit-transform: rotate(0deg) skew(0deg);
-    -ms-transform: rotate(0deg) skew(0deg);
-    transform: rotate(0deg) skew(0deg);
-    margin-top: 0px;
-  }
-}
-
-@keyframes flag-back {
-  0% {
-    -webkit-transform: rotate(0deg) skew(0deg);
-    -ms-transform: rotate(0deg) skew(0deg);
-    transform: rotate(0deg) skew(0deg);
-    margin-top: 0px;
-  }
-}
-
-.ribbon-left, .ribbon-right {
-  background: #29293a;
-  margin-top: 31px;
-  position: absolute;
-  height: 60px;
-  width: 120px;
-  z-index: -300;
-}
-
-.ribbon-left {
-  float: left;
-  margin-left: -32px;
-  text-align: center;
-  -webkit-animation: flag-end-left 1s ease;
-  -moz-animation: flag-end-left 1s ease;
-  -o-animation: flag-end-left 1s ease;
-  animation: flag-end-left 1s ease;
-}
-
-.ribbon-right {
-  display: inline;
-  margin-left: 3px;
-  -webkit-animation: flag-end-right 1s ease;
-  -moz-animation: flag-end-right 1s ease;
-  -o-animation: flag-end-right 1s ease;
-  animation: flag-end-right 1s ease;
-}
-
-@-webkit-keyframes flag-end-right {
-  0% {
-    margin-top: 0;
-    width: 25px;
-  }
-}
-
-@-moz-keyframes flag-end-right {
-  0% {
-    margin-top: 0;
-    width: 25px;
-  }
-}
-
-@-o-keyframes flag-end-right {
-  0% {
-    margin-top: 0;
-    width: 25px;
-  }
-}
-
-@keyframes flag-end-right {
-  0% {
-    margin-top: 0;
-    width: 25px;
-  }
-}
-
-@-webkit-keyframes flag-end-left {
-  0% {
-    margin-top: 0;
-    width: 25px;
-    margin-left: 63px;
-  }
-}
-
-@-moz-keyframes flag-end-left {
-  0% {
-    margin-top: 0;
-    width: 25px;
-    margin-left: 63px;
-  }
-}
-
-@-o-keyframes flag-end-left {
-  0% {
-    margin-top: 0;
-    width: 25px;
-    margin-left: 63px;
-  }
-}
-
-@keyframes flag-end-left {
-  0% {
-    margin-top: 0;
-    width: 25px;
-    margin-left: 63px;
-  }
-}
-
-.ribbon-left:before {
-  content: '';
-  width: 0;
-  height: 0;
-  border-bottom: 30px solid #29293a;
-  border-left: 50px solid transparent;
-  float: left;
-  margin-left: -50px;
-  margin-top: 30px;
-}
-
-.ribbon-left:after {
-  content: '';
-  width: 0;
-  height: 0;
-  border-top: 30px solid #29293a;
-  border-left: 50px solid transparent;
-  float: left;
-  margin-left: -50px;
-  margin-top: 0;
-}
-
-.ribbon-right:before {
-  content: '';
-  width: 0;
-  height: 0;
-  border-bottom: 30px solid #29293a;
-  border-right: 50px solid transparent;
-  float: right;
-  margin-right: -50px;
-  margin-top: 30px;
-}
-
-.ribbon-right:after {
-  content: '';
-  width: 0;
-  height: 0;
-  border-top: 30px solid #29293a;
-  border-right: 50px solid transparent;
-  float: right;
-  margin-right: -50px;
-  margin-top: 0;
-}
-
-@media all and (max-width: 1340px) {
-  .center-wrap {
-    width: 100%;
-  }
-}
-
-@media all and (max-width: 850px) {
-  .title-container {
-    font-size: 4.8vw;
-  }
+/***************************/
+.button-ultradanger{
+  background-color: #f44336;
+  color: hsla(0,0%,100%,.84);
 }
 
 /***************************/
