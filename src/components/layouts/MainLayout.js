@@ -1,6 +1,6 @@
 import React from 'react';
 import {Layout} from 'antd';
-import HeaderCustom from '../widgets/Header';
+import HeaderCustom from './Header';
 import Snackbar from '../widgets/actions/Snackbar';
 
 const {Header, Footer, Content} = Layout;
