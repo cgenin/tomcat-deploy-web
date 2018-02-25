@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {Menu, Row, Col, Icon} from 'antd';
 import CleanHistory from '../widgets/artifacts/CleanHistory';
 import AboutModal from '../widgets/AboutModal';
-import {ADD_ARTIFACT, HOME} from '../../routesConstant'
+import {ADD_ARTIFACT, HOME, LOG} from '../../routesConstant'
 
 
 const mapStateToProps = function (state, props) {
@@ -53,6 +53,10 @@ class Header extends React.PureComponent {
     this.props.history.push('/md/help');
   }
 
+  onLogPage() {
+    this.props.history.push(LOG.CST());
+  }
+
   onLaunchAbout() {
     this.setState({smShow: true});
   }
@@ -70,6 +74,9 @@ class Header extends React.PureComponent {
         break;
       case '3.2':
         this.onLaunchCleanHistory();
+        break;
+      case '3.3':
+        this.onLogPage();
         break;
       case '4.1' :
         this.onHelpPage();
@@ -118,6 +125,9 @@ class Header extends React.PureComponent {
               </Menu.Item>
               <Menu.SubMenu title={<span><i className="fa fa-cog "/><span
                 className="label-item-menu">&nbsp; Configuration</span></span>}>
+                <Menu.ItemGroup title="Logs">
+                  <Menu.Item key="3.3">Go to history</Menu.Item>
+                </Menu.ItemGroup>
                 <Menu.ItemGroup title="Artifacts">
                   <Menu.Item key="3.2">Clean history</Menu.Item>
                 </Menu.ItemGroup>

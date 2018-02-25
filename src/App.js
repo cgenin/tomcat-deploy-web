@@ -13,6 +13,7 @@ import {loggerReducers as logger} from './modules/logger/reducers';
 import {versionsReducers as versions} from './modules/versions/reducers';
 import {nexusReducers as nexus} from './modules/nexus/reducers';
 import {reducer as schedulers} from './modules/schedulers/reducers';
+import {reducer as logHistory} from './modules/history-log/reducers';
 import {nexusVersionReducers as nexusVersions} from './modules/nexus-versions/reducers';
 import {initialize} from './socket';
 import Routes from './routes';
@@ -28,7 +29,8 @@ const rootReducer = combineReducers(Object.assign({}, {
   versions,
   nexus,
   nexusVersions,
-  schedulers
+  schedulers,
+  logHistory
 }));
 
 export const store = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')

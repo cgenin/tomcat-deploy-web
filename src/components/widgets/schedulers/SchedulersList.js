@@ -86,6 +86,14 @@ class SchedulersList extends PureComponent {
         title: 'Cron',
       },
       {
+        key: 'server',
+        dataIndex: 'server',
+        title: 'Server',
+        render: (server) => {
+          return (<span>{server.name}</span>);
+        }
+      },
+      {
         key: 'type', dataIndex: 'type', title: 'Type', render: (type, scheduler) => {
           switch (type) {
             case 'job' :

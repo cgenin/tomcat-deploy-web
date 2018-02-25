@@ -1,5 +1,5 @@
 const inProgress = require('../actions/in-progress');
-const logger = require('../logger');
+const logger = require('../logger').consoleWebLogger;
 
 let instance = null;
 
@@ -46,30 +46,37 @@ class RemoteConsole {
   }
 
   emitInProgress(ip) {
+    logger.info(`inprogress for ${ip}`);
     this.io.sockets.emit('deploiement-in-progress', {active: inProgress.isActive(), ip});
   }
 
   deployStart(ip) {
+    logger.info('start deployement works');
     this.io.sockets.emit('deploy-start', {type: 'Deploy', host: ip});
   }
 
   deployEnd() {
+    logger.info('end deployement works');
     this.io.sockets.emit('deploy-end', {});
   }
 
   error(msg) {
+    logger.error(msg);
     this.io.sockets.emit('rc-error', msg);
   }
 
   log(msg) {
+    logger.info(msg);
     this.io.sockets.emit('rc-log', msg);
   }
 
   end() {
+    logger.info('end deployement for one artifact');
     this.io.sockets.emit('rc-end', {});
   }
 
   start() {
+    logger.info('start deployement for one artifact');
     this.io.sockets.emit('rc-start', {});
   }
 }

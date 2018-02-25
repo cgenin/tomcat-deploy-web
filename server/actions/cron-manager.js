@@ -2,7 +2,7 @@ const moment = require('moment');
 const cron = require('cron');
 const Rx = require('rxjs/Rx');
 const deploydb = require('../deploydb');
-const logger = require('../logger');
+const logger = require('../logger').cronLogger;
 const rc = require('../ws/RemoteConsole');
 const DeployManager = require('./deploy-manager');
 
@@ -54,19 +54,16 @@ class CronManager {
 
     const nextFunc = o => {
       const msg = `artifact '${o.name}' deploy by scheduling job '${name}'`;
-      logger.info(msg);
       rc.log(msg);
     };
 
     const errorFunc = () => {
       const msg = `Error in deploying the scheduling job '${name}'. See the logs for further informations.`;
-      logger.error(msg);
       rc.error(msg);
       stopJob();
     };
     const completeFunc = () => {
       const msg = `End of the scheduling job '${name}'.`;
-      logger.info(msg);
       rc.log(msg);
       stopJob();
     };
@@ -172,7 +169,8 @@ class CronManager {
             }, true);
           return {name, running: true};
         } catch (err) {
-          logger.error('error in creating job', err);
+          logger.error(`error in creating job:  '${name}'`);
+          logger.error(err);
         }
         return {name, running: false, failure: true};
       });

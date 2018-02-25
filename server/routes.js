@@ -5,6 +5,7 @@ module.exports = (app, io) => {
   app.use('/api/nexus', require('./routes/nexus'));
   app.use('/api/scheduler', require('./routes/scheduler')(io));
   app.use('/api/history', require('./routes/history')(io));
+  app.use('/api/log', require('./routes/log')(io));
   app.use('/api/artifact', require('./routes/artifact')(io));
 
   app.use('/*', routes);

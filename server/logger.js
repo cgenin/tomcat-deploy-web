@@ -1,7 +1,7 @@
 const winston = require('winston');
 winston.emitErrs = true;
 
-const logger = new winston.Logger({
+const defaultConfig = {
   transports: [
     new winston.transports.File({
       level: 'info',
@@ -20,11 +20,44 @@ const logger = new winston.Logger({
     })
   ],
   exitOnError: false
-});
+};
+
+const logger = new winston.Logger(defaultConfig);
+
+class SourceLogger {
+  constructor(source) {
+    this.source = source;
+  }
+
+  log(level, message) {
+    const {source} = this;
+    logger.log(level,
+      message, {
+        source
+      });
+  }
+
+  info(message) {
+    this.log('info', message);
+  }
+
+  warn(message) {
+    this.log('warn', message);
+  }
+
+  error(message) {
+    this.log('error', message);
+  }
+}
 
 module.exports = logger;
+const networkLogger = new SourceLogger('network');
 module.exports.stream = {
-  write: function(message, encoding){
-    logger.info(message);
+  write(message, encoding) {
+    const msg = message.replace(/\n/, '');
+    networkLogger.info(msg);
   }
 };
+module.exports.consoleWebLogger = new SourceLogger('consoleLog');
+module.exports.websocketLogger = new SourceLogger('websocket');
+module.exports.cronLogger = new SourceLogger('cron');

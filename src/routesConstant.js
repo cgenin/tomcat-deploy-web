@@ -10,6 +10,18 @@ export const HOME = {
   }
 };
 
+export const LOG = {
+  /**
+   * @return {string}
+   */
+  CST() {
+    return '/log';
+  },
+  path() {
+    return this.CST();
+  }
+};
+
 export const HOME_TABS = {
   root: '/home/',
   /**

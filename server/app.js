@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 
-require('./backup').load().subscribe((inner) => logger.info('backup versions initialized'), err => logger.error(err));
+require('./backup').load().subscribe(() => logger.info('backup versions initialized'), err => logger.error(err));
 
 const deploydb = require('./deploydb');
 
@@ -19,7 +19,7 @@ const app = express();
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
-app.use(morgan('dev',{stream}));
+app.use(morgan('short',{stream}));
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -39,7 +39,7 @@ deploydb.init().subscribe(
         err => {
           logger.error('error in starting job', err);
         },
-        () => logger.info('All jobs started'));
+        () => logger.cronLogger.info('All jobs started'));
   });
 
 module.exports = app;

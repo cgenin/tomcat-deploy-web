@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
   if (socket && socket.conn && socket.conn.remoteAddress) {
     ip = socket.conn.remoteAddress;
   }
-  logger.info(`connection of ${ip}`);
+  logger.websocketLogger.info(`connection of ${ip}`);
   if (inProgress.isActive()) {
     socket.emit(inProgress.event, { active: true });
   }
