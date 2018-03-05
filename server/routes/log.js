@@ -19,15 +19,15 @@ module.exports = () => {
       order: 'desc',
     };
 
-    const opts = {...defOptions, ...reqOpts};
-    logger.query(opts, (err, r) => {
+    const options = {...defOptions, ...reqOpts};
+    logger.query(options, (err, results) => {
       if (err) {
         logger.error('error in retreiving history', err);
         res.status(500);
         res.json();
         return;
       }
-      res.json(r);
+      res.json({options, results: results.file});
     });
 
   });

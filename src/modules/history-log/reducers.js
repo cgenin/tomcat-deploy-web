@@ -2,7 +2,7 @@ import {UPDATE, LOADING} from './actions';
 
 const defaultState = {
   loading: false,
-  logs: []
+  history: []
 };
 
 
@@ -11,7 +11,8 @@ export function reducer(state = defaultState, action) {
     case LOADING:
       return {loading: true, history: []};
     case UPDATE:
-      return {loading: false, history: action.arr};
+      const {options, results} = action.result;
+      return {loading: false, history: results, options};
     default :
       return state;
   }

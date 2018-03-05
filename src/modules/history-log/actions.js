@@ -9,10 +9,10 @@ function loading() {
   };
 }
 
-export function update(arr) {
+export function update(result) {
   return {
     type: UPDATE,
-    arr
+    result
   };
 }
 
