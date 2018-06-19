@@ -15,7 +15,8 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "Christophe Genin <genin.christophe@gmail.com>",
   "dependencies": {
@@ -51,14 +52,14 @@
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.0",
+    "react-scripts": "1.1.1",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "rxjs": "^5.4.3",
     "services-config": "^0.1.6",
     "simple-registry": "^0.2.2",
-    "snyk": "^1.49.2",
+    "snyk": "^1.83.0",
     "socket.io": "^2.0.0",
     "socket.io-client": "^2.0.3",
     "winston": "^2.4.0"
