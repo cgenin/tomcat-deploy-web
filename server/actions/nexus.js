@@ -5,8 +5,8 @@ const fs = require('fs');
 const os = require('os');
 const Q = require('q');
 const Rx = require('rxjs/Rx');
-const {execFile} = require('child_process');
-const logger = require('../logger')
+const {spawn} = require('child_process');
+const logger = require('../logger');
 
 /**
  * Get the maven
@@ -20,9 +20,32 @@ const getMavenCommandLine = () => {
   return 'mvn';
 };
 
+const execFile = (cmd, args) => {
+  return Rx.Observable.create(subscriber => {
+    const child = spawn(cmd, args);
+    let _stdout = '';
+    let _stderr = '';
+    child.stdout.on('data', (data) => {
+      _stdout += data.toString();
+    });
+
+    child.stderr.on('data', (data) => {
+      _stderr += data.toString();
+    });
+
+    child.on('exit', (code) => {
+      subscriber.next([_stdout, _stderr, code]);
+      subscriber.complete();
+    });
+    child.addListener('close', () => {
+      subscriber.next([_stdout, _stderr]);
+      subscriber.complete();
+    });
+  });
+};
+
 
 const search = function (host, port, q) {
-// http://intserv:8081
   const deferred = Q.defer();
   const url = `http://${host}:${port}/nexus/service/local/lucene/search?q=${q}`;
   try {
@@ -62,8 +85,7 @@ const search = function (host, port, q) {
 };
 
 const valid = function (groupId, artifactId, packaging = 'war', version = 'LATEST') {
-  const ef = Rx.Observable.bindNodeCallback(execFile);
-  return ef(getMavenCommandLine(), [
+  return execFile(getMavenCommandLine(), [
     'dependency:get',
     `-DgroupId=${groupId}`,
     `-DartifactId=${artifactId}`,
@@ -87,9 +109,8 @@ const valid = function (groupId, artifactId, packaging = 'war', version = 'LATES
 
 
 const copy = function (groupId, artifactId, outputDirectory, packaging = 'war', version = 'LATEST') {
-  const ef = Rx.Observable.bindNodeCallback(execFile);
   const readdir = Rx.Observable.bindNodeCallback(fs.readdir);
-  return ef(getMavenCommandLine(), [
+  return execFile(getMavenCommandLine(), [
     '-U',
     'dependency:copy',
     `-Dartifact=${groupId}:${artifactId}:${version}:${packaging}`,
