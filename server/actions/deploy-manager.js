@@ -7,11 +7,9 @@ const {copy} = require('./nexus');
 const Rx = require('rxjs/Rx');
 
 class DeployManager {
-
   constructor(ip) {
     this.ip = ip;
   }
-
   undeploy(server, artifacts) {
     return new Promise((resolve, reject) => {
       inProgresss.schedule(() => {
@@ -51,7 +49,7 @@ class DeployManager {
         war.makeNexusDirectory()
           .flatMap((root) => {
             rc.log('root directory : OK.');
-            const obs = nexus.map(artifact => {
+            const obs = nexus.map((artifact) => {
               const {artifactId, groupId, packaging, version, name} = artifact;
               return Rx.Observable.of(artifact)
                 .flatMap(() => war.makeNexusDirectory())
@@ -60,7 +58,7 @@ class DeployManager {
                   return war.makeNexusDirectory();
                 })
                 .flatMap(() => {
-                  let str = JSON.stringify(artifact);
+                  const str = JSON.stringify(artifact);
                   rc.log(`prepare to deploy from nexus : ${str}`);
                   return copy(groupId, artifactId, root, packaging, version);
                 })
@@ -72,12 +70,14 @@ class DeployManager {
                       rc.log(`deploy : ${name}`);
                       return war.deploySync(server, name, warPath);
                     });
-                }).map(
+                })
+                .map(
                   () => {
-                    rc.log(`End deploy`);
+                    rc.log('End deploy');
                     return artifact;
                   }
-                ).do(null, () => {
+                )
+                .do(null, () => {
                   history.update(server, new Date(), artifact.name, 'KO', {type: 'nexus', version: artifact.version});
                 });
             });
@@ -96,7 +96,7 @@ class DeployManager {
               }
               logger.error(err);
               rc.endDeploy(this.ip);
-              reject(false)
+              reject(false);
             },
             () => {
               rc.endDeploy(this.ip);

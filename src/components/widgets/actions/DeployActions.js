@@ -1,12 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {Button, Row, Col, Alert} from 'antd';
 import {deploy, deployByNexus, undeploy} from '../../../modules/actions/actions';
-import PropTypes from 'prop-types';
+import DownloadNexusButton from '../nexus/DownloadNexusButton'
 import SelectedUrls from './SelectedUrls';
 import SelectedNexus from './SelectedNexus';
-import {ADD_SCHEDULER} from '../../../routesConstant'
+import {ADD_SCHEDULER} from '../../../routesConstant';
 import './DeployActions.css';
 
 const mapStateToProps = function (state) {
@@ -29,6 +30,7 @@ const mapDispatchToProps = function (dispatch) {
     }
   };
 };
+
 
 class ButtonSchedule extends React.PureComponent {
 
@@ -68,17 +70,30 @@ ButtonSchedule.propTypes = {
 class DeployActions extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      tags: []
+    };
     this.onDeploy = this.onDeploy.bind(this);
     this.onDeployByNexus = this.onDeployByNexus.bind(this);
     this.onUnDeploy = this.onUnDeploy.bind(this);
+    this.onDownload = this.onDownload.bind(this);
   }
 
   onDeploy(e) {
     e.preventDefault();
     const server = this.props.actions.servers[0];
-    const artifacts = this.props.actions.artifacts;
-    const versions = this.props.actions.versions;
+    const {artifacts, versions} = this.props.actions;
     this.props.onDeploy(server, artifacts, versions);
+  }
+
+  onDownload(e) {
+    e.preventDefault();
+    const {nexus} = this.props;
+    const tags = nexus.map((artifact) => {
+      const {groupId, artifactId, version, name} = artifact;
+      return {name, url: `/api/nexus/download/${groupId}/${artifactId}/${version}/to/${name}`};
+    });
+    this.setState({tags});
   }
 
   onDeployByNexus(e) {
@@ -92,7 +107,7 @@ class DeployActions extends React.PureComponent {
   onUnDeploy(e) {
     e.preventDefault();
     const server = this.props.actions.servers[0];
-    const artifacts = this.props.actions.artifacts;
+    const {artifacts} = this.props.actions;
     this.props.onUnDeploy(server, artifacts);
   }
 
@@ -101,8 +116,10 @@ class DeployActions extends React.PureComponent {
       return (
         <Row className="current-deployement">
           <Col span={12} offset={6} className="text-center">
-            <Alert showIcon type="warning"
-                   message={<h3>Deployement in progress <i className="fa fa-refresh fa-spin fa-2x"/></h3>}/>
+            <Alert
+              showIcon
+              type="warning"
+              message={<h3>Deployement in progress <i className="fa fa-refresh fa-spin fa-2x"/></h3>}/>
           </Col>
         </Row>
       );
@@ -120,11 +137,15 @@ class DeployActions extends React.PureComponent {
       </Button>
     );
 
+
+
     return (
       <Row id="deploy-actions">
         <Col md={{span: 3, offset: 6}} xs={{span: 8}}>
-          <ButtonSchedule showArtifacts={!this.props.disabled} history={this.props.history}
-                          showNexus={this.props.showNexusButton}/>
+          <ButtonSchedule
+            showArtifacts={!this.props.disabled}
+            history={this.props.history}
+            showNexus={this.props.showNexusButton}/>
         </Col>
         <Col md={{span: 3}} xs={{span: 8}}>
           <Button onClick={this.onUnDeploy} disabled={this.props.disabled}>
@@ -132,14 +153,18 @@ class DeployActions extends React.PureComponent {
             &nbsp;Undeploy
           </Button>
         </Col>
-        <Col md={{span: 8}} xs={{span: 8}}>
+        <Col md={{span: 4}} xs={{span: 4}}>
           {buttonDeploy}
         </Col>
-        <Col className="main-number-of-items" md={{span: 2, offset:0}} xs={{span: 8, offset: 8}}>
-          <SelectedUrls />
+        <Col md={{span: 4}} xs={{span: 4}}>
+
+          <DownloadNexusButton tags={this.props.nexus}/>
         </Col>
-        <Col className="main-number-of-items" md={{span: 2, offset:0}} xs={{span: 8, offset: 8}}>
-          <SelectedNexus />
+        <Col className="main-number-of-items" md={{span: 2, offset: 0}} xs={{span: 8, offset: 8}}>
+          <SelectedUrls/>
+        </Col>
+        <Col className="main-number-of-items" md={{span: 2, offset: 0}} xs={{span: 8, offset: 8}}>
+          <SelectedNexus/>
         </Col>
       </Row>
     );
@@ -149,7 +174,7 @@ class DeployActions extends React.PureComponent {
 DeployActions.propTypes = {
   disabled: PropTypes.bool.isRequired,
   showNexusButton: PropTypes.bool.isRequired,
-  actions: PropTypes.object,
+  actions: PropTypes.object
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DeployActions));

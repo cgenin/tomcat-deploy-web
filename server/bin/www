@@ -10,13 +10,11 @@ const registry = require('simple-registry');
 const inProgress = require('../actions/in-progress');
 const http = require('http');
 registry.set('config', config);
-const app = require('../app');
 const debug = require('debug')(`${config.app.name}:server`);
 
-/**
- * Get port from environment and store in Express.
- */
-const port = normalizePort(process.env.PORT || '5000');
+const opts = require('../args');
+const {port} = opts;
+const app = require('../app')(opts.dbpath);
 app.set('port', port);
 
 /**
@@ -34,65 +32,65 @@ server.listen(port);
 
 require('../ws/RemoteConsole').setIo(io);
 io.on('connection', (socket) => {
-  let ip = '';
-  if (socket && socket.conn && socket.conn.remoteAddress) {
-    ip = socket.conn.remoteAddress;
-  }
-  logger.websocketLogger.info(`connection of ${ip}`);
-  if (inProgress.isActive()) {
-    socket.emit(inProgress.event, { active: true });
-  }
-  require('../ws/deploy')(socket, io, ip);
+    let ip = '';
+    if (socket && socket.conn && socket.conn.remoteAddress) {
+        ip = socket.conn.remoteAddress;
+    }
+    logger.websocketLogger.info(`connection of ${ip}`);
+    if (inProgress.isActive()) {
+        socket.emit(inProgress.event, {active: true});
+    }
+    require('../ws/deploy')(socket, io, ip);
 });
 
 require('../routes')(app, io);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val) {
-  const tmpPort = parseInt(val, 10);
-
-  if (isNaN(tmpPort)) {
-    // named pipe
-    return val;
-  }
-
-  if (tmpPort >= 0) {
-    // port number
-    return tmpPort;
-  }
-
-  return false;
-}
+//
+// /**
+//  * Normalize a port into a number, string, or false.
+//  */
+//
+// function normalizePort(val) {
+//     const tmpPort = parseInt(val, 10);
+//
+//     if (isNaN(tmpPort)) {
+//         // named pipe
+//         return val;
+//     }
+//
+//     if (tmpPort >= 0) {
+//         // port number
+//         return tmpPort;
+//     }
+//
+//     return false;
+// }
 
 /**
  * Event listener for HTTP server "error" event.
  */
 
 function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
 
-  const bind = typeof port === 'string'
-    ? `Pipe ${port}`
-    : `Port ${port}`;
+    const bind = typeof port === 'string'
+        ? `Pipe ${port}`
+        : `Port ${port}`;
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      logger.error(`${bind} requires elevated privileges`);
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      logger.error(`${bind} is already in use`);
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            logger.error(`${bind} requires elevated privileges`);
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            logger.error(`${bind} is already in use`);
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
 }
 
 /**
@@ -100,9 +98,9 @@ function onError(error) {
  */
 
 function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === 'string'
-    ? `pipe ${addr}`
-    : `port ${addr.port}`;
-  debug(`Listening on ${bind}`);
+    const addr = server.address();
+    const bind = typeof addr === 'string'
+        ? `pipe ${addr}`
+        : `port ${addr.port}`;
+    logger.info(`Listening on ${bind}`);
 }

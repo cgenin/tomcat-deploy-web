@@ -7,9 +7,7 @@ module.exports = () => {
   const router = express.Router();
   router.get('/', (req, res) => {
     const reqOpts = req.params;
-    //const query = Rx.Observable.bindNodeCallback(logger.query);
-
-
+    // const query = Rx.Observable.bindNodeCallback(logger.query);
     const today = new Date();
     const defOptions = {
       from: today - (24 * 60 * 60 * 1000),

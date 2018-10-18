@@ -79,6 +79,18 @@ export const ADD_SERVER = {
   }
 };
 
+export const SETTINGS = {
+  /**
+   * @return {string}
+   */
+  CST() {
+    return '/settings';
+  },
+  path() {
+    return this.CST();
+  }
+};
+
 export const EDIT_SERVER = {
   root: '/server/edit/',
   /**

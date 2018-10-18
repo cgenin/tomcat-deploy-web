@@ -12,7 +12,7 @@ const rewireLess = require('react-app-rewire-less');
 */
 
 module.exports = function override(config, env) {
-  config = injectBabelPlugin(['import', {libraryName: 'antd', style: true}], config);  // change importing css to less
+  config = injectBabelPlugin(['import', {libraryName: 'antd', libraryDirectory: 'es', style: true}], config);  // change importing css to less
 
   config = rewireLess.withLoaderOptions({
     modifyVars: {
@@ -20,12 +20,8 @@ module.exports = function override(config, env) {
       '@layout-header-background': '#3f51b5',
       '@btn-danger-color': '@background-color-base',
       '@btn-danger-bg': '@error-color',
-      /*  "@normal-color": "#E6E6E6" ,
-        "@error-color": "#E7475E" ,
-        "@highlight-color": "#E7475E" ,
-        "@body-background": "#E6E6E6" ,
-        "@info-color": "#F0D879"*/
     },
+    javascriptEnabled: true,
   })(config, env);
 
   return config;

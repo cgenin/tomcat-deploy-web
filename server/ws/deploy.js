@@ -11,8 +11,7 @@ module.exports = function (socket, io, ip) {
   socket.on('artifact-clean', (nb) => backup.clean(nb).subscribe(v => io.sockets.emit('versions', v)));
 
   socket.on('undeploy', (data) => {
-    const server = data.server;
-    const artifacts = data.artifacts;
+    const {server, artifacts} = data;
     new DeployManager(ip)
       .undeploy(server, artifacts);
   });

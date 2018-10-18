@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {Menu, Row, Col, Icon} from 'antd';
 import CleanHistory from '../widgets/artifacts/CleanHistory';
 import AboutModal from '../widgets/AboutModal';
-import {ADD_ARTIFACT, HOME, LOG} from '../../routesConstant'
+import {ADD_ARTIFACT, HOME, LOG, SETTINGS} from '../../routesConstant'
 
 
 const mapStateToProps = function (state, props) {
@@ -17,11 +17,11 @@ const mapStateToProps = function (state, props) {
 };
 
 
-class Header extends React.PureComponent {
+class Header extends React.PureComponent{
 
   constructor(props) {
     super(props);
-    this.state = {smShow: false, show: false, nexusConfiguration: false,};
+    this.state = {smShow: false, show: false, };
     this.onLaunchAbout = this.onLaunchAbout.bind(this);
     this.onLaunchCleanHistory = this.onLaunchCleanHistory.bind(this);
     this.onHome = this.onHome.bind(this);
@@ -29,6 +29,7 @@ class Header extends React.PureComponent {
     this.onAddArtifact = this.onAddArtifact.bind(this);
     this.onLicensePage = this.onLicensePage.bind(this);
     this.handleChangeMenu = this.handleChangeMenu.bind(this);
+    this.onSettingsPage = this.onSettingsPage.bind(this);
 
   }
 
@@ -55,6 +56,10 @@ class Header extends React.PureComponent {
 
   onLogPage() {
     this.props.history.push(LOG.CST());
+  }
+
+  onSettingsPage() {
+    this.props.history.push(SETTINGS.CST());
   }
 
   onLaunchAbout() {
@@ -90,6 +95,9 @@ class Header extends React.PureComponent {
       case '4.4' :
         this.onLaunchAbout();
         break;
+      case '3.4':
+        this.onSettingsPage();
+        break;
       default:
         this.onHome();
     }
@@ -107,7 +115,7 @@ class Header extends React.PureComponent {
           <Col xs={{span: 0}} md={{span: 3}}>
             <a href="/" className="label-item-menu" style={{color: 'white', fontWeight: 'bold'}}>Deploy tool</a>
           </Col>
-          <Col span={20}>
+          <Col span={19}>
             <Menu
               theme="dark"
               mode="horizontal"
@@ -125,6 +133,7 @@ class Header extends React.PureComponent {
               </Menu.Item>
               <Menu.SubMenu title={<span><i className="fa fa-cog "/><span
                 className="label-item-menu">&nbsp; Configuration</span></span>}>
+                <Menu.Item key="3.4">Settings</Menu.Item>
                 <Menu.ItemGroup title="Logs">
                   <Menu.Item key="3.3">Go to history</Menu.Item>
                 </Menu.ItemGroup>
@@ -134,7 +143,7 @@ class Header extends React.PureComponent {
               </Menu.SubMenu>
             </Menu>
           </Col>
-          <Col md={{span: 1}} xs={{span: 3}}>
+          <Col md={{span: 2}} xs={{span: 3}}>
             <Menu
               theme="dark"
               mode="horizontal"
@@ -142,8 +151,10 @@ class Header extends React.PureComponent {
               style={{lineHeight: '56px'}}
               forceSubMenuRender={true}
             >
-              <Menu.SubMenu id="help-dropdown" key={4}
-                            title={<strong>&nbsp;?&nbsp;<Icon type="caret-down"/></strong>}>
+              <Menu.SubMenu
+                id="help-dropdown"
+                key={4}
+                title={<strong>&nbsp;?&nbsp;<Icon type="caret-down"/></strong>}>
                 <Menu.Item key="4.1">Help</Menu.Item>
                 <Menu.Item key="4.2">APi Rest Doc</Menu.Item>
                 <Menu.Item key="4.3">License</Menu.Item>

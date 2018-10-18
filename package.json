@@ -1,6 +1,6 @@
 {
   "name": "tomcat-web-deploy",
-  "version": "1.0.0-rc2",
+  "version": "1.0.1",
   "description": "Webapp for deploy multiple wars at once on a tomcat webserver.",
   "template": {
     "forceLanguage": "en"
@@ -19,7 +19,7 @@
   },
   "author": "Christophe Genin <genin.christophe@gmail.com>",
   "dependencies": {
-    "antd": "^3.1.4",
+    "antd": "^3.10.1",
     "bluebird": "^3.2.1",
     "body-parser": "^1.14.2",
     "bundle-loader": "^0.5.5",
@@ -34,10 +34,11 @@
     "express": "^4.13.4",
     "font-awesome": "^4.7.0",
     "github-markdown-css": "^2.9.0",
+    "glob": "^7.1.2",
     "immutable": "^3.7.6",
     "isomorphic-fetch": "^2.2.1",
-    "less": "2.x",
-    "less-loader": "3.x",
+    "less": "^3.8.1",
+    "less-loader": "^4.1.0",
     "lodash.defaultsdeep": "^4.6.0",
     "lokijs": "^1.3.11",
     "markdown-with-front-matter-loader": "^0.1.0",
@@ -60,16 +61,23 @@
     "rxjs": "^5.4.3",
     "services-config": "^0.1.6",
     "simple-registry": "^0.2.2",
-    "snyk": "^1.49.2",
     "socket.io": "^2.0.0",
     "socket.io-client": "^2.0.3",
-    "winston": "^2.4.0"
+    "tmp": "^0.0.33",
+    "uuid": "^3.2.1",
+    "winston": "^2.4.0",
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
     "babel-plugin-import": "^1.6.3",
+    "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
-    "react-app-rewire-less": "^2.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.8.2",
+    "html-webpack-harddisk-plugin": "^0.2.0",
+    "react-app-rewire-less": "2.1.1",
     "react-app-rewired": "^1.4.0",
     "rimraf": "^2.6.2"
   },
