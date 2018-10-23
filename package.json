@@ -15,7 +15,8 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "npm run snyk-protect"
   },
   "author": "Christophe Genin <genin.christophe@gmail.com>",
   "dependencies": {
@@ -66,7 +67,8 @@
     "tmp": "^0.0.33",
     "uuid": "^3.2.1",
     "winston": "^2.4.0",
-    "yargs": "^11.0.0"
+    "yargs": "^11.0.0",
+    "snyk": "^1.104.2"
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
