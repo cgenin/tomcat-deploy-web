@@ -153,20 +153,29 @@ class NexusManagement {
       .flatMap((outputDirectory) => {
         return Rx.Observable.of(outputDirectory)
           .flatMap(() => mkdir(outputDirectory))
-          .flatMap(() => execFile(getMavenCommandLine(), [
+          .flatMap(() => {
+            return execFile(getMavenCommandLine(), [
               '-U',
               'dependency:copy',
               `-Dartifact=${groupId}:${artifactId}:${version}:${packaging}`,
               `-DoutputDirectory=${outputDirectory}`
-            ])
-              .flatMap(() => readdir(outputDirectory))
-              .map((files) => {
-                const filename = files[0];
-                return `${outputDirectory}/${filename}`;
-              })
-              .flatMap(targetFile => readFile(targetFile))
-              .finally(() => rimraf(outputDirectory, () => logger.info(`remove directory : ${outputDirectory}`)))
-          );
+            ]);
+          })
+          .flatMap(([_stdout, _stderr]) => {
+            logger.info(_stdout);
+            logger.error(_stderr);
+            if (/FAILURE/g.test(_stdout)) {
+              throw Error(`${groupId}:${artifactId}:${version}:${packaging} not found.`);
+            }
+            return readdir(outputDirectory);
+          })
+          .map((files) => {
+            const filename = files[0];
+            return `${outputDirectory}/${filename}`;
+          })
+          .flatMap(targetFile => readFile(targetFile))
+          .finally(() => rimraf(outputDirectory, () => logger.info(`remove directory : ${outputDirectory}`)))
+          ;
       });
   }
 

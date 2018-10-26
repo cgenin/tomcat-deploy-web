@@ -5,7 +5,13 @@ import {Modal, Button, Icon, Spin} from 'antd';
 const transform = (artifact) => {
 
   const {groupId, artifactId, version, name} = artifact;
-  return {name, url: `/api/nexus/download/${groupId}/${artifactId}/${version}/to/${name}`};
+  return {
+    name,
+    groupId,
+    artifactId,
+    version,
+    url: `/api/nexus/download/${groupId}/${artifactId}/${version}/to/${name}`
+  };
 
 };
 
@@ -19,7 +25,7 @@ class DownloadItem extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false, donwloaded: false
+      loading: false, downloaded: false, error: false,
     };
     this.onDownload = this.onDownload.bind(this);
     this.onEnd = this.onEnd.bind(this);
@@ -28,7 +34,13 @@ class DownloadItem extends React.PureComponent {
   componentDidMount() {
     this.onDownload();
     fetch(this.props.item.url)
-      .then(res => res.blob())
+      .then(res => {
+        if (res.status !== 200) {
+          throw Error('Error in calling service');
+        }
+
+        return res.blob();
+      })
       .then((blob) => {
         const blobURL = window.URL.createObjectURL(blob);
         const tagA = document.createElement('a');
@@ -38,7 +50,8 @@ class DownloadItem extends React.PureComponent {
         this.mainTag.appendChild(tagA);
         tagA.click();
         this.onEnd();
-      });
+      })
+      .catch(() => this.onError());
   }
 
   onDownload() {
@@ -46,15 +59,22 @@ class DownloadItem extends React.PureComponent {
   }
 
   onEnd() {
-    this.setState({loading: false, donwloaded: true});
+    this.setState({loading: false, downloaded: true});
+  }
+
+  onError() {
+    this.setState({loading: false, downloaded: false, error: true});
   }
 
   render() {
     const {item} = this.props;
-    const downloaded = (this.state.donwloaded) ? <Icon type="check"/> : null;
+    const {name, groupId, artifactId, version} = item;
+    const downloaded = (this.state.downloaded) ? <Icon type="check"/> : null;
     const load = (this.state.loading) ? <Spin/> : null;
+    const error = (this.state.error) ?
+      <span style={{color: 'red'}}>Impossible to download. '{groupId}/{artifactId}/{version}' exist ?</span> : null;
     return (
-      <p ref={elm => this.mainTag = elm}>{item.name} : {downloaded} {load}</p>
+      <p ref={elm => this.mainTag = elm}>{name} : {downloaded} {load} {error}</p>
     );
   }
 }
@@ -78,6 +98,8 @@ class ModalDownload extends React.PureComponent {
     return (
       <Modal
         title="Download selected Nexus artifacts"
+        width="60vw"
+        he
         visible={true}
         onOk={this.props.close}
         onCancel={this.props.close}
