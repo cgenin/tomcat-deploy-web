@@ -1,13 +1,15 @@
 # npm ignore
 npm-debug.log
 node_modules
+public/apidoc
 mocha.json
 coverage
 build
 yarn.lock
-
+*.log
+*.ipr
 .tmp
-
+*.iws
 # Sublime Text
 *.sublime-workspace
 

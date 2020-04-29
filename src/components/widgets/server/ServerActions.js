@@ -1,12 +1,13 @@
 import React from 'react';
 import {withRouter} from 'react-router'
 import {connect} from 'react-redux';
-import ReactDOM from 'react-dom';
-import Overlay from 'react-bootstrap/lib/Overlay';
+import {Row, Col, Select, Button, Popover} from 'antd'
 import {EDIT_SERVER} from '../../../routesConstant';
-import {OverlayStyle, StyleFabButt} from '../../Styles';
 import {load, del} from '../../../modules/server/actions';
 import {updateServers} from '../../../modules/actions/actions';
+import './ServerActions.css'
+
+const Option = Select.Option;
 
 const mapStateToProps = function (state) {
   const servers = state.servers;
@@ -54,8 +55,7 @@ class ServerActions extends React.PureComponent {
 
   onEdit(e) {
     e.preventDefault();
-    const index = this.refs.current.value;
-    const server = this.props.servers[index];
+    const server = this.props.servers.find(s => s.name === this.state.server);
     this.props.history.push(
       {
         pathname: EDIT_SERVER.path(server.$loki)
@@ -71,8 +71,7 @@ class ServerActions extends React.PureComponent {
 
   onDelete(e) {
     this.toggle(e);
-    const index = this.refs.current.value;
-    const server = this.props.servers[index];
+    const server = this.props.servers.find(s => s.name === this.state.server);
     this.props.onDelete(server);
     return false;
   }
@@ -85,63 +84,62 @@ class ServerActions extends React.PureComponent {
     return false;
   }
 
-  onChange(e) {
-    if (e) {
-      e.preventDefault();
+  onChange(value) {
+    if (value === '') {
+      this.setState({server: null});
+      this.props.onSelect(null);
+      return;
     }
-    const index = this.refs.current.value;
-    const server = this.props.servers[index];
-    this.setState({server});
+
+    const server = this.props.servers.find(s => s.name === value);
+    this.setState({server: value});
     this.props.onSelect(server);
-    return false;
   }
 
 
   render() {
-    const options = this.props.servers.map((s, i) => (<option key={i} value={i}>{s.name} ({s.host})</option>));
+    const options = this.props.servers.map((s) => (<Option key={`${s.name}`}>{s.name} ({s.host})</Option>));
     const disabled = this.props.servers.length === 0;
     const buttonEdit = (this.state.server) ? (
-      <a onClick={this.onEdit} className="btn btn-xs btn-success btn-fab" title="Edit current server"
-         disabled={disabled} style={StyleFabButt}>
-        <i className="material-icons">create</i>
-      </a>
+      <div className="button-container">
+        <Button onClick={this.onEdit} type="success" title="Edit current server" shape="circle"
+                size="large" disabled={disabled}>
+          <i className="fa fa-edit"/>
+        </Button>
+      </div>
     ) : (<span/>);
     const buttonRemove = (this.state.server) ? (
-      <button ref="target" onClick={this.toggle} className="btn btn-xs btn-danger btn-fab"
-              title="Remove an server" disabled={disabled} style={StyleFabButt}>
-        <i className="material-icons">remove</i>
-      </button>
+      <div className="button-container">
+        <Popover content={
+          <div>
+            <strong>Are you sure to delete ?</strong> <a href="/" onClick={this.onDelete}>Yes</a>&nbsp;/&nbsp;
+            <a href="/" onClick={this.toggle}>No</a>
+          </div>
+        } trigger="click" visible={this.state.show} onVisibleChange={(show) => this.setState({show})}>
+          <Button type="danger" shape="circle" size="large"
+                  icon="minus" title="Remove an server" disabled={disabled}>
+          </Button>
+        </Popover>
+      </div>
     ) : (<span/>);
-
     return (
-      <div className="row">
-        <div className="col-sm-3 col-sm-offset-4 col-xs-12 text-right ">
-          <div className="form-group">
-            <select ref="current" className="form-control" onChange={this.onChange} style={{marginTop: '-28px'}}>
-              <option value="" selected/>
-              {options}
-            </select>
-          </div>
-        </div>
-        <div className="col-sm-offset-0 col-sm-5 col-xs-offset-3 col-xs-6  text-left">
-          <div className="btn-group-sm">
-            {buttonEdit}
-            <a onClick={this.onCreate} className="btn btn-xs btn-primary btn-fab" title="Add an server"
-               style={StyleFabButt}
-            >
-              <i className="material-icons">add</i>
-            </a>
-            {buttonRemove}
-          </div>
-          <Overlay
-            show={this.state.show} onHide={() => this.setState({show: false})} placement="bottom" container={this}
-            target={() => ReactDOM.findDOMNode(this.refs.target)}>
-            <div style={OverlayStyle}>
-              <strong>Are you sure to delete ?</strong> <a href="/" onClick={this.onDelete}>Yes</a>&nbsp;/&nbsp;
-              <a href="/" onClick={this.toggle}>No</a>
+      <div id="server-actions">
+        <Row type="flex" justify="center">
+          <Col sm={20} xs={24}>
+            <div className="container">
+              <Select className="select-server" value={this.state.server} onChange={this.onChange}>
+                {options}
+              </Select>
+              {buttonEdit}
+              <div className="button-container">
+                <Button onClick={this.onCreate} title="Add an server" shape="circle" type="primary" size="large">
+                  <i className="fa fa-plus"/>
+                </Button>
+              </div>
+              {buttonRemove}
             </div>
-          </Overlay>
-        </div>
+          </Col>
+        </Row>
       </div>
     );
   }

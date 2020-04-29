@@ -1,8 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
+import {Row, Col, Card} from 'antd'
 import 'github-markdown-css'
 
 import Title from '../widgets/Title'
+import {pageLayout} from "../Styles";
 
 const webpackCtx = require.context('!markdown-with-front-matter-loader!./_mds', false, /.md$/);
 const markdowns = webpackCtx.keys().reduce(
@@ -13,16 +15,15 @@ const MdWrapper = (props) => {
   return (
     <div>
       <Title text={title}/>
-      <div className="row">
-        <div className="panel panel-default col-xs-offset-1 col-xs-10">
-          <div className="panel-body">
-
-            <Link to="/"><i className="fa fa-chevron-left"/>&nbsp;Back to the main screen</Link>
-            <hr/>
-            <div className="markdown-body" dangerouslySetInnerHTML={{__html: html}}/>
-          </div>
-        </div>
-      </div>
+      <Row>
+        <Col {...pageLayout}>
+          <Card style={{width: '100%'}}>
+          <Link to="/"><i className="fa fa-chevron-left"/>&nbsp;Back to the main screen</Link>
+          <hr/>
+          <div className="markdown-body" dangerouslySetInnerHTML={{__html: html}}/>
+          </Card>
+        </Col>
+      </Row>
     </div>
   )
 };

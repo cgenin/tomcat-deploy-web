@@ -1,13 +1,19 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import { deploy, deployByNexus, undeploy } from '../../../modules/actions/actions';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
+import {Button, Row, Col, Alert} from 'antd';
+import {deploy, deployByNexus, undeploy} from '../../../modules/actions/actions';
+import DownloadNexusButton from '../nexus/DownloadNexusButton'
+import SelectedUrls from './SelectedUrls';
+import SelectedNexus from './SelectedNexus';
+import {ADD_SCHEDULER} from '../../../routesConstant';
+import './DeployActions.css';
 
 const mapStateToProps = function (state) {
   const {actions, nexus} = state;
   const disabled = !actions.artifacts || !actions.servers || actions.artifacts.length === 0 || !actions.servers[0] || actions.servers[0].length === 0
   const showNexusButton = nexus.length > 0 && actions.servers.length > 0;
-  console.log(showNexusButton);
   return {disabled, actions, showNexusButton, nexus};
 };
 
@@ -25,20 +31,69 @@ const mapDispatchToProps = function (dispatch) {
   };
 };
 
+
+class ButtonSchedule extends React.PureComponent {
+
+  toNextScreen(type) {
+    return () => {
+      this.props.history.push(ADD_SCHEDULER.path(type));
+    }
+  }
+
+  render() {
+    if (this.props.showNexus) {
+      return (
+        <Button icon="clock-circle" onClick={this.toNextScreen('nexus')}>
+          Schedule
+        </Button>);
+    }
+
+    if (this.props.showArtifacts) {
+      return (
+        <Button icon="clock-circle" onClick={this.toNextScreen('job')}>
+          Schedule
+        </Button>);
+    }
+
+
+    return null;
+  }
+}
+
+ButtonSchedule.propTypes = {
+  showArtifacts: PropTypes.bool.isRequired,
+  showNexus: PropTypes.bool.isRequired,
+  history: PropTypes.object.isRequired,
+};
+
+
 class DeployActions extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      tags: []
+    };
     this.onDeploy = this.onDeploy.bind(this);
     this.onDeployByNexus = this.onDeployByNexus.bind(this);
     this.onUnDeploy = this.onUnDeploy.bind(this);
+    this.onDownload = this.onDownload.bind(this);
   }
 
   onDeploy(e) {
     e.preventDefault();
     const server = this.props.actions.servers[0];
-    const artifacts = this.props.actions.artifacts;
-    const versions = this.props.actions.versions;
+    const {artifacts, versions} = this.props.actions;
     this.props.onDeploy(server, artifacts, versions);
+  }
+
+  onDownload(e) {
+    e.preventDefault();
+    const {nexus} = this.props;
+    const tags = nexus.map((artifact) => {
+      const {groupId, artifactId, version, name} = artifact;
+      return {name, url: `/api/nexus/download/${groupId}/${artifactId}/${version}/to/${name}`};
+    });
+    this.setState({tags});
   }
 
   onDeployByNexus(e) {
@@ -52,45 +107,66 @@ class DeployActions extends React.PureComponent {
   onUnDeploy(e) {
     e.preventDefault();
     const server = this.props.actions.servers[0];
-    const artifacts = this.props.actions.artifacts;
+    const {artifacts} = this.props.actions;
     this.props.onUnDeploy(server, artifacts);
   }
 
   render() {
     if (this.props.actions.inProgress.active) {
       return (
-        <div className="row">
-          <div className="alert alert-dismissible alert-warning col-xs-6 col-xs-offset-3 text-center">
-            <h3>Deployement in progress <i className="fa fa-refresh fa-spin fa-2x"/></h3>
-          </div>
-        </div>
+        <Row className="current-deployement">
+          <Col span={12} offset={6} className="text-center">
+            <Alert
+              showIcon
+              type="warning"
+              message={<h3>Deployement in progress <i className="fa fa-refresh fa-spin fa-2x"/></h3>}/>
+          </Col>
+        </Row>
       );
     }
 
     const buttonDeploy = (this.props.showNexusButton) ? (
-      <button type="button" onClick={this.onDeployByNexus}  className="btn btn-info">
+      <Button onClick={this.onDeployByNexus}>
         <i className="fa fa-play"/>
         &nbsp;Run
-      </button>
+      </Button>
     ) : (
-      <button type="button" onClick={this.onDeploy} disabled={this.props.disabled} className="btn btn-info">
+      <Button onClick={this.onDeploy} disabled={this.props.disabled}>
         <i className="fa fa-play"/>
         &nbsp;Run
-      </button>
+      </Button>
     );
 
+
+
     return (
-      <div className="row">
-        <div className="col-xs-3 col-xs-offset-3 text-right">
-          <button type="button" onClick={this.onUnDeploy} disabled={this.props.disabled} className="btn btn-default">
+      <Row id="deploy-actions">
+        <Col md={{span: 3, offset: 6}} xs={{span: 8}}>
+          <ButtonSchedule
+            showArtifacts={!this.props.disabled}
+            history={this.props.history}
+            showNexus={this.props.showNexusButton}/>
+        </Col>
+        <Col md={{span: 3}} xs={{span: 8}}>
+          <Button onClick={this.onUnDeploy} disabled={this.props.disabled}>
             <i className="fa fa-trash-o"/>
             &nbsp;Undeploy
-          </button>
-        </div>
-        <div className="col-xs-6 text-left">
+          </Button>
+        </Col>
+        <Col md={{span: 4}} xs={{span: 4}}>
           {buttonDeploy}
-        </div>
-      </div>
+        </Col>
+        <Col md={{span: 4}} xs={{span: 4}}>
+
+          <DownloadNexusButton tags={this.props.nexus}/>
+        </Col>
+        <Col className="main-number-of-items" md={{span: 2, offset: 0}} xs={{span: 8, offset: 8}}>
+          <SelectedUrls/>
+        </Col>
+        <Col className="main-number-of-items" md={{span: 2, offset: 0}} xs={{span: 8, offset: 8}}>
+          <SelectedNexus/>
+        </Col>
+      </Row>
     );
   }
 }
@@ -98,7 +174,7 @@ class DeployActions extends React.PureComponent {
 DeployActions.propTypes = {
   disabled: PropTypes.bool.isRequired,
   showNexusButton: PropTypes.bool.isRequired,
-  actions:PropTypes.object,
+  actions: PropTypes.object
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeployActions);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DeployActions));

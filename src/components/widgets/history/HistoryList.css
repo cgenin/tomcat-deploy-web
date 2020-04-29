@@ -1,0 +1,28 @@
+#history-list .filters {
+  margin-bottom: 1em;
+}
+
+#history-list table tr td {
+  font-size: 1.2em;
+}
+
+#history-list .label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+
+#history-list .label.label-success {
+  background-color: #5cb85c;
+}
+
+#history-list .label.label-danger {
+  background-color: #d9534f;
+}

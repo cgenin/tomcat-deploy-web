@@ -1,18 +1,28 @@
 import React from 'react';
-import AddForm from '../../widgets/artifacts/AddForm';
+import {Row, Col, Card, Breadcrumb} from 'antd';
+import AddForm from '../../widgets/artifacts/ArtifactForm';
 import Title from '../../widgets/Title';
+import {pageLayout} from "../../Styles";
 
 const AddPage = () => {
   return (
     <div>
+      <Row>
+        <Col {...pageLayout}>
+          <Breadcrumb className="main-bread-crumb">
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>Add an artifact</Breadcrumb.Item>
+          </Breadcrumb>
+        </Col>
+      </Row>
       <Title text="Add an artifact"/>
-      <div className="row">
-        <div className="panel panel-default col-xs-offset-1 col-xs-10">
-          <div className="panel-body">
+      <Row>
+        <Col {...pageLayout}>
+          <Card style={{width: '100%'}}>
             <AddForm/>
-          </div>
-        </div>
-      </div>
+          </Card>
+        </Col>
+      </Row>¬
     </div>
   );
 };
