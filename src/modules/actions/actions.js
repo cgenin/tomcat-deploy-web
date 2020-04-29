@@ -48,6 +48,13 @@ export function deploy(server, artifacts, versions) {
   };
 }
 
+export function deployByNexus(server, nexus) {
+  socket.emit('deploy-nexus', {server, nexus});
+  return {
+    type: FORCE_LOGGER, val: true
+  };
+}
+
 export function undeploy(server, artifacts) {
   socket.emit('undeploy', {server, artifacts});
   return {
@@ -56,10 +63,13 @@ export function undeploy(server, artifacts) {
 }
 
 export function updateArtifacts(artifacts) {
-  return {
-    type: ARTIFACTS,
-    artifacts
-  };
+  return (dispatch) => new Promise((resolve) => {
+    dispatch({
+      type: ARTIFACTS,
+      artifacts
+    });
+    resolve(true);
+  });
 }
 
 export function updateServers(servers) {

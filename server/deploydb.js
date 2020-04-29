@@ -1,57 +1,91 @@
-const DeployDB = function DeployDB() {
-  const Rx = require('rxjs/Rx');
-  const fileCollection = 'files';
-  const configCollection = 'configuration';
-  const nexusCollection = 'nexus';
-  const loki = require('lokijs');
-  const db = new loki('db/data.json', { autoload: false });
-  const createIfNotExist = function (name) {
-    console.log(`createIfNotExist : ${name}`);
-    if (!db.getCollection(name)) {
-      db.addCollection(name);
-      db.saveDatabase();
-    }
-  };
+const Rx = require('rxjs/Rx');
+const loki = require('lokijs');
+const logger = require('./logger');
+const fileCollection = 'files';
+const configCollection = 'configuration';
+const nexusCollection = 'nexus';
+const schedulersCollection = 'schedulers';
+const historyCollection = 'history';
+const toolConfigurationCollection = 'toolConfiguration';
 
-  this.init = function () {
-    return Rx.Observable.create((sub)=>{
-      db.loadDatabase({}, () => {
-        createIfNotExist(fileCollection);
-        createIfNotExist(configCollection);
-        createIfNotExist(nexusCollection);
-        sub.next(db);
+let instance = null;
+
+class DeployDB {
+  constructor() {
+    if (instance) {
+      return instance;
+    }
+    instance = this;
+
+  }
+
+  createIfNotExist(name) {
+    logger.info(`createIfNotExist : ${name}`);
+    if (!this.db.getCollection(name)) {
+      this.db.addCollection(name);
+      this.db.saveDatabase();
+    }
+  }
+
+  init(path) {
+    if (!path) {
+      throw new Error('dbpath must not be undefined');
+    }
+    logger.info(`load db in '${path}'`);
+    this.db = new loki(path, {autoload: false});
+    return Rx.Observable.create((sub) => {
+      this.db.loadDatabase({}, () => {
+        this.createIfNotExist(fileCollection);
+        this.createIfNotExist(configCollection);
+        this.createIfNotExist(nexusCollection);
+        this.createIfNotExist(historyCollection);
+        this.createIfNotExist(schedulersCollection);
+        this.createIfNotExist(toolConfigurationCollection);
+        sub.next(this.db);
         sub.complete();
       });
     });
-  };
+  }
 
-  this.files = function () {
-    return db.getCollection(fileCollection);
-  };
+  files() {
+    return this.db.getCollection(fileCollection);
+  }
 
-  this.config = function () {
-    return db.getCollection(configCollection);
-  };
+  config() {
+    return this.db.getCollection(configCollection);
+  }
 
-  this.nexus = function () {
-    return db.getCollection(nexusCollection);
-  };
+  nexus() {
+    return this.db.getCollection(nexusCollection);
+  }
 
-  this.insert = function (collection, item) {
+  history() {
+    return this.db.getCollection(historyCollection);
+  }
+
+  toolConfiguration() {
+    return this.db.getCollection(toolConfigurationCollection) || {data: []};
+  }
+
+  schedulers() {
+    return this.db.getCollection(schedulersCollection) || {data: []};
+  }
+
+  insert(collection, item) {
     collection.insert(item);
-    db.saveDatabase();
-  };
+    this.db.saveDatabase();
+  }
 
-  this.save = function (collection, item) {
+  save(collection, item) {
     if (item.$loki) {
       collection.update(item);
     } else {
       collection.insert(item);
     }
-    db.saveDatabase();
-  };
+    this.db.saveDatabase();
+  }
 
-  this.updateStatus = function (collection, item, state, host) {
+  updateStatus(collection, item, state, host) {
     if (item.$loki) {
       const filter = collection.data.filter((i) => i.$loki === item.$loki);
       if (filter && filter.length > 0) {
@@ -61,39 +95,23 @@ const DeployDB = function DeployDB() {
           state, dt: new Date()
         };
         collection.update(selected);
-        db.saveDatabase();
+        this.db.saveDatabase();
         return selected;
       }
     }
     return item;
-  };
+  }
 
-  this.remove = function (collection, item) {
+  remove(collection, item) {
     collection.remove(item);
-    db.saveDatabase();
-  };
-  this.close = function () {
-    db.close();
-  };
-  if (DeployDB.caller !== DeployDB.getInstance) {
-    throw new Error('This object cannot be instanciated');
+    this.db.saveDatabase();
   }
-};
 
-/* ************************************************************************
- SINGLETON CLASS DEFINITION
- ************************************************************************ */
-DeployDB.instance = null;
 
-/**
- * Singleton getInstance definition
- * @return DeployDB class
- */
-DeployDB.getInstance = function () {
-  if (this.instance === null) {
-    this.instance = new DeployDB();
+  close() {
+    this.db.close();
   }
-  return this.instance;
-};
 
-module.exports = DeployDB.getInstance();
+}
+
+module.exports = new DeployDB();

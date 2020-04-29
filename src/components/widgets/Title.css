@@ -1,0 +1,126 @@
+.component-title .title {
+  -webkit-transform: scale(0);
+  transform: scale(0);
+  -webkit-filter: blur(10px);
+  filter: blur(10px);
+}
+
+.component-title h1 {
+  font-size: 2em;
+  font-weight: bolder;
+  margin-top: 20px;
+  opacity: 1;
+  position: relative;
+  color: black;
+  /*font-weight: 400;*/
+  text-align: center;
+  margin-right: 10px;
+  padding-bottom: 10px;
+  display: inline-block;
+  border-bottom: 3px solid black;
+  letter-spacing: 10px;
+}
+
+.component-title h1 > div {
+  position: relative;
+  display: inline-block;
+  min-width: 15em;
+}
+
+.component-title h1 > div + div {
+  display: block;
+}
+
+.component-title h1 span {
+  letter-spacing: normal;
+  display: block;
+  margin-bottom: 10px;
+  font-size: .5em;
+  font-style: italic;
+  position: relative;
+  z-index: 2;
+}
+
+.component-title h1 span:before,
+.component-title h1 span:after {
+  content: "";
+  width: 20%;
+  height: 3px;
+  border-radius: 5px;
+  background: black;
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  top: .5em;
+}
+
+.component-title h1 span:after {
+  left: 0;
+}
+
+.component-title p {
+  font-family: 'Josefin Sans', sans-serif;
+  text-transform: uppercase;
+  color: #fff;
+  margin-top: 14px;
+  letter-spacing: 5px;
+  line-height: 1.2em;
+}
+
+/*ANimation stuff*/
+.component-title .title {
+  -webkit-animation-name: zoomIn;
+  animation-name: zoomIn;
+  -webkit-animation-duration: 0s;
+  animation-duration: 0s;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+  -webkit-animation-delay: 0s;
+  animation-delay: 0s;
+  -webkit-animation-direction: alternate;
+  animation-direction: alternate;
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-animation-play-state: running;
+  animation-play-state: running;
+}
+
+@-webkit-keyframes zoomIn {
+  0% {
+    -webkit-transform: scale(0.3);
+    transform: scale(0.3);
+    -webkit-filter: blur(10px);
+    filter: blur(10px);
+  }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  100% {
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomIn {
+  0% {
+    -webkit-transform: scale(0.3);
+    transform: scale(0.3);
+    -webkit-filter: blur(10px);
+    filter: blur(10px);
+  }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  100% {
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}

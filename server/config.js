@@ -1,5 +1,6 @@
 'use strict';
 const consolePrefix = require('console-prefix');
+const logger = require('./logger');
 
 const platforms = require('../conf/platforms')({
   console: require('console-prefix')('[platforms-bootstrap]')
@@ -11,8 +12,8 @@ const options = {
 
 const config = platforms.current()(options);
 
-console.log('-------------------------------------------------------------');
-console.log('Great, as far as we can tell we have a valid config:', config.name);
-console.log('Let\'s move on');
-console.log('-------------------------------------------------------------');
+logger.info('-------------------------------------------------------------');
+logger.info('Great, as far as we can tell we have a valid config:', config.name);
+logger.info('Let\'s move on');
+logger.info('-------------------------------------------------------------');
 module.exports = config;

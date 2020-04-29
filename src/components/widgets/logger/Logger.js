@@ -1,8 +1,10 @@
 import React from 'react';
 import moment from 'moment';
 import {connect} from 'react-redux';
-import { clear } from '../../../modules/logger/actions';
+import {Row, Col, Button} from 'antd';
+import {clear} from '../../../modules/logger/actions';
 import PropTypes from 'prop-types';
+import './Logger.css';
 
 const mapStateToProps = function (state) {
   return {
@@ -18,16 +20,13 @@ const mapDispatchToProps = function (dispatch) {
   };
 };
 
-class LogItem extends React.PureComponent {
-
-  render() {
-    const formattedDate = moment(this.props.log.dt).format('YYYY/MM/DD HH:mm:ss SSSSSSSSS');
-    if (this.props.log.error) {
-      return (<li><span className="text-danger">{formattedDate} - {this.props.log.msg}</span></li>);
-    }
-    return (<li><span className="text-success">{formattedDate} - {this.props.log.msg}</span></li>);
+const LogItem = (props) => {
+  const formattedDate = moment(props.log.dt).format('YYYY/MM/DD HH:mm:ss SSSSSSSSS');
+  if (props.log.error) {
+    return (<li><span className="text-danger">{formattedDate} - {props.log.msg}</span></li>);
   }
-}
+  return (<li><span className="text-success">{formattedDate} - {props.log.msg}</span></li>);
+};
 
 LogItem.propTypes = {log: PropTypes.object.isRequired};
 
@@ -46,23 +45,24 @@ class Logger extends React.PureComponent {
   render() {
     const logs = this.props.logs.map((log, i) => <LogItem key={i} log={log}/>);
     return (
-      <div>
-        <div className="col-xs-2" style={{marginTop: '1em'}}>
-          <button className="btn btn-danger" onClick={this.onClick}>
-            <i className="fa fa-trash-o"/> Clear
-          </button>
-        </div>
-        <div className="col-xs-10">
-          <div className="panel panel-default ">
-            <div className="panel-body deploy-logger-main-panel"
-                 style={{fontWeight: 'bold', backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>
-              <ul >
+      <div id="logger">
+        <Row>
+          <Col span={4}>
+            <Button type="danger" onClick={this.onClick}>
+              <i className="fa fa-trash-o"/> Clear
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <div className="deploy-logger-main-panel">
+              <ul>
                 <li> > Ready !</li>
                 {logs}
               </ul>
             </div>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </div>
     );
   }

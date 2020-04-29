@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import MenuItem from 'react-bootstrap/lib/MenuItem';
 import PropTypes from 'prop-types';
 
 const mapStateToProps = function (state, ownProps) {
@@ -22,8 +21,8 @@ class LaunchButton extends React.PureComponent {
     }
     const title = `open in a new window ${this.props.name}.`;
     return (
-      <MenuItem eventKey="0" href={this.props.url} target="_blanck"
-         title={title}><i className="fa fa-send-o"/> Launch</MenuItem>
+      <a rel="noopener noreferrer" href={this.props.url} target="_blanck"
+         title={title}><i className="fa fa-send-o"/> Launch</a>
     );
   }
 }

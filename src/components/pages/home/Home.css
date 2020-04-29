@@ -1,0 +1,18 @@
+#home .ant-tabs-nav-wrap {
+  background: #009688;
+  color: #e2dddefc !important;
+  font-weight: 500;
+}
+
+#home .ant-tabs-nav .ant-tabs-tab:hover {
+  color: #fff;
+}
+
+#home .ant-tabs-nav .ant-tabs-tab-active {
+  color: #fff;
+  font-weight: 500;
+}
+
+#home .ant-tabs-ink-bar {
+  background: yellowgreen;
+}

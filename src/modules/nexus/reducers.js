@@ -13,12 +13,13 @@ export function nexusReducers(state = defaultState, action) {
     case RESET :
       return [];
     case  ADD : {
-      const {artifactId, groupId, packaging, version} = action.nexus;
+      const {artifactId, groupId, packaging, version, name} = action.nexus;
       const filter = state.filter(filterArtifact(artifactId, groupId, packaging));
       return [...filter, {
         artifactId,
         groupId,
         packaging,
+        name,
         version
       }];
     }

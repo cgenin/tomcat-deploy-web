@@ -1,90 +1,95 @@
-'use strict';
-
 const fs = require('fs');
-const Q = require('q');
+const Rx = require('rxjs/Rx');
 const config = require('./config');
 const downloadedDir = config.downloadedDir;
 
-const Backup = function Backup() {
-  let inner = {};
+const def = /^(.*?)\.war$/;
+const old = /^(.*?)\.war\.([0-9]+?)$/;
 
-  this.load = function (filter) {
-    const deferred = Q.defer();
-    fs.readdir(downloadedDir, (err, files) => {
-      if (err) {
-        return;
-      }
-      if (filter) {
-        inner[filter] = [];
-      } else {
-        inner = {};
-      }
+let instance = null;
 
-      const def = /^(.*?)\.war$/;
-      const old = /^(.*?)\.war\.([0-9]+?)$/;
+class Backup {
 
-      files.filter((f) => !filter || f.indexOf(filter) !== -1)
-        .forEach((f) => {
-          if (def.test(f)) {
-            const name = def.exec(f)[1];
-            const stat = fs.statSync(`${downloadedDir}/${f}`);
-            const dt = stat.ctime.getTime();
-            if (!inner[name]) {
-              inner[name] = [];
-            }
-            inner[name].push({ f, name, dt, date: new Date(dt) });
-            inner[name].sort((a, b) => b.dt - a.dt);
-          }
-          if (old.test(f)) {
-            const reOld = old.exec(f);
-            const name = reOld[1];
-            const dt = parseInt(reOld[2], 10);
-            if (!inner[name]) {
-              inner[name] = [];
-            }
-            inner[name].push({ f, name, dt, date: new Date(dt) });
-            inner[name].sort((a, b) => b.dt - a.dt);
-          }
-        });
-      deferred.resolve(inner);
-    });
-    return deferred.promise;
-  };
-
-  this.clean = function (nb) {
-    if (nb) {
-      const filtering = (o, i) => i >= nb;
-      const deleteFile = (o) => fs.unlinkSync(`${downloadedDir}/${o.f}`);
-      for (const key of Object.keys(inner)) {
-        const values = inner[key];
-        const v2Delete = values.filter(filtering);
-        v2Delete.forEach(deleteFile);
-      }
+  constructor() {
+    if (instance) {
+      return this;
     }
-    this.load();
-    return inner;
-  };
-
-  this.data = function () {
-    return inner;
-  };
-};
-
-
-/* ************************************************************************
- SINGLETON CLASS DEFINITION
- ************************************************************************ */
-Backup.instance = null;
-
-/**
- * Singleton getInstance definition
- * @return Backup class
- */
-Backup.getInstance = function () {
-  if (this.instance === null) {
-    this.instance = new Backup();
+    instance = this;
+    this.inner = {};
   }
-  return this.instance;
-};
 
-module.exports = Backup.getInstance();
+
+  load(filter) {
+    if (filter) {
+      this.inner[filter] = [];
+    } else {
+      this.inner = {};
+    }
+    const readdir = Rx.Observable.bindNodeCallback(fs.readdir);
+    return readdir(downloadedDir)
+      .flatMap((files) => {
+          return Rx.Observable.of(...files);
+        }
+      )
+      .filter((f) => !filter || f.indexOf(filter) !== -1)
+      .filter(f => def.test(f) || old.test(f))
+      .flatMap((f) =>
+        Rx.Observable.if(
+          () => def.test(f),
+          // last artifacted deplyed
+          Rx.Observable.of(f)
+            .flatMap(() => {
+              const fsStat = Rx.Observable.bindNodeCallback(fs.stat);
+              return fsStat(`${downloadedDir}/${f}`);
+            })
+            .map((stat) => {
+              const name = def.exec(f)[1];
+              const dt = stat.ctime.getTime();
+              return {f, name, dt, date: new Date(dt)}
+            }),
+          // old artifacts
+          Rx.Observable.of(f)
+            .map(() => {
+              const reOld = old.exec(f);
+              const name = reOld[1];
+              const dt = parseInt(reOld[2], 10);
+              return {f, name, dt, date: new Date(dt)};
+            }))
+      )
+      .reduce((acc, obj) => {
+        if (!acc[obj.name]) {
+          acc[obj.name] = [];
+        }
+        acc[obj.name].push(obj);
+        acc[obj.name].sort((a, b) => b.dt - a.dt);
+        return acc;
+      }, this.inner);
+  }
+
+  clean(nb) {
+    const filtering = (o, i) => i >= nb;
+    return Rx.Observable.if(
+      () => nb,
+      Rx.Observable.of(Object.keys(this.inner))
+        .flatMap(keys => Rx.Observable.of(...keys))
+        .map(key => this.inner[key])
+        .map(values => values.filter(filtering))
+        .flatMap(values => Rx.Observable.of(...values))
+        .flatMap(v2Delete => {
+          const unlink = Rx.Observable.bindNodeCallback(fs.unlink);
+          return unlink(`${downloadedDir}/${v2Delete.f}`);
+        })
+        .takeLast(1),
+      Rx.Observable.of(this.inner)
+    )
+      .flatMap(() => this.load());
+
+  }
+
+  data() {
+    return this.inner;
+  }
+}
+
+
+module.exports = new Backup();

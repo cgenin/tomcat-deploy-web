@@ -2,12 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
-import {DropdownButton, MenuItem} from 'react-bootstrap'
+import {Table, Select, Row, Col, Input} from 'antd'
 import {load} from '../../../modules/artifacts/actions';
 import {reset, add, remove} from '../../../modules/nexus/actions';
+import {filtering, sortStrBy} from "../../FiltersAndSorter";
+import './ListNexusArtifact.css';
 
 const mapStateToProps = function (state) {
-  let iterable = state.artifacts.filter(a => {
+  const artifacts = state.artifacts.filter(a => {
     const {groupId, artifactId} = a;
     return groupId && artifactId;
   })
@@ -16,11 +18,16 @@ const mapStateToProps = function (state) {
         n.artifactId === a.artifactId) === -1
     )
     .map(a => {
-      const {groupId, artifactId, p} = a;
+      const {groupId, artifactId, p, name} = a;
       const packaging = (p) ? p : 'war';
-      return {groupId, artifactId, packaging};
-    });
-  const artifacts = Array.from(new Set(iterable));
+      return {groupId, artifactId, packaging, name};
+    })
+    .reduce((arr, artifact) => {
+      if (arr.find(a => (a.groupId === artifact.groupId && a.artifactId === artifact.artifactId))) {
+        return arr;
+      }
+      return [artifact, ...arr];
+    }, []);
 
   const nexus = [...state.nexus, ...artifacts];
   return {
@@ -58,7 +65,7 @@ const sorting = (a, b) => {
 
 const toLabel = (version) => {
   if (!version) {
-    return 'No Deploy';
+    return 'no';
   }
   switch (version) {
     case 'LATEST' :
@@ -66,7 +73,7 @@ const toLabel = (version) => {
     case 'RELEASE' :
       return 'RELEASE';
     default :
-      return "Specific";
+      return "1.0.0";
   }
 
 };
@@ -88,18 +95,17 @@ class SelectionVersion extends React.PureComponent {
   render() {
 
     const title = toLabel(this.props.version);
-    const inputVersion = (title === 'Specific') ?
-      <input type="text" className="form-control" defaultValue={this.props.version}
-             onChange={this.onChangeInput}/> : null;
+    const inputVersion = (title === '1.0.0') ?
+      <Input value={this.props.version} onChange={this.onChangeInput}/> : null;
 
     return (
-      <div>
-        <DropdownButton title={title} id="bg-nested-dropdown" onSelect={this.props.onChange}>
-          <MenuItem eventKey={null}>{toLabel(null)}</MenuItem>
-          <MenuItem eventKey="LATEST">{toLabel('LATEST')}</MenuItem>
-          <MenuItem eventKey="RELEASE">{toLabel('RELEASE')}</MenuItem>
-          <MenuItem eventKey="1.0.0">{toLabel('fdsfsd')}</MenuItem>
-        </DropdownButton>
+      <div className="selection-version">
+        <Select className="select" value={title} onChange={this.props.onChange}>
+          <Select.Option key="no">No Deploy</Select.Option>
+          <Select.Option key="LATEST">LATEST</Select.Option>
+          <Select.Option key="RELEASE">RELEASE</Select.Option>
+          <Select.Option key="1.0.0">Specific</Select.Option>
+        </Select>
         {inputVersion}
       </div>
     );
@@ -115,6 +121,7 @@ class ListNexusArtifact extends React.PureComponent {
     };
     this.onFilter = this.onFilter.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.handleChangeTable = this.handleChangeTable.bind(this);
   }
 
   onFilter(e) {
@@ -123,7 +130,7 @@ class ListNexusArtifact extends React.PureComponent {
 
   onChange(artifact) {
     return (version) => {
-      if (!version && version !== '') {
+      if (!version || version === '' || version === 'no') {
         // SUppress nexus data
         this.props.onRemove(artifact);
       } else if (version !== '') {
@@ -134,62 +141,67 @@ class ListNexusArtifact extends React.PureComponent {
     }
   }
 
+  handleChangeTable(pagination, filters, sorter) {
+    console.log('Various parameters', pagination, filters, sorter);
+    this.setState({
+      filteredInfo: filters,
+      sortedInfo: sorter,
+    });
+  }
+
+  componentDidMount() {
+    this.props.onInit();
+  }
 
   render() {
-    const arr = (this.state.filter !== '') ? this.props.nexus
-      .filter(a => JSON.stringify(a).toUpperCase().indexOf(this.state.filter.toUpperCase()) !== -1) : this.props.nexus;
+    let {sortedInfo, filteredInfo} = this.state;
+    filteredInfo = filteredInfo || {};
+    sortedInfo = sortedInfo || {};
+    const arr = filtering(this.props.nexus, this.state.filter);
     const artifacts = arr.sort(sorting).map(
-      (artifact, i) => (
-        <tr key={i}>
-          <td style={{verticalAlign: 'middle'}}>
-            {artifact.groupId}
-          </td>
-          <td style={{verticalAlign: 'middle'}}>
-            {artifact.artifactId}
-          </td>
-          <td style={{verticalAlign: 'middle'}}>
-            {artifact.packaging}
-          </td>
-          <td>
-            <SelectionVersion onChange={this.onChange(artifact)} version={artifact.version}/>
-          </td>
-        </tr>
-      )
-    );
+      (artifact, i) => {
+        return Object.assign({}, artifact, {
+          key: i,
+        });
+      });
+    const columns = [
+      {
+        key: 'groupId', dataIndex: 'groupId', title: 'GroupId',
+        filteredValue: filteredInfo.groupId || null,
+        onFilter: (value, record) => record.groupId.includes(value),
+        sorter: sortStrBy('groupId'),
+        sortOrder: sortedInfo.columnKey === 'groupId' && sortedInfo.order,
+      },
+      {
+        key: 'artifactId', dataIndex: 'artifactId', title: 'ArtifactId',
+        filteredValue: filteredInfo.artifactId || null,
+        onFilter: (value, record) => record.artifactId.includes(value),
+        sorter: sortStrBy('artifactId'),
+        sortOrder: sortedInfo.columnKey === 'artifactId' && sortedInfo.order,
+      },
+      {
+        key: 'version',
+        title: 'Nexus Version',
+        render: (text, artifact) => <SelectionVersion onChange={this.onChange(artifact)} version={artifact.version}/>
+      },
+    ];
 
     return (
-      <div className="col-xs-12 ">
-        <table className="table table-hover table-responsive">
-          <caption>
-            <div className="row">
-              <div className="col-xs-6">
-                Results {arr.length}.
-              </div>
-              <div className="col-xs-4">
-                <div className="form-group" style={{marginTop: 0}}>
-                  <input type="text" className="form-control" defaultValue={this.state.filter} onChange={this.onFilter}
-                         placeholder="Filter..."/>
-                </div>
-              </div>
-            </div>
-          </caption>
-          <thead>
-          <tr>
-            <th>
-              GroupId
-            </th>
-            <th>
-              ArtifactId
-            </th>
-            <th>Packaging</th>
-            <th className="text-center">Nexus Version</th>
-
-          </tr>
-          </thead>
-          <tbody>
-          {artifacts}
-          </tbody>
-        </table>
+      <div id="list-nexus-artifact">
+        <Row className="filter-panel">
+          <Col xs={24} sm={12}>
+            Results {arr.length}.
+          </Col>
+          <Col xs={24} sm={12}>
+            <Input value={this.state.filter} onChange={this.onFilter} placeholder="Filter..."/>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={24}>
+            <Table dataSource={artifacts} columns={columns} onChange={this.handleChangeTable}
+                   pagination={{pageSize: 50}}/>
+          </Col>
+        </Row>
       </div>
     );
   }

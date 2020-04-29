@@ -45,24 +45,6 @@ class History extends React.PureComponent {
 }
 History.propTypes = { versions: PropTypes.array.isRequired };
 
-class Nexus extends React.PureComponent {
-
-
-  render() {
-    if (this.props.versions.length === 0) {
-      return <optgroup label="Nexus"/>;
-    }
-    const opts = this.props.versions.map((v, i) => (
-      <option key={i} value={JSON.stringify(v)}>{v.version}</option>));
-    return (
-      <optgroup label="Nexus">
-        {opts}
-      </optgroup>
-    );
-  }
-}
-
-Nexus.propTypes = { versions: PropTypes.array.isRequired };
 
 class ArtifactVersions extends React.Component {
   constructor(props) {
@@ -88,7 +70,6 @@ class ArtifactVersions extends React.Component {
                 disabled={disabled}>
           <option value="">Latest Jenkins</option>
           <History versions={this.props.versions}/>
-          <Nexus versions={this.props.nexusVersions}/>
         </select>
       </div>
     );

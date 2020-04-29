@@ -1,0 +1,18 @@
+#artifact-form .buttons {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+#artifact-form .buttons .one-button {
+  display: flex;
+  justify-content: center;
+}
+
+#artifact-form .nexus-card .ant-card-head {
+  background: darkred;
+}
+
+#artifact-form .nexus-card .ant-card-head .ant-card-head-title {
+  color: white;
+  font-size: 1.5em;
+}

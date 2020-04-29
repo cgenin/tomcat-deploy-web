@@ -1,22 +1,28 @@
 import React from 'react';
+import {Row, Col, Card, Breadcrumb} from 'antd';
 import Title from '../../widgets/Title';
-import ServerEdit from '../../widgets/server/Edition';
+import ServerEdit from '../../widgets/server/ServerForm';
+import {pageLayout} from '../../Styles';
 
 
-export default class ServerAddPage extends React.PureComponent {
+const ServerAddPage = () =>
+  (<div>
+    <Row>
+      <Col {...pageLayout}>
+        <Breadcrumb className="main-bread-crumb">
+          <Breadcrumb.Item>Home</Breadcrumb.Item>
+          <Breadcrumb.Item>Add an server</Breadcrumb.Item>
+        </Breadcrumb>
+      </Col>
+    </Row>
+    <Title text="Add and Save server"/>
+    <Row>
+      <Col {...pageLayout}>
+        <Card style={{width: '100%'}}>
+          <ServerEdit add />
+        </Card>
+      </Col>
+    </Row>
+  </div>);
 
-  render() {
-    return (
-      <div>
-        <Title text="Add and Save server"/>
-        <div className="row">
-          <div className="panel panel-default col-xs-offset-1 col-xs-10">
-            <div className="panel-body">
-              <ServerEdit add={true}/>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
+export default ServerAddPage;

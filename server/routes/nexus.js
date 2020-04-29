@@ -1,9 +1,10 @@
 const express = require('express');
 const deploydb = require('../deploydb');
-const nexus = require('../nexus');
-const router = express.Router();
+const logger = require('../logger');
+const nexus = require('../actions/nexus');
 const bodyParser = require('body-parser');
 
+const router = express.Router();
 
 router.get('/', (req, res) => {
   const config = deploydb.nexus() || {data: [{}]};
@@ -11,18 +12,45 @@ router.get('/', (req, res) => {
   res.json(json);
 });
 
-router.get('/test', (req, res) => {
-  const host = req.query.host;
-  const port = req.query.port;
-  const context = req.query.context;
-  nexus.up(host, port, context).then(d => res.json(d), d => res.json(d));
+router.delete('/', bodyParser.json(), (req, res) => {
+  const {body} = req;
+  const pathM2 = body.pathM2 || 'C:/dev_intranet/.m2/';
+  const suffix = body.suffix || '*.war';
+  nexus.purge(pathM2, suffix)
+    .subscribe(
+      d => res.json(d),
+      (err) => {
+        logger.error(err);
+        res.status(404);
+        res.json(err);
+      }
+    );
 });
 
 
+router.get('/test', (req, res) => {
+  const {
+    host,
+    port,
+    context
+  } = req.query;
+  nexus.up(host, port, context).then(d => res.json(d), d => res.json(d));
+});
+
+router.get('/maven/version', (req, res) => {
+  nexus.mavenVersion().subscribe(d => res.json(d),     (err) => {
+    logger.error(err);
+    res.status(404);
+    res.json(err);
+  });
+});
+
 router.get('/artifact/search', (req, res) => {
-  const host = req.query.host;
-  const port = req.query.port;
-  const q = req.query.q;
+  const {
+    host,
+    port,
+    q
+  } = req.query;
   nexus.search(host, port, q).then(d => res.json(d), d => res.json(d));
 });
 
@@ -39,51 +67,42 @@ router.get('/artifact', (req, res) => {
   const artifactId = req.query.a;
   nexus.valid(groupId, artifactId).subscribe(
     d => res.json(d),
-    err => {
-      console.error(err);
+    (err) => {
+      logger.error(err);
       res.status(404);
       res.json(err);
     });
 });
 
+router.get('/download/:groupId/:artifactId/:version/to/:name', (req, res) => {
+  const {groupId, artifactId, version, name} = req.params;
+  nexus.download(groupId, artifactId, version)
+    .subscribe((data) => {
+        res.writeHead(200, {
+          'Cache-Control': 'public',
+          'Content-Description': 'File Transfer',
+          'Content-Type': 'binary/octet-stream',
+          'Content-Transfer-Encoding': 'binary',
+          'Content-disposition': `attachment;filename=${name}.war`,
+          'Content-Length': data.length
+        });
+        res.end(new Buffer(data, 'binary'));
+      },
+      (err) => {
+        logger.error(err);
+        res.status(404);
+        res.json(err);
+      });
+});
+
+
 router.put('/', bodyParser.json(), (req, res) => {
-  const body = req.body;
+  const {body} = req;
   const config = deploydb.nexus();
   const data = Object.assign({}, config.data[0], body);
   config.data.filter((d, i) => i > 0).forEach(d => deploydb.remove(config, d));
   deploydb.save(config, data);
   res.json(body);
 });
-
-
-// router.get('/test2', (req, res) => {
-//   const groupId = 'fr.mdpa.ms.metier.mdpa.societaire';
-//   const artifactId = 'societaire-service-impl';
-//   const version = '1.1.3';
-//   const packaging = 'war';
-//   const ef = Rx.Observable.bindNodeCallback(execFile);
-//   ef('mvn.bat', [
-//     'dependency:get',
-//     `-DgroupId=${groupId}`,
-//     `-DartifactId=${artifactId}`,
-//     `-Dversion=${version}`,
-//     `-Dpackaging=${packaging}`,
-//     '-Dtransitive=false'
-//   ])
-//     .flatMap(() => ef('mvn.bat', [
-//         'dependency:copy',
-//         `-Dartifact=${groupId}:${artifactId}:${version}:${packaging}`,
-//         '-DoutputDirectory=download/versions'
-//       ])
-//     ).subscribe(
-//     (arr) => {
-//       console.log(arr);
-//       res.json(arr);
-//     },
-//     err => {
-//       console.error(err);
-//       res.json({error: true});
-//     })
-// });
 
 module.exports = router;
