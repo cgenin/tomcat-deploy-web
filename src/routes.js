@@ -11,7 +11,8 @@ import {
   EDIT_SERVER,
   HOME,
   ADD_SCHEDULER,
-  HOME_TABS
+  HOME_TABS,
+  SETTINGS
 } from './routesConstant';
 import AsyncComponent from "./AsyncComponent";
 
@@ -22,6 +23,7 @@ const LazyEdit = AsyncComponent(() => import(/* webpackChunkName: "edit-artifact
 const LazyServerEdit = AsyncComponent(() => import(/* webpackChunkName: "edit-server" */ './components/pages/server/ServerEditPage'));
 const LazySchedulers = AsyncComponent(() => import(/* webpackChunkName: "add-scheduler" */ './components/pages/schedulers/Scheduler'));
 const LazyLogPage = AsyncComponent(() => import(/* webpackChunkName: "log-page" */ './components/pages/log/LogPage'));
+const LazySettingsPage = AsyncComponent(() => import(/* webpackChunkName: "log-page" */ './components/pages/settings'));
 
 const routes = () => (
   <BrowserRouter>
@@ -34,6 +36,7 @@ const routes = () => (
       <Route path={EDIT_SERVER.CST()} component={LazyServerEdit}/>
       <Route path={ADD_SCHEDULER.CST()} component={LazySchedulers}/>
       <Route path={LOG.CST()} component={LazyLogPage}/>
+      <Route path={SETTINGS.CST()} component={LazySettingsPage}/>
       {routesMd.map(r => <Route key={r.path} path={r.path} component={r.component}/>)}
     </MainLayout>
   </BrowserRouter>

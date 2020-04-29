@@ -6,6 +6,7 @@ const configCollection = 'configuration';
 const nexusCollection = 'nexus';
 const schedulersCollection = 'schedulers';
 const historyCollection = 'history';
+const toolConfigurationCollection = 'toolConfiguration';
 
 let instance = null;
 
@@ -15,7 +16,7 @@ class DeployDB {
       return instance;
     }
     instance = this;
-    this.db = new loki('db/data.json', {autoload: false});
+
   }
 
   createIfNotExist(name) {
@@ -26,7 +27,12 @@ class DeployDB {
     }
   }
 
-  init() {
+  init(path) {
+    if (!path) {
+      throw new Error('dbpath must not be undefined');
+    }
+    logger.info(`load db in '${path}'`);
+    this.db = new loki(path, {autoload: false});
     return Rx.Observable.create((sub) => {
       this.db.loadDatabase({}, () => {
         this.createIfNotExist(fileCollection);
@@ -34,6 +40,7 @@ class DeployDB {
         this.createIfNotExist(nexusCollection);
         this.createIfNotExist(historyCollection);
         this.createIfNotExist(schedulersCollection);
+        this.createIfNotExist(toolConfigurationCollection);
         sub.next(this.db);
         sub.complete();
       });
@@ -54,6 +61,10 @@ class DeployDB {
 
   history() {
     return this.db.getCollection(historyCollection);
+  }
+
+  toolConfiguration() {
+    return this.db.getCollection(toolConfigurationCollection) || {data: []};
   }
 
   schedulers() {

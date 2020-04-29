@@ -1,11 +1,13 @@
 const http = require('http');
 const fs = require('fs');
 const URL = require('url');
+const rimraf = require('rimraf');
 const Rx = require('rxjs/Rx');
 const config = require('../config');
+
 const logger = require('../logger');
-const rimraf = require('rimraf');
-const downloadedDir = config.downloadedDir;
+
+const {downloadedDir} = config;
 
 
 const makeDirectory = function () {
@@ -20,23 +22,29 @@ const makeDirectory = function () {
     });
 };
 
-const makeNexusDirectory = function () {
-  const nexusDir = `${downloadedDir}/download`;
+
+const createDir = (directory) => {
   const mkdir = Rx.Observable.bindNodeCallback(fs.mkdir);
   try {
-    const exist = fs.statSync(nexusDir);
+    const exist = fs.statSync(directory);
     if (exist) {
-      return Rx.Observable.bindNodeCallback(rimraf)(nexusDir)
-        .flatMap(() => mkdir(nexusDir))
-        .map(() => nexusDir);
+      return Rx.Observable.bindNodeCallback(rimraf)(directory)
+        .flatMap(() => mkdir(directory))
+        .map(() => directory);
     }
-  }
-  catch (err) {
+  } catch (err) {
     logger.warn(err);
   }
-  return mkdir(nexusDir)
-    .map(() => nexusDir);
+  return mkdir(directory)
+    .map(() => directory);
 };
+
+const makeNexusDirectory = function () {
+  const nexusDir = `${downloadedDir}/download`;
+  return createDir(downloadedDir)
+    .flatMap(() => createDir(nexusDir));
+};
+
 
 const warname = function (name) {
   return `${name}.war`;
@@ -45,12 +53,13 @@ const warname = function (name) {
 const fullpath = function (name) {
   return `${downloadedDir}/${warname(name)}`;
 };
+
 const managedOld = function (item) {
-  const name = item.name;
+  const {name} = item;
   const path = fullpath(name);
   const stat = Rx.Observable.bindNodeCallback(fs.stat);
   return stat(path)
-    .map(stat => stat.ctimeMs)
+    .map(st => st.ctimeMs)
     .flatMap((time) => {
       const renameSync = Rx.Observable.bindNodeCallback(fs.rename);
       return renameSync(path, `${path}.${time}`);
@@ -59,8 +68,7 @@ const managedOld = function (item) {
 };
 
 const download = function (item) {
-  const name = item.name;
-  const url = item.url;
+  const {name, url} = item;
   const war = warname(name);
   const path = fullpath(name);
   const file = fs.createWriteStream(path);
@@ -72,7 +80,7 @@ const download = function (item) {
         return Rx.Observable.throw(response);
       }
       response.pipe(file);
-      return Rx.Observable.create((sub) =>
+      return Rx.Observable.create(sub =>
         file.on('finish', () => {
           file.close(() => {
             sub.next(war);
@@ -100,28 +108,26 @@ const rollback = function (configuration, item, oldVersion) {
   };
   const readFile = Rx.Observable.bindNodeCallback(fs.readFile);
   return readFile(`${downloadedDir}/${oldVersion.f}`)
-    .flatMap(d => {
-        return Rx.Observable.create((subscriber) => {
-          const req = http.request(options, (rs) => {
-            let result = '';
-            rs.on('data', (data) => {
-              result += data;
-            });
-            rs.on('end', () => {
-              if (rs.statusCode === 200) {
-                subscriber.next(result);
-                subscriber.complete();
-              } else {
-                subscriber.error(rs);
-              }
-            });
-          }).on('error', (e) => {
-            subscriber.error(e);
+    .flatMap(d => Rx.Observable.create((subscriber) => {
+        const req = http.request(options, (rs) => {
+          let result = '';
+          rs.on('data', (data) => {
+            result += data;
           });
-
-          req.end(d);
+          rs.on('end', () => {
+            if (rs.statusCode === 200) {
+              subscriber.next(result);
+              subscriber.complete();
+            } else {
+              subscriber.error(rs);
+            }
+          });
+        }).on('error', (e) => {
+          subscriber.error(e);
         });
-      }
+
+        req.end(d);
+      })
     );
 };
 
@@ -138,8 +144,8 @@ const deploySync = function (configuration, nameArtifact, pathWar) {
     auth: `${configuration.username}:${configuration.password}`
   };
   const readFile = Rx.Observable.bindNodeCallback(fs.readFile);
-  return readFile(pathWar).flatMap(d => {
-    return Rx.Observable.create((subscriber) => {
+  return readFile(pathWar).flatMap(d =>
+    Rx.Observable.create((subscriber) => {
       const req = http.request(options, (rs) => {
         let result = '';
         rs.on('data', (data) => {
@@ -157,8 +163,8 @@ const deploySync = function (configuration, nameArtifact, pathWar) {
         subscriber.error(e);
       });
       req.end(d);
-    });
-  });
+    })
+  );
 };
 
 const deploy = function (configuration, item) {

@@ -17,7 +17,6 @@ const getArtifacts = function () {
 };
 
 module.exports = (io) => {
-
   /**
    * @api {get} /artifact Get all artifacts
    * @apiName GetArtifact

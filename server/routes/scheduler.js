@@ -19,16 +19,15 @@ const searchByReqId = (req) => {
 const getJobs = () => {
   const items = deploydb.schedulers().data;
   const runnings = cronManager.getRunning();
-  return items.map(item => {
+  return items.map((item) => {
     const running = runnings.find(r => r.name === item.name);
     if (running) {
-      return Object.assign({run: true}, item, running)
+      return Object.assign({run: true}, item, running);
     }
-    return Object.assign({run: false}, item)
+    return Object.assign({run: false}, item);
   });
 };
 module.exports = () => {
-
   /**
    * @api {get} /scheduler Get all scheduling job's
    * @apiName GetScheduler
@@ -106,11 +105,11 @@ module.exports = () => {
   router.get('/:cron/validate', (req, res) => {
     const {cron} = req.params;
     cronManager.test(cron).subscribe(
-      d => {
+      (d) => {
         const json = Object.assign({}, d, {valid: true});
         res.json(json);
       },
-      err => {
+      (err) => {
         const {message, stack} = err;
         res.json({message, stack, valid: false});
       }
@@ -125,7 +124,7 @@ module.exports = () => {
           () => {
             deploydb.remove(deploydb.schedulers(), itemToRemove)
           },
-          err => {
+          (err) => {
             logger.error(err);
             res.status(500);
             res.json([]);
@@ -147,7 +146,7 @@ module.exports = () => {
     cronManager.start(itemToStart)
       .subscribe((result) => {
           logger.info(result);
-        }, err => {
+        }, (err) => {
           logger.error(err);
           res.status(500);
           res.json([]);
@@ -161,7 +160,7 @@ module.exports = () => {
     cronManager.stop(itemToStop)
       .subscribe((result) => {
           logger.info(result);
-        }, err => {
+        }, (err) => {
           logger.error(err);
           res.status(500);
           res.json([]);
